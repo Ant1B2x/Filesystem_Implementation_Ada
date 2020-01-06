@@ -1,1 +1,0 @@
-# PROJET_SGF_BEDEX
