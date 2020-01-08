@@ -1,5 +1,14 @@
 package body P_Metadata is
    
+   function create (name : in String; rights : in T_Rights; size : in Integer) return T_Metadata is
+      metadata : T_Metadata;
+   begin
+      metadata.name := name;
+      metadata.rights := rights;
+      metadata.size := metadata.size;
+      return metadata;
+   end create;
+   
    function get_name (metadata : in T_Metadata) return String is
    begin
       return metadata.name;
@@ -10,7 +19,7 @@ package body P_Metadata is
       metadata.name := name;
    end set_name;
    
-   function get_rights (metadata : in T_Metadata) is
+   function get_rights (metadata : in T_Metadata) return T_Rights is
    begin
       return metadata.rights;
    end get_rights;
@@ -20,12 +29,12 @@ package body P_Metadata is
       metadata.rights := rights;
    end set_rights;
    
-   function get_size (metadata : in T_Metadata) return Long_Integer is
+   function get_size (metadata : in T_Metadata) return Integer is
    begin
       return metadata.size;
    end get_size;
    
-   procedure set_size (metadata : in out T_Metadata; size : in Long_Integer) is
+   procedure set_size (metadata : in out T_Metadata; size : in Integer) is
    begin
       metadata.size := size;
    end set_size;

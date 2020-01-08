@@ -74,6 +74,5 @@ package body P_Tree is
          tree.all.nb_siblings := tree.all.nb_siblings - 1;
       end if;
    end del_sibling;
-      
 
 end P_Tree;
