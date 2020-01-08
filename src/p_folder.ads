@@ -13,7 +13,7 @@ package P_Folder is
    -- indeed, they're the siblings in the tree
    type T_Folder_Data is record
       metadata : T_Metadata;
-      nb_files; -- effective files number
+      nb_files : Integer; -- effective files number
       files : T_Files;
    end record;
    
@@ -21,11 +21,11 @@ package P_Folder is
    -- P_Folder_Tree.T_Tree will be our Folder type
    package P_Folder_Tree is new P_Tree (T => T_Folder_Data);
    subtype T_Folder is P_Folder_Tree.T_Tree;
-   subtype T_Folder_Siblings is P_Folder_Tree.T_Siblings;
+   subtype T_Folders is P_Folder_Tree.T_Siblings;
    
-   function create (name : in String) return T_Folder;
+   function create (name : in String; parent : in T_Folder) return T_Folder;
    
-   function create (name : in String; rights : in T_Rights) return T_Folder;
+   function create (name : in String; parent : in T_Folder; rights : in T_Rights) return T_Folder;
    
    function get_name (folder : in T_Folder) return String;
    
@@ -38,21 +38,23 @@ package P_Folder is
    
    function get_size (folder : in T_Folder) return Integer;
    
-   procedure set_size (folder : in out T_Folder; size : in Integer)
-     with Pre => size <= SMAX_FILE;
-   
    function get_parent (folder : in T_Folder) return T_Folder;
    
    procedure set_parent (folder : in out T_Folder; parent : in T_Folder);
    
    function is_empty (folder : in T_Folder) return Boolean;
    
-   function get_siblings (folder : in T_Folder) return T_Folder_Siblings;
+   function get_folders (folder : in T_Folder) return T_Folders;
    
-   procedure add_sibling (folder : in out T_Folder; sibling : in T_Folder)
-     with Pre => folder.all.nb_siblings <= NMAX_SIBLINGS;
+   function get_nb_folders (folder : in T_Folder) return Integer;
    
-   procedure del_sibling (folder : in out T_Folder; sibling : in P_Folder_Tree.T_Tree);
+   procedure add_folder (folder : in out T_Folder; sibling_folder : in T_Folder)
+     with Pre => get_nb_folders(folder) <= NMAX_SIBLINGS;
+   
+   procedure del_folder (folder : in out T_Folder; sibling_folder : in T_Folder);
+   
+   function find_folder (folder : in T_Folder; folder_name : in String) return T_Folder
+     with Pre => folder_name'length <= LMAX_NAME;
    
    function get_files (folder : in T_Folder) return T_Files;
    
@@ -60,11 +62,7 @@ package P_Folder is
    
    procedure del_file (folder : in out T_Folder; file : in T_File);
    
+   function find_file (folder : in T_Folder; file_name : in String) return T_File
+     with Pre => file_name'length <= LMAX_NAME;
    
-   
-   -- ajouter / supprimer fils
-   
-   
-   
-
 end P_Folder;

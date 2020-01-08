@@ -24,8 +24,10 @@ package P_Tree is
    
    function get_siblings (tree : in T_Tree) return T_Siblings;
    
+   function get_nb_siblings (tree : in T_Tree) return Integer;
+   
    procedure add_sibling (tree : in out T_Tree; sibling : in T_Tree)
-     with Pre => tree.all.nb_siblings <= NMAX_SIBLINGS;
+     with Pre => get_nb_siblings(tree) <= NMAX_SIBLINGS;
    
    procedure del_sibling (tree : in out T_Tree; sibling : in T_Tree);
       

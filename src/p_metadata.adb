@@ -3,9 +3,9 @@ package body P_Metadata is
    function create (name : in String; rights : in T_Rights; size : in Integer) return T_Metadata is
       metadata : T_Metadata;
    begin
-      metadata.name := name;
-      metadata.rights := rights;
-      metadata.size := metadata.size;
+      set_name(metadata, name);
+      set_rights(metadata, rights);
+      set_size(metadata, size);
       return metadata;
    end create;
    
@@ -16,6 +16,14 @@ package body P_Metadata is
    
    procedure set_name (metadata : in out T_Metadata; name : in String) is
    begin
+      
+      -- a name can't contain a '/'
+      for i in 1..name'length loop
+         if name(i) = '/' or name(i) = ' ' then
+            raise InvalidCaracterError;
+         end if;
+      end loop;
+      
       metadata.name := name;
    end set_name;
    

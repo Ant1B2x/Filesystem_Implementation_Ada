@@ -1,33 +1,26 @@
 package body P_File is
 
-   function create (name : in String; data : in String) return T_File is
-      rights : T_Rights;
-      metadata : T_Metadata;
+   function create (name : in String; rights : in T_Rights; data : in String) return T_File is
       file : T_File;
    begin
-      -- rights creation
-      rights := ( RW, R, R ); -- chmod 644 by default
-      -- metadata creation
-      metadata := create (name, rights, data'length);
-      -- file creation
-      file.metadata := metadata;
-      file.data := data;
+      
+      -- set file properties
+      set_name(file, name);
+      set_rights(file, rights);
+      set_data(file, data);
       
       return file;
    end create;
    
-   function create (name : in String; rights : in T_Rights; data : in String) return T_File is
-      metadata : T_Metadata;
-      file : T_File;
+   function create (name : in String; data : in String) return T_File is
+      rights : T_Rights;
    begin
       
-      -- metadata creation
-      metadata := create (name, rights, data'length);
+      -- rights creation
+      rights := ( RW, R, R ); -- chmod 644 by default
       -- file creation
-      file.metadata := metadata;
-      file.data := data;
+      return create (name, rights, data);
       
-      return file;
    end create;
    
    function get_data (file : in T_File) return String is
@@ -69,7 +62,6 @@ package body P_File is
    begin
       P_Metadata.set_size (file.metadata, size);
    end set_size;
-   
    
    
 end P_File;

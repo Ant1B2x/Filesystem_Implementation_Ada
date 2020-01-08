@@ -49,6 +49,11 @@ package body P_Tree is
       return tree.all.siblings(1..tree.all.nb_siblings);
    end get_siblings;
    
+   function get_nb_siblings (tree : in T_Tree) return Integer is
+   begin
+      return tree.all.nb_siblings;
+   end get_nb_siblings;
+   
    procedure add_sibling (tree : in out T_Tree; sibling : in T_Tree) is
    begin
       tree.all.nb_siblings := tree.all.nb_siblings + 1;
