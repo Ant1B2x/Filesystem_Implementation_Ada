@@ -1,3 +1,4 @@
+with P_Constants; use P_Constants;
 with P_Metadata; use P_Metadata;
 
 package p_file is
@@ -15,9 +16,20 @@ package p_file is
    procedure set_data (file : in out T_File; data : in String)
      with Pre => data'length <= SMAX_FILE;
    
-   function get_metadata (file : in T_File) return T_Metadata;
+   function get_name (file : in T_File) return String;
    
-   procedure set_metadata (file : in out T_File; metadata : in T_Metadata);
+   procedure set_name (file : in out T_File; name : in String)
+     with Pre => name'length <= LMAX_NAME;
+   
+   function get_rights (file : in T_File) return T_Rights;
+   
+   procedure set_rights (file : in out T_File; rights : in T_Rights);
+   
+   function get_size (file : in T_File) return Integer;
+   
+   procedure set_size (file : in out T_File; size : in Integer)
+     with Pre => size <= SMAX_FILE;
+   
    
 private
    type T_File is record

@@ -1,8 +1,8 @@
 module dossier
-module fichier
 module parser
+module commandes
 
-gérer les créations avec des noms similaires
+gérer les créations avec des noms similaires (fichiers et dossiers)
 
 main interpréteur
 main menu

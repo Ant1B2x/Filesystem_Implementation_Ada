@@ -1,9 +1,9 @@
+with P_Constants; use P_Constants;
+
 generic
    type T is private;
 
 package P_Tree is
-
-   NMAX_SIBLINGS : constant Integer := 1000; -- maximum of siblings per tree
    
    type T_Tree is private;
    type T_Siblings is private;

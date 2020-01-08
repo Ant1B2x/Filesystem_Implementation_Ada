@@ -1,7 +1,6 @@
+with P_Constants; use P_Constants;
+
 package P_Metadata is
-   
-   LMAX_NAME : constant Integer := 100; -- maximum name length
-   SMAX_FILE : constant Integer := 10000000; -- maximum file size
    
    type E_Rights is (R,W,X,RW,RX,WX,RWX);
    type T_Rights is Array (1..3) of E_Rights;
