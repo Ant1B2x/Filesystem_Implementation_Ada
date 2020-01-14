@@ -26,53 +26,52 @@ package body P_File is
    
    function get_data (file : in T_File) return String is
    begin
-      return file.data;
+      return file.all.data;
    end get_data;
    
    procedure set_data (file : in out T_File; data : in String) is
    begin
-      file.data := data;
+      file.all.data := data;
    end set_data;
    
    function get_name (file : in T_File) return String is
    begin
-      return P_Metadata.get_name(file.metadata);
+      return P_Metadata.get_name(file.all.metadata);
    end get_name;
    
    procedure set_name (file : in out T_File; name : in String) is
    begin
-      P_Metadata.set_name(file.metadata, name);
+      P_Metadata.set_name(file.all.metadata, name);
    end set_name;
    
    function get_rights (file : in T_File) return T_Rights is
    begin
-      return P_Metadata.get_rights(file.metadata);
+      return P_Metadata.get_rights(file.all.metadata);
    end get_rights;
       
    procedure set_rights (file : in out T_File; rights : in T_Rights) is
    begin
-      P_Metadata.set_rights(file.metadata, rights);
+      P_Metadata.set_rights(file.all.metadata, rights);
    end set_rights;
    
    function get_size (file : in T_File) return Integer is
    begin
-      return P_Metadata.get_size(file.metadata);
+      return P_Metadata.get_size(file.all.metadata);
    end get_size;
    
    procedure set_size (file : in out T_File; size : in Integer) is
    begin
-      P_Metadata.set_size (file.metadata, size);
+      P_Metadata.set_size (file.all.metadata, size);
    end set_size;
    
    function get_path (file : in T_File) return String is
    begin
-      return P_Metadata.get_path(file.metadata);
+      return P_Metadata.get_path(file.all.metadata);
    end get_path;
    
    procedure set_path (file : in out T_File; path : in String) is
    begin
-      P_Metadata.set_path (file.metadata, path);
+      P_Metadata.set_path (file.all.metadata, path);
    end set_path;
-   
    
 end P_File;

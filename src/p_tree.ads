@@ -5,8 +5,8 @@ generic
 
 package P_Tree is
    
-   type T_Tree is private;
-   type T_Siblings is private;
+   type T_Node is private;
+   type T_Tree is access T_Node;
    
    function create return T_Tree;
    
@@ -22,7 +22,8 @@ package P_Tree is
    
    procedure set_parent (tree : in out T_Tree; parent : in T_Tree);
    
-   function get_siblings (tree : in T_Tree) return T_Siblings;
+   function get_sibling (tree : in T_Tree; index : in Integer) return T_Tree
+     with Pre => index <= get_nb_siblings(tree);
    
    function get_nb_siblings (tree : in T_Tree) return Integer;
    
@@ -33,8 +34,6 @@ package P_Tree is
       
 private
    
-   type T_Node;
-   type T_Tree is access T_Node;
    type T_Siblings is array (1..NMAX_SIBLINGS) of T_Tree;
    
    type T_Node is record

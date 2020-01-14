@@ -3,7 +3,8 @@ with P_Metadata; use P_Metadata;
 
 package p_file is
 
-   type T_File is private;
+   type T_R_File is private;
+   type T_File is access T_R_File;
    
    function create (name : in String; path : in String; data : in String) return T_File;
    
@@ -31,9 +32,9 @@ package p_file is
    procedure set_path (file : in out T_File; path : in String);
    
 private
-   type T_File is record
+   type T_R_File is record
       metadata : T_Metadata;
       data : String(1..SMAX_FILE);
    end record;
-
+   
 end p_file;

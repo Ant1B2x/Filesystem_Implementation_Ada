@@ -43,11 +43,10 @@ package body P_Tree is
       tree.all.parent := parent;
    end set_parent;
    
-   -- return an array with the effective number of siblings
-   function get_siblings (tree : in T_Tree) return T_Siblings is
+   function get_sibling (tree : in T_Tree; index : in Integer) return T_Tree is
    begin
-      return tree.all.siblings(1..tree.all.nb_siblings);
-   end get_siblings;
+      return tree.all.siblings(i);
+   end get_sibling;
    
    function get_nb_siblings (tree : in T_Tree) return Integer is
    begin

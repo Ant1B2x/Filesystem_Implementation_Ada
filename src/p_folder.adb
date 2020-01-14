@@ -1,18 +1,32 @@
 package body P_Folder is
 
-   function create (name : in String; parent : in T_Folder; path : in String) return T_Folder is
+   function create_root return T_Folder is
+      folder : T_Folder;
+      data : T_Folder_Data;
    begin
-      return create (name, parent, (RWX, RX, RX), path);
+      folder := P_Folder_Tree.create;
+      
+      data.nb_files := 0;
+      data.metadata := P_Metadata.create ("/", (RWX, RX, RX), 10, "");
+      
+      P_Folder_Tree.set_data(folder, data);
+      return folder;
+   end create_root;
+   
+   function create (name : in String; parent : in T_Folder) return T_Folder is
+   begin
+      return create (name, parent, (RWX, RX, RX));
    end create;
    
-   function create (name : in String; parent : in T_Folder; rights : in T_Rights; path : in String) return T_Folder is
+   function create (name : in String; parent : in T_Folder; rights : in T_Rights) return T_Folder is
       folder : T_Folder;
       data : T_Folder_Data;
    begin
       folder := P_Folder_Tree.create(parent);
       
       data.nb_files := 0;
-      data.metadata := P_Metadata.create(name, rights, 10, path);
+      
+      data.metadata := P_Metadata.create(name, rights, 10, calculate_path(parent) );
       
       P_Folder_Tree.set_data(folder, data);
       return folder;
@@ -49,6 +63,42 @@ package body P_Folder is
       return P_Metadata.get_size (P_Folder_Tree.get_data(folder).metadata );
    end get_size;
    
+   function get_root (folder : in T_Folder) return T_Folder is
+      current : T_Folder;
+   begin
+      
+      if get_parent(folder) /= null then
+         current := get_parent(folder);
+         while get_parent(current) /= null loop
+            current := get_parent(current);
+         end loop;
+         return current;
+      else
+         return folder;
+      end if;
+      
+   end get_root;
+   
+   function calculate_path (folder : in T_Folder) return String is
+      absolute_path: Unbounded_String;
+      current: T_Folder;
+   begin
+      if is_root(folder) then
+         return "";
+      end if;
+      
+      absolute_path := To_Unbounded_String("");
+      current := folder;
+      while not is_root(get_parent(current)) loop
+         current := get_parent(current);
+         absolute_path := get_name(current) & "/" & absolute_path;
+      end loop;
+      absolute_path := "/" & absolute_path;
+      
+      return To_String(absolute_path);
+      
+   end calculate_path;
+   
    function get_path (folder : in T_Folder) return String is
    begin
       return P_Metadata.get_path (P_Folder_Tree.get_data(folder).metadata );
@@ -64,7 +114,7 @@ package body P_Folder is
    
    function get_parent (folder : in T_Folder) return T_Folder is
    begin
-      P_Folder_Tree.get_parent(folder);
+      return P_Folder_Tree.get_parent(folder);
    end get_parent;
    
    procedure set_parent (folder : in out T_Folder; parent : in T_Folder) is
@@ -74,47 +124,86 @@ package body P_Folder is
    
    function is_empty (folder : in T_Folder) return Boolean is
    begin
-      return P_Folder_Tree.is_empty(folder);
+      return get_nb_folders(folder) = 0 and get_nb_files(folder) = 0;
    end is_empty;
    
-   function get_folders (folder : in T_Folder) return T_Folders is
+   function is_root (folder : in T_Folder) return Boolean is
    begin
-      return P_Folder_Tree.get_siblings(folder);
-   end get_folders;
+      return get_parent(folder) = null;
+   end is_root;
+   
+   function get_folder (folder : in T_Folder; index : in Integer) return T_Folder is
+   begin
+      return P_Folder_Tree.get_sibling(folder, index);
+   end get_folder;
    
    function get_nb_folders (folder : in T_Folder) return Integer is
    begin
       return P_Folder_Tree.get_nb_siblings(folder);
    end get_nb_folders;
    
-   procedure add_folder (folder : in out T_Folder; sibling_folder : in T_Folder) is
+   -- T_Tree doit être en "protected" car on a besoin de savoir que c'est un pointeur
+   function find_folder (folder : in T_Folder; folder_name : in String) return T_Folder is
    begin
-      P_Folder_Tree.add_sibling(folder, sibling_folder);
+      for i in 1..get_nb_folders(folder) loop
+         if get_name ( get_folder(folder, i) ) = folder_name then 
+            return get_folder(folder, i);
+         end if;
+      end loop;
+      return null;
+   end find_folder;   
+   
+   procedure add_folder (folder : in out T_Folder; folder_name : in String) is
+      same_name : Boolean := False;
+   begin
+      
+      -- vérifier si un fichier ou dossier du même nom existe déjà
+      if find_folder(folder, folder_name ) = null
+        and find_file(folder, folder_name ) = null then
+         P_Folder_Tree.add_sibling(folder, create(folder_name, folder) );
+      else
+         put_line("> A directory or a file already has the same name.");
+      end if;
+      
    end add_folder;
    
-   procedure del_folder (folder : in out T_Folder; sibling_folder : in T_Folder) is
+   procedure del_folder (folder : in out T_Folder; folder_name : in String) is
    begin
-      P_Folder_Tree.del_sibling(folder, sibling_folder);
+      for i in 1..get_nb_folders(folder) loop
+         if get_name(get_folder(folder, i)) = folder_name then
+            P_Folder_Tree.del_sibling(folder, get_folder(folder, i));
+         end if;
+      end loop;
    end del_folder;
    
-   function find_folder (folder : in T_Folder; folder_name : in String) return T_Folder
-     with Pre => folder_name'length <= LMAX_NAME;
-   
-   function get_files (folder : in T_Folder) return T_Files is
+   function get_file (folder : in T_Folder; index : in Integer) return T_File is
    begin
-      return P_Folder_Tree.get_data(folder).files(1..P_Folder_Tree.get_data(folder).nb_files);
-   end get_files;
+      return P_Folder_Tree.get_data(folder).files(index);
+   end get_file;
+   
+   function get_nb_files (folder : in T_Folder) return Integer is
+   begin
+      return P_Folder_Tree.get_data(folder).nb_files;
+   end get_nb_files;
+   
+   function find_file (folder : in T_Folder; file_name : in String) return T_File is
+   begin
+      for i in 1..get_nb_files(folder) loop
+         if P_File.get_name(get_file(folder, i)) = file_name then
+            return get_file(folder, i);
+         end if;
+      end loop;
+      return null;
+   end find_file;
    
    procedure add_file (folder : in out T_Folder; file : in T_File);
    
    procedure del_file (folder : in out T_Folder; file : in T_File);
    
-   function find_file (folder : in T_Folder; file_name : in String) return T_File
-     with Pre => file_name'length <= LMAX_NAME;
    
-   function get_root (folder : in T_Folder) return T_Folder is
-      current : T_Folder;
-   begin
-      current := fol
+   
+   
+   
+   
    
 end P_Folder;

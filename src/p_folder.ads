@@ -1,9 +1,13 @@
+with Ada.Text_IO; use Ada.Text_IO;
+with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 with P_Constants; use P_Constants;
 with P_Metadata; use P_Metadata;
 with P_Tree;
 with P_File; use P_File;
 
 package P_Folder is
+   
+   same_name_error : Exception;
 
    -- files of the folder
    type T_Files is array (1..NMAX_SIBLINGS) of T_File;
@@ -21,12 +25,13 @@ package P_Folder is
    -- P_Folder_Tree.T_Tree will be our Folder type
    package P_Folder_Tree is new P_Tree (T => T_Folder_Data);
    subtype T_Folder is P_Folder_Tree.T_Tree;
-   subtype T_Folders is P_Folder_Tree.T_Siblings;
-   -- use type T_Folder; ?
+   use type T_Folder;
    
-   function create (name : in String; parent : in T_Folder; path : in String) return T_Folder;
+   function create_root return T_Folder;
    
-   function create (name : in String; parent : in T_Folder; rights : in T_Rights; path : in String) return T_Folder;
+   function create (name : in String; parent : in T_Folder) return T_Folder;
+   
+   function create (name : in String; parent : in T_Folder; rights : in T_Rights) return T_Folder;
    
    function get_name (folder : in T_Folder) return String;
    
@@ -38,9 +43,11 @@ package P_Folder is
    
    function get_size (folder : in T_Folder) return Integer;
    
-   function get_path (folder : in T_Folder) return String;
+   function get_root (folder : in T_Folder) return T_Folder;
    
-   procedure set_path (folder : in out T_Folder; path : in String);
+   function calculate_path (folder : in T_Folder) return String;
+   
+   function get_path (folder : in T_Folder) return String;
    
    function get_parent (folder : in T_Folder) return T_Folder;
    
@@ -48,24 +55,29 @@ package P_Folder is
    
    function is_empty (folder : in T_Folder) return Boolean;
    
-   function get_folders (folder : in T_Folder) return T_Folders;
+   function is_root (folder : in T_Folder) return Boolean;
+   
+   function get_folder (folder : in T_Folder; index : in Integer) return T_Folder;
    
    function get_nb_folders (folder : in T_Folder) return Integer;
-   
-   procedure add_folder (folder : in out T_Folder; sibling_folder : in T_Folder);
-   
-   procedure del_folder (folder : in out T_Folder; sibling_folder : in T_Folder);
    
    function find_folder (folder : in T_Folder; folder_name : in String) return T_Folder
      with Pre => folder_name'length <= LMAX_STRING;
    
-   function get_files (folder : in T_Folder) return T_Files;
+   procedure add_folder (folder : in out T_Folder; folder_name : in String);
+   
+   procedure del_folder (folder : in out T_Folder; folder_name : in String);
+   
+   function get_file (folder : in T_Folder; index : in Integer) return T_File
+     with Pre => index <= get_nb_files(folder);
+   
+   function get_nb_files (folder : in T_Folder) return Integer;
+   
+   function find_file (folder : in T_Folder; file_name : in String) return T_File
+     with Pre => file_name'length <= LMAX_STRING;
    
    procedure add_file (folder : in out T_Folder; file : in T_File);
    
    procedure del_file (folder : in out T_Folder; file : in T_File);
-   
-   function find_file (folder : in T_Folder; file_name : in String) return T_File
-     with Pre => file_name'length <= LMAX_STRING;
    
 end P_Folder;
