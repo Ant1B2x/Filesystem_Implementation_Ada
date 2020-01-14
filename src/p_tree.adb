@@ -57,7 +57,7 @@ package body P_Tree is
    begin
       tree.all.nb_siblings := tree.all.nb_siblings + 1;
       tree.all.siblings(tree.all.nb_siblings) := sibling;
-   end add_sibling;      
+   end add_sibling;
    
    procedure del_sibling (tree : in out T_Tree; sibling : in T_Tree) is
       index : Integer;
@@ -66,7 +66,7 @@ package body P_Tree is
       index := 1;
       while index <= tree.all.nb_siblings
         and then tree.all.siblings(index) /= sibling loop
-      index := index + 1;   
+         index := index + 1;   
       end loop;
       -- if the sibling is found
       if index <= tree.all.nb_siblings then
