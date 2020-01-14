@@ -1,27 +1,18 @@
-package body p_folder is
+package body P_Folder is
 
-   function create (name : in String; parent : in T_Folder) return T_Folder is
-      folder : T_Folder;
-      data : T_Folder_Data;
+   function create (name : in String; parent : in T_Folder; path : in String) return T_Folder is
    begin
-      folder := P_Folder_Tree.create(parent);
-      
-      data.nb_files := 0;
-      data.metadata := P_Metadata.create(name, (RWX, RX, RX), 20);
-      
-      P_Folder_Tree.set_data(folder, data);
-      return folder;
+      return create (name, parent, (RWX, RX, RX), path);
    end create;
    
-   
-   function create (name : in String; parent : in T_Folder; rights : in T_Rights) return T_Folder is
+   function create (name : in String; parent : in T_Folder; rights : in T_Rights; path : in String) return T_Folder is
       folder : T_Folder;
       data : T_Folder_Data;
    begin
       folder := P_Folder_Tree.create(parent);
       
       data.nb_files := 0;
-      data.metadata := P_Metadata.create(name, rights, 20);
+      data.metadata := P_Metadata.create(name, rights, 10, path);
       
       P_Folder_Tree.set_data(folder, data);
       return folder;
@@ -58,9 +49,22 @@ package body p_folder is
       return P_Metadata.get_size (P_Folder_Tree.get_data(folder).metadata );
    end get_size;
    
+   function get_path (folder : in T_Folder) return String is
+   begin
+      return P_Metadata.get_path (P_Folder_Tree.get_data(folder).metadata );
+   end get_path;
+   
+   procedure set_path (folder : in out T_Folder; path : in String) is
+      data : T_Folder_Data;
+   begin
+      data := P_Folder_Tree.get_data(folder);
+      P_Metadata.set_path(data.metadata, path);
+      P_Folder_Tree.set_data(folder, data);
+   end set_path;
+   
    function get_parent (folder : in T_Folder) return T_Folder is
    begin
-      return P_Folder_Tree.get_parent(folder);
+      P_Folder_Tree.get_parent(folder);
    end get_parent;
    
    procedure set_parent (folder : in out T_Folder; parent : in T_Folder) is
@@ -108,5 +112,9 @@ package body p_folder is
    function find_file (folder : in T_Folder; file_name : in String) return T_File
      with Pre => file_name'length <= LMAX_NAME;
    
+   function get_root (folder : in T_Folder) return T_Folder is
+      current : T_Folder;
+   begin
+      current := fol
    
-end p_folder;
+end P_Folder;

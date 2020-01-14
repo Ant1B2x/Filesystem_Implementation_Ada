@@ -1,6 +1,17 @@
 package body P_File is
 
-   function create (name : in String; rights : in T_Rights; data : in String) return T_File is
+   function create (name : in String; path : in String; data : in String) return T_File is
+      rights : T_Rights;
+   begin
+      
+      -- rights creation
+      rights := ( RW, R, R ); -- chmod 644 by default
+      -- file creation
+      return create (name, rights, path, data);
+      
+   end create;
+   
+   function create (name : in String; rights : in T_Rights; path : in String; data : in String) return T_File is
       file : T_File;
    begin
       
@@ -8,19 +19,9 @@ package body P_File is
       set_name(file, name);
       set_rights(file, rights);
       set_data(file, data);
+      set_path(file, path);
       
       return file;
-   end create;
-   
-   function create (name : in String; data : in String) return T_File is
-      rights : T_Rights;
-   begin
-      
-      -- rights creation
-      rights := ( RW, R, R ); -- chmod 644 by default
-      -- file creation
-      return create (name, rights, data);
-      
    end create;
    
    function get_data (file : in T_File) return String is
@@ -62,6 +63,16 @@ package body P_File is
    begin
       P_Metadata.set_size (file.metadata, size);
    end set_size;
+   
+   function get_path (file : in T_File) return String is
+   begin
+      return P_Metadata.get_path(file.metadata);
+   end get_path;
+   
+   procedure set_path (file : in out T_File; path : in String) is
+   begin
+      P_Metadata.set_path (file.metadata, path);
+   end set_path;
    
    
 end P_File;

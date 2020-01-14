@@ -1,11 +1,12 @@
 package body P_Metadata is
    
-   function create (name : in String; rights : in T_Rights; size : in Integer) return T_Metadata is
+   function create (name : in String; rights : in T_Rights; size : in Integer; path : in String) return T_Metadata is
       metadata : T_Metadata;
    begin
       set_name(metadata, name);
       set_rights(metadata, rights);
       set_size(metadata, size);
+      set_path(metadata, path);
       return metadata;
    end create;
    
@@ -46,5 +47,15 @@ package body P_Metadata is
    begin
       metadata.size := size;
    end set_size;
+   
+   function get_path (metadata : in T_Metadata) return String is
+   begin
+      return metadata.path;
+   end get_path;
+     
+   procedure set_path (metadata : in out T_Metadata; path : in String) is
+   begin
+      metadata.path := path;
+   end set_path;
       
 end P_Metadata;

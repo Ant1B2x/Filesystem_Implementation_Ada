@@ -5,11 +5,9 @@ package p_file is
 
    type T_File is private;
    
-   function create (name : in String; data : in String) return T_File
-     with Pre => data'length <= SMAX_FILE and name'length <= LMAX_NAME;
+   function create (name : in String; path : in String; data : in String) return T_File;
    
-   function create (name : in String; rights : in T_Rights; data : in String) return T_File
-     with Pre => data'length <= SMAX_FILE and name'length <= LMAX_NAME;
+   function create (name : in String; rights : in T_Rights; path : in String; data : in String) return T_File;
    
    function get_data (file : in T_File) return String;
    
@@ -18,8 +16,7 @@ package p_file is
    
    function get_name (file : in T_File) return String;
    
-   procedure set_name (file : in out T_File; name : in String)
-     with Pre => name'length <= LMAX_NAME;
+   procedure set_name (file : in out T_File; name : in String);
    
    function get_rights (file : in T_File) return T_Rights;
    
@@ -27,9 +24,11 @@ package p_file is
    
    function get_size (file : in T_File) return Integer;
    
-   procedure set_size (file : in out T_File; size : in Integer)
-     with Pre => size <= SMAX_FILE;
+   procedure set_size (file : in out T_File; size : in Integer);
    
+   function get_path (file : in T_File) return String;
+   
+   procedure set_path (file : in out T_File; path : in String);
    
 private
    type T_File is record
