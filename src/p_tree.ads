@@ -9,6 +9,9 @@ package P_Tree is
    type T_Node is private;
    type T_Tree is access T_Node;
    
+   package P_Siblings is new P_Array (T => T_Tree);
+   subtype T_Siblings is P_Siblings.T_Array;
+   
    function create return T_Tree;
    
    function create (parent : in T_Tree) return T_Tree;
@@ -33,9 +36,6 @@ package P_Tree is
    procedure del_sibling (tree : in out T_Tree; sibling : in T_Tree);
       
 private
-   
-   package P_Siblings is new P_Array (T => T_Tree);
-   subtype T_Siblings is P_Siblings.T_Array;
    
    type T_Node is record
       data : T;
