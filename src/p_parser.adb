@@ -1,4 +1,4 @@
-package body parser is
+package body p_parser is
 
    procedure runCommand(current_dir: T_Folder; command: String) is 
  
@@ -47,4 +47,4 @@ package body parser is
       end case;
    end runCommand;
 
-end parser;
+end p_parser;
