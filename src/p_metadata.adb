@@ -3,7 +3,7 @@ package body P_Metadata is
    function create_root return T_Metadata is
       metadata : T_Metadata;
    begin
-      metadata.name := "/";
+      metadata.name := To_Unbounded_String("/");
       set_rights(metadata, (RWX, RX, RX));
       set_size(metadata, FOLDER_SIZE);
       set_path(metadata, "");
@@ -22,7 +22,7 @@ package body P_Metadata is
    
    function get_name (metadata : in T_Metadata) return String is
    begin
-      return metadata.name;
+      return To_String(metadata.name);
    end get_name;
    
    procedure set_name (metadata : in out T_Metadata; name : in String) is
@@ -39,7 +39,7 @@ package body P_Metadata is
          end if;
       end loop;
       
-      metadata.name := name;
+      metadata.name := To_Unbounded_String(name);
    end set_name;
    
    function get_rights (metadata : in T_Metadata) return T_Rights is
@@ -64,12 +64,12 @@ package body P_Metadata is
    
    function get_path (metadata : in T_Metadata) return String is
    begin
-      return metadata.path;
+      return To_String(metadata.path);
    end get_path;
      
    procedure set_path (metadata : in out T_Metadata; path : in String) is
    begin
-      metadata.path := path;
+      metadata.path := To_Unbounded_String(path);
    end set_path;
       
 end P_Metadata;

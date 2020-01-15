@@ -1,3 +1,4 @@
+with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 with P_Constants; use P_Constants;
 
 package P_Metadata is
@@ -36,10 +37,10 @@ package P_Metadata is
       
 private
    type T_Metadata is record
-      name : String(1..LMAX_STRING);
+      name : Unbounded_String;
       rights : T_Rights;
       size : Integer;
-      path : String(1..LMAX_STRING);
+      path : Unbounded_String;
    end record;
    
 end P_Metadata;
