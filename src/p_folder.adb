@@ -1,13 +1,13 @@
 package body P_Folder is
-
+   
    function create_root return T_Folder is
       folder : T_Folder;
       data : T_Folder_Data;
    begin
       folder := P_Folder_Tree.create;
       
-      data.nb_files := 0;
-      data.metadata := P_Metadata.create ("/", (RWX, RX, RX), 10, "");
+      data.files := P_Files.create;
+      data.metadata := P_Metadata.create_root;
       
       P_Folder_Tree.set_data(folder, data);
       return folder;
@@ -24,9 +24,8 @@ package body P_Folder is
    begin
       folder := P_Folder_Tree.create(parent);
       
-      data.nb_files := 0;
-      
-      data.metadata := P_Metadata.create(name, rights, 10, calculate_path(parent) );
+      data.files := P_Files.create;
+      data.metadata := P_Metadata.create(name, rights, FOLDER_SIZE, calculate_path(parent) );
       
       P_Folder_Tree.set_data(folder, data);
       return folder;
@@ -64,18 +63,14 @@ package body P_Folder is
    end get_size;
    
    function get_root (folder : in T_Folder) return T_Folder is
-      current : T_Folder;
    begin
       
-      if get_parent(folder) /= null then
-         current := get_parent(folder);
-         while get_parent(current) /= null loop
-            current := get_parent(current);
-         end loop;
-         return current;
-      else
-         return folder;
+      -- singleton pattern
+      if ROOT = null then
+         ROOT := create_root;
       end if;
+      
+      return ROOT;
       
    end get_root;
    
@@ -83,9 +78,6 @@ package body P_Folder is
       absolute_path: Unbounded_String;
       current: T_Folder;
    begin
-      if is_root(folder) then
-         return "";
-      end if;
       
       absolute_path := To_Unbounded_String("");
       current := folder;
@@ -151,7 +143,17 @@ package body P_Folder is
          end if;
       end loop;
       return null;
-   end find_folder;   
+   end find_folder;
+   
+   function get_data (folder : in T_Folder) return T_Folder_Data is
+   begin
+      return P_Folder_Tree.get_data(folder);
+   end get_data;
+   
+   procedure set_data (folder : in out T_Folder; folder_data : in T_Folder_Data) is
+   begin
+      P_Folder_Tree.set_data(folder, folder_data);
+   end set_data;
    
    procedure add_folder (folder : in out T_Folder; folder_name : in String) is
       same_name : Boolean := False;
@@ -178,12 +180,12 @@ package body P_Folder is
    
    function get_file (folder : in T_Folder; index : in Integer) return T_File is
    begin
-      return P_Folder_Tree.get_data(folder).files(index);
+      return P_Files.get_value( P_Folder_Tree.get_data(folder).files, index);
    end get_file;
    
    function get_nb_files (folder : in T_Folder) return Integer is
    begin
-      return P_Folder_Tree.get_data(folder).nb_files;
+      return P_Files.get_nb_values (P_Folder_Tree.get_data(folder).files);
    end get_nb_files;
    
    function find_file (folder : in T_Folder; file_name : in String) return T_File is
@@ -196,14 +198,20 @@ package body P_Folder is
       return null;
    end find_file;
    
-   procedure add_file (folder : in out T_Folder; file : in T_File);
+   procedure add_file (folder : in out T_Folder; file : in T_File) is
+      folder_data : T_Folder_Data;
+   begin
+      folder_data := get_data(folder);
+      P_Files.add_value(folder_data.files, file);
+      set_data(folder, folder_data);
+   end add_file;
    
-   procedure del_file (folder : in out T_Folder; file : in T_File);
-   
-   
-   
-   
-   
-   
+   procedure del_file (folder : in out T_Folder; file : in T_File) is
+      folder_data : T_Folder_Data;
+   begin
+      folder_data := get_data(folder);
+      P_Files.del_value(folder_data.files, file);
+      set_data(folder, folder_data);
+   end del_file;
    
 end P_Folder;

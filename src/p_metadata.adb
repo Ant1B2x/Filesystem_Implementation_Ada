@@ -1,5 +1,15 @@
 package body P_Metadata is
    
+   function create_root return T_Metadata is
+      metadata : T_Metadata;
+   begin
+      metadata.name := "/";
+      set_rights(metadata, (RWX, RX, RX));
+      set_size(metadata, FOLDER_SIZE);
+      set_path(metadata, "");
+      return metadata;
+   end create_root;
+   
    function create (name : in String; rights : in T_Rights; size : in Integer; path : in String) return T_Metadata is
       metadata : T_Metadata;
    begin
@@ -17,6 +27,10 @@ package body P_Metadata is
    
    procedure set_name (metadata : in out T_Metadata; name : in String) is
    begin
+      
+      if name'length = 0 then
+         raise EmptyNameError;
+      end if;
       
       -- a name can't contain a '/'
       for i in 1..name'length loop

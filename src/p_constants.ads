@@ -4,8 +4,7 @@ package P_Constants is
    LMAX_STRING : constant Integer := 100;
    -- maximum file size
    SMAX_FILE : constant Integer := 10000000;
-   -- maximum of siblings per tree
-   -- maximum of files per folder
-   NMAX_SIBLINGS : constant Integer := 100;
+   -- folder size
+   FOLDER_SIZE : constant Integer := 10*1024;
 
 end P_Constants;

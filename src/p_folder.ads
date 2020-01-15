@@ -3,21 +3,22 @@ with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 with P_Constants; use P_Constants;
 with P_Metadata; use P_Metadata;
 with P_Tree;
+with P_Array;
 with P_File; use P_File;
 
 package P_Folder is
    
    same_name_error : Exception;
 
-   -- files of the folder
-   type T_Files is array (1..NMAX_SIBLINGS) of T_File;
+   -- files of the folder   
+   package P_Files is new P_Array (T => T_File);
+   subtype T_Files is P_Files.T_Array;
    
    -- data contained in a folder (metadata + files)
    -- folder siblings are already present
    -- indeed, they're the siblings in the tree
    type T_Folder_Data is record
       metadata : T_Metadata;
-      nb_files : Integer; -- effective files number
       files : T_Files;
    end record;
    
@@ -26,8 +27,6 @@ package P_Folder is
    package P_Folder_Tree is new P_Tree (T => T_Folder_Data);
    subtype T_Folder is P_Folder_Tree.T_Tree;
    use type T_Folder;
-   
-   function create_root return T_Folder;
    
    function create (name : in String; parent : in T_Folder) return T_Folder;
    
@@ -64,6 +63,10 @@ package P_Folder is
    function find_folder (folder : in T_Folder; folder_name : in String) return T_Folder
      with Pre => folder_name'length <= LMAX_STRING;
    
+   function get_data (folder : in T_Folder) return T_Folder_Data;
+   
+   procedure set_data (folder : in out T_Folder; folder_data : in T_Folder_Data);
+   
    procedure add_folder (folder : in out T_Folder; folder_name : in String);
    
    procedure del_folder (folder : in out T_Folder; folder_name : in String);
@@ -79,5 +82,9 @@ package P_Folder is
    procedure add_file (folder : in out T_Folder; file : in T_File);
    
    procedure del_file (folder : in out T_Folder; file : in T_File);
+   
+private
+   function create_root return T_Folder;
+   ROOT : T_Folder;
    
 end P_Folder;

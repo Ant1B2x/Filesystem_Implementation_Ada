@@ -1,11 +1,11 @@
 package body p_array is
 
-   function create_array return T_Array is
+   function create return T_Array is
       f_array : T_Array;
    begin
       f_array.nb_values := 0;
       return f_array;
-   end create_array;
+   end create;
    
    function get_nb_values (f_array : in T_Array) return Integer is
    begin

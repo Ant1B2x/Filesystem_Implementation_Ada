@@ -1,4 +1,5 @@
 with P_Constants; use P_Constants;
+with P_Array;
 
 generic
    type T is private;
@@ -27,19 +28,18 @@ package P_Tree is
    
    function get_nb_siblings (tree : in T_Tree) return Integer;
    
-   procedure add_sibling (tree : in out T_Tree; sibling : in T_Tree)
-     with Pre => get_nb_siblings(tree) <= NMAX_SIBLINGS;
+   procedure add_sibling (tree : in out T_Tree; sibling : in T_Tree);
    
    procedure del_sibling (tree : in out T_Tree; sibling : in T_Tree);
       
 private
    
-   type T_Siblings is array (1..NMAX_SIBLINGS) of T_Tree;
+   package P_Siblings is new P_Array (T => T_Tree);
+   subtype T_Siblings is P_Siblings.T_Array;
    
    type T_Node is record
       data : T;
       parent : T_Tree;
-      nb_siblings : Integer; -- number of effective siblings in the node
       siblings : T_Siblings;
    end record;
 
