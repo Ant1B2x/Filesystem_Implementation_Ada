@@ -1,4 +1,3 @@
-module dossier
 module parser
 module commandes
 
@@ -13,13 +12,4 @@ programme de test pour le module dossier
 programme de test pour le module fichier
 programme de test pour le module parser
 
-
-
-/////
-
-opérations tableau communes dossier et arbre ? => liste chainée ??
-déplacer trouver_fichier et trouver_dossier dans dossier
-on ne peut pas renvoyer de T_Fichier null (soit on ne fait pas de fonction qui en renvoie, soit on définie T_Fichier comme pointeur)
-supprimer dernière constante
-tableau dans arbre
-tableau dans dossier (pour les fichiers)
+delfile

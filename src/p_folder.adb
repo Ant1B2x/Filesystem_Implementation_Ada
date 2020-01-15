@@ -155,14 +155,13 @@ package body P_Folder is
       P_Folder_Tree.set_data(folder, folder_data);
    end set_data;
    
-   procedure add_folder (folder : in out T_Folder; folder_name : in String) is
-      same_name : Boolean := False;
+   procedure add_folder (folder : in out T_Folder; new_folder : in T_Folder) is
    begin
       
       -- vérifier si un fichier ou dossier du même nom existe déjà
-      if find_folder(folder, folder_name ) = null
-        and find_file(folder, folder_name ) = null then
-         P_Folder_Tree.add_sibling(folder, create(folder_name, folder) );
+      if find_folder(folder, get_name(new_folder) ) = null
+        and find_file(folder, get_name(new_folder) ) = null then
+         P_Folder_Tree.add_sibling(folder, new_folder );
       else
          put_line("> A directory or a file already has the same name.");
       end if;
@@ -198,20 +197,31 @@ package body P_Folder is
       return null;
    end find_file;
    
-   procedure add_file (folder : in out T_Folder; file : in T_File) is
+   procedure add_file (folder : in out T_Folder; new_file : in T_File) is
       folder_data : T_Folder_Data;
    begin
-      folder_data := get_data(folder);
-      P_Files.add_value(folder_data.files, file);
-      set_data(folder, folder_data);
+      
+      -- vérifier si un fichier ou dossier du même nom existe déjà
+      if find_folder(folder, P_File.get_name(new_file) ) = null
+        and find_file(folder, P_File.get_name(new_file) ) = null then
+         folder_data := get_data(folder);
+         P_Files.add_value(folder_data.files, new_file);
+         set_data(folder, folder_data);
+      else
+         put_line("> A directory or a file already has the same name.");
+      end if;
+      
    end add_file;
    
-   procedure del_file (folder : in out T_Folder; file : in T_File) is
-      folder_data : T_Folder_Data;
+   procedure del_file (folder : in out T_Folder; file_name : in String) is
+      --folder_data : T_Folder_Data;
    begin
-      folder_data := get_data(folder);
-      P_Files.del_value(folder_data.files, file);
-      set_data(folder, folder_data);
+      null;
+      -- TOUT RECODER
+      
+      --folder_data := get_data(folder);
+      --P_Files.del_value(folder_data.files, file);
+      --set_data(folder, folder_data);
    end del_file;
    
 end P_Folder;

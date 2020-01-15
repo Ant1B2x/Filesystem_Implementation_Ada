@@ -67,7 +67,7 @@ package P_Folder is
    
    procedure set_data (folder : in out T_Folder; folder_data : in T_Folder_Data);
    
-   procedure add_folder (folder : in out T_Folder; folder_name : in String);
+   procedure add_folder (folder : in out T_Folder; new_folder : in T_Folder);
    
    procedure del_folder (folder : in out T_Folder; folder_name : in String);
    
@@ -79,9 +79,9 @@ package P_Folder is
    function find_file (folder : in T_Folder; file_name : in String) return T_File
      with Pre => file_name'length <= LMAX_STRING;
    
-   procedure add_file (folder : in out T_Folder; file : in T_File);
+   procedure add_file (folder : in out T_Folder; new_file : in T_File);
    
-   procedure del_file (folder : in out T_Folder; file : in T_File);
+   procedure del_file (folder : in out T_Folder; file_name : in String);
    
 private
    function create_root return T_Folder;
