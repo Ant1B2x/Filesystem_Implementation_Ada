@@ -1,7 +1,7 @@
 with P_Constants; use P_Constants;
 with P_Metadata; use P_Metadata;
 
-package p_file is
+package P_File is
 
    type T_R_File is private;
    type T_File is access T_R_File;
@@ -37,4 +37,4 @@ private
       data : String(1..SMAX_FILE);
    end record;
    
-end p_file;
+end P_File;

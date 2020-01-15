@@ -158,10 +158,10 @@ package body P_Folder is
    procedure add_folder (folder : in out T_Folder; new_folder : in T_Folder) is
    begin
       
-      -- vérifier si un fichier ou dossier du même nom existe déjà
+      -- check if an existing directory/file has the same name
       if find_folder(folder, get_name(new_folder) ) = null
         and find_file(folder, get_name(new_folder) ) = null then
-         P_Folder_Tree.add_sibling(folder, new_folder );
+         P_Folder_Tree.add_sibling(folder, new_folder);
       else
          put_line("> A directory or a file already has the same name.");
       end if;
@@ -201,7 +201,7 @@ package body P_Folder is
       folder_data : T_Folder_Data;
    begin
       
-      -- vérifier si un fichier ou dossier du même nom existe déjà
+      -- check if an existing directory/file has the same name
       if find_folder(folder, P_File.get_name(new_file) ) = null
         and find_file(folder, P_File.get_name(new_file) ) = null then
          folder_data := get_data(folder);
@@ -214,14 +214,15 @@ package body P_Folder is
    end add_file;
    
    procedure del_file (folder : in out T_Folder; file_name : in String) is
-      --folder_data : T_Folder_Data;
+      folder_data : T_Folder_Data;
    begin
-      null;
-      -- TOUT RECODER
-      
-      --folder_data := get_data(folder);
-      --P_Files.del_value(folder_data.files, file);
-      --set_data(folder, folder_data);
+      folder_data := get_data(folder);
+      for i in 1..P_Files.get_nb_values(folder_data.files) loop
+         if P_File.get_name( P_Files.get_value(folder_data.files, i) ) = file_name then
+            P_Files.del_value(folder_data.files, P_Files.get_value(folder_data.files, i));
+         end if;
+      end loop;
+      set_data(folder, folder_data);
    end del_file;
    
 end P_Folder;

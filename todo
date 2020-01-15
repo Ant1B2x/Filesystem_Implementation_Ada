@@ -1,7 +1,7 @@
 module parser
 module commandes
 
-gérer les créations avec des noms similaires (fichiers et dossiers)
+gérer les créations avec des noms similaires (fichiers et dossiers) avec MV
 
 main interpréteur
 main menu
@@ -12,4 +12,3 @@ programme de test pour le module dossier
 programme de test pour le module fichier
 programme de test pour le module parser
 
-delfile
