@@ -1,4 +1,3 @@
-module parser
 module commandes
 
 gérer les créations avec des noms similaires (fichiers et dossiers) avec MV
