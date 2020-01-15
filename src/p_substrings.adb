@@ -34,6 +34,11 @@ package body P_Substrings is
       return substrings;
    end split_string;
 
+   function get_nb_substrings (substrings : in T_Substrings) return Integer is
+   begin
+      return P_Substrings_Array.get_nb_values(substrings);
+   end get_nb_substrings;
+
    function get_substring (substrings : in T_Substrings; index : in Integer) return Unbounded_String is
    begin
       return P_Substrings_Array.get_value(substrings, index);

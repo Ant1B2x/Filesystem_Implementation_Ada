@@ -62,7 +62,7 @@ package body P_Folder is
       return P_Metadata.get_size (P_Folder_Tree.get_data(folder).metadata );
    end get_size;
    
-   function get_root (folder : in T_Folder) return T_Folder is
+   function get_root return T_Folder is
    begin
       
       -- singleton pattern

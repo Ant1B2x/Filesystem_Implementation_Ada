@@ -42,7 +42,7 @@ package P_Folder is
    
    function get_size (folder : in T_Folder) return Integer;
    
-   function get_root (folder : in T_Folder) return T_Folder;
+   function get_root return T_Folder;
    
    function calculate_path (folder : in T_Folder) return String;
    
