@@ -1,4 +1,11 @@
 package body P_File is
+   
+   function create (name : in String; path: in String) return T_File is
+   begin
+      -- file creation
+      return create (name, path, "");
+      
+   end create;
 
    function create (name : in String; path : in String; data : in String) return T_File is
       rights : T_Rights;

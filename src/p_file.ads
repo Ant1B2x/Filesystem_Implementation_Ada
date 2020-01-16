@@ -6,6 +6,8 @@ package P_File is
    type T_R_File is private;
    type T_File is access T_R_File;
    
+   function create (name : in String; path: in String) return T_File;
+   
    function create (name : in String; path : in String; data : in String) return T_File;
    
    function create (name : in String; rights : in T_Rights; path : in String; data : in String) return T_File;
