@@ -10,6 +10,8 @@ with P_Substrings; use P_Substrings;
 
 package P_Commands is
    
+   type encoded_commands is (ls, rm, pwd, cd, mkdir, cp, mv, tar, touch, help);
+   
    function "+" (S : String) return Unbounded_String renames To_Unbounded_String;
 
    type sonRecord is record
@@ -33,5 +35,8 @@ package P_Commands is
    procedure mvCommand(firstParameter: String; secondParameter: String; currentDirectory: T_Folder);
    procedure tarCommand(firstParameter: String; currentDirectory: T_Folder);
    procedure touchCommand(firstParameter: String; currentDirectory: in out T_Folder);
+   procedure help;
+   procedure help_command (command : in String);
+   procedure help_command (has_option : in Boolean; command : in String);
    
 end P_Commands;

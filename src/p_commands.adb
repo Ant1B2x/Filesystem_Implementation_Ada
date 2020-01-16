@@ -132,5 +132,115 @@ package body P_Commands is
       else return False;
       end if;
    end "<";
+   
+   procedure help_command is
+   begin
+      put_line("Available commands:");
+      put_line("pwd      print name of current/working directory");
+      put_line("cd       change the working directory");
+      put_line("ls       list directory contents");
+      put_line("mkdir    make directories");
+      put_line("touch    create empty file");
+      put_line("cp       copy files and directories"); -- not sure
+      put_line("mv       move (rename) files"); -- not sure
+      put_line("rm       remove files or directories");
+      put_line("tar      archive a file");
+      put_line("help     show this menu");
+      new_line;
+      put_line("You can get more help by specifying a command.");
+      put_line("For example, try 'help ls'.");
+   end help_command;
+
+   procedure help_command (command : in String) is
+   begin
+      
+      begin
+         case encoded_commands'Value(command) is
+            when pwd =>
+               put_line("NAME");
+               put_line("  pwd - print name of current/working directory");
+               new_line;
+               put_line("SYNOPSIS");
+               put_line("  pwd");
+            when cd =>
+               put_line("NAME");
+               put_line("  cd - change the working directory");
+               new_line;
+               put_line("SYNOPSIS");
+               put_line("  cd DIRECTORY");
+            when ls =>
+               put_line("NAME");
+               put_line("  ls - list directory contents");
+               new_line;
+               put_line("SYNOPSIS");
+               put_line("  ls [-r] DIRECTORY");
+               new_line;
+               put_line("OPTIONS");
+               put_line("  -r");
+               put_line("      list recursively");
+            when mkdir =>
+               put_line("NAME");
+               put_line("  mkdir - make directories");
+               new_line;
+               put_line("SYNOPSIS");
+               put_line("  mkdir DIRECTORY");
+            when touch =>
+               put_line("NAME");
+               put_line("  touch - create empty file");
+               new_line;
+               put_line("SYNOPSIS");
+               put_line("  touch FILE");
+            when cp =>
+               put_line("NAME");
+               put_line("  cp - copy files and directories");
+               new_line;
+               put_line("SYNOPSIS");
+               put_line("  cp [-r] SOURCE DEST");
+               new_line;
+               put_line("OPTIONS");
+               put_line("  -r");
+               put_line("      copy a directory, copy file if omitted");
+            when mv =>
+               put_line("NAME");
+               put_line("  mv - move (rename) files");
+               new_line;
+               put_line("SYNOPSIS");
+               put_line("  mv SOURCE DEST");
+            when rm =>
+               put_line("NAME");
+               put_line("  rm - remove files or directories");
+               new_line;
+               put_line("SYNOPSIS");
+               put_line("  rm [-r] FILE");
+               new_line;
+               put_line("OPTIONS");
+               put_line("  -r");
+               put_line("      remove a directory, remove file if omitted");
+            when tar =>
+               put_line("NAME");
+               put_line("  tar - archive a file");
+               new_line;
+               put_line("SYNOPSIS");
+               put_line("  tar FILE");
+            when help =>
+               help_command;
+               
+         end case;
+      exception
+         when Constraint_Error =>
+            put_line("The command you entered is invalid.");
+            new_line;
+            help_command;
+      end;
+   end help_command;
+   
+   procedure help_command (has_option : in Boolean; command : in String) is
+   begin
+      if has_option then
+         help_command(command);
+      else
+         help_command;
+      end if;
+   end help_command;
 
 end P_Commands;

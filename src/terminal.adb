@@ -8,7 +8,6 @@ with P_Folder; use P_Folder;
 
 procedure Terminal is
 
-   type encoded_commands is (ls, rm, pwd, cd, mkdir, cp, mv, tar, touch);
    procedure run_command(command: String; current_dir: T_Folder) is
       substrings : T_Substrings;
       option_true : Boolean := False;
@@ -20,18 +19,24 @@ procedure Terminal is
 
       num_element := P_Substrings.get_nb_substrings(substrings);
       if num_element > 1 then
-         if get_substring_to_string(substrings, 2) = "-r" then
+         -- help command case
+         if encoded_commands'Value(get_substring_to_string(substrings, 1)) = help
+           and get_substring_to_string(substrings, 2) /= "" then
             option_true := True;
-            if num_element > 2 then
-               first_parameter := get_substring(substrings, 3);
-               if num_element = 4 then
-                  second_parameter := get_substring(substrings, 4);
-               end if;
-            end if;
          else
-            first_parameter := get_substring(substrings, 2);
-            if num_element = 3 then
-               second_parameter := get_substring(substrings, 3);
+            if get_substring_to_string(substrings, 2) = "-r" then
+               option_true := True;
+               if num_element > 2 then
+                  first_parameter := get_substring(substrings, 3);
+                  if num_element = 4 then
+                     second_parameter := get_substring(substrings, 4);
+                  end if;
+               end if;
+            else
+               first_parameter := get_substring(substrings, 2);
+               if num_element = 3 then
+                  second_parameter := get_substring(substrings, 3);
+               end if;
             end if;
          end if;
       else
@@ -50,6 +55,7 @@ procedure Terminal is
             when mv => put_line("aime vé");
             when touch => put_line("toutche");
             when tar => put_line("tard");
+            when help => put_line("aile peu");
 
             --when ls => lsCommand(option_true, To_String(first_parameter), current_dir);
             --when rm => rmCommand(option_true,To_String(first_parameter), current_dir);
@@ -60,11 +66,13 @@ procedure Terminal is
             --when  mv => mvCommand(To_String(first_parameter), To_String(second_parameter), current_dir);
             --when  tar => tarCommand(To_String(first_parameter), current_dir);
             --when  touch => touchCommand(To_String(first_parameter), current_dir);
-            --when others => Put_Line("> Unknown command.");
+            --when tar => tarCommand(To_String(first_parameter, current_dir);
+            --when help => help_command(option_true, get_substring_to_string(substrings, 2));
          end case;
       exception
          when Constraint_Error =>
             put_line("Unknown command.");
+            put_line("Try 'help' to see a list of available commands.");
       end;
 
    end run_command;
