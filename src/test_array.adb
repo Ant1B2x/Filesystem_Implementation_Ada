@@ -1,20 +1,30 @@
 with Ada.Text_IO; use Ada.Text_IO;
 with Ada.Integer_Text_IO; use Ada.Integer_Text_IO;
-with P_Tree;
+with P_Array;
 
-procedure test_tree is
+procedure test_array is
    
-   package P_Tree_Integer is new P_Tree (T => Integer);
-   use P_Tree_Integer;
+   package P_Array_Integer is new P_Array (T => Integer);
+   use P_Array_Integer;
    
-   tree_integer : P_Tree_Integer.T_Tree;
+   -- print an integer array
+   procedure print_array (array_integer : in T_Array) is
+   begin
+      put("[");
+      for i in 1..get_nb_values(array_integer) loop
+         put(get_value(array_integer, i), 1);
+         if i /= get_nb_values(array_integer) then
+            put(", ");
+         end if;
+      end loop;
+      put("]");
+      new_line;
+   end print_array;
+   
+   array_integer : P_Array_Integer.T_Array;
 begin
    -- create
    put_line("Create:");
-   tree_integer := create;
-   
-   
-   
    array_integer := create;
    print_array(array_integer);
    if get_nb_values(array_integer) = 0 then
@@ -68,4 +78,4 @@ begin
    end if;
    new_line;
    
-end test_tree;
+end test_array;
