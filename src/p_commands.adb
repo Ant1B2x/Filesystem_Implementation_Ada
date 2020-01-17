@@ -66,7 +66,7 @@ package body P_Commands is
          index_global := index_global + 1;
       end loop;
       Sort (allSons);
-      return sons;
+      return allSons;
    end get_folders_and_files;
    
    
@@ -108,7 +108,7 @@ package body P_Commands is
             end loop;
          end if;
       else
-         Put_Line("> You have to enter a parameter.");
+         Put_Line("You have to enter a parameter.");
       end if;
    end cdCommand;
    
@@ -246,5 +246,32 @@ package body P_Commands is
          help_command;
       end if;
    end help_command;
+   
+   function go_to_folder(original_directory: T_Folder; siblings: T_Substrings) return T_Folder is
+      current: T_Folder;
+   begin
+      if(get_nb_substrings(siblings) > 0)then
+         -- check is the fisrt folder is the root folder => "/home/..." for example
+         if(get_substring_to_string(siblings, 1) = FILE_SEPARATOR)then
+            -- start for root if it's true
+            current := get_root;
+         else
+            -- else, start from the current folder
+            current := original_directory;            
+         end if;
+         -- follow the path from the defined start
+         for i in 1..get_nb_substrings(siblings) loop
+            -- If the following sibling doesn't exist, raise an exception, otherwise, take the next sibling as current
+            if(not is_null(find_folder(current, get_substring_to_string(siblings, i))))then
+               current := find_folder(current, get_substring_to_string(siblings, i));
+            else
+               raise invalid_folder_error;
+            end if;
+         end loop;
+         return current;
+      else
+         Put_Line("You have to enter a parameter.");
+      end if;
+   end go_to_folder;
 
 end P_Commands;

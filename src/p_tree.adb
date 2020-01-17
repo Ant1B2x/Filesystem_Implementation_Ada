@@ -22,6 +22,11 @@ package body P_Tree is
       return get_nb_siblings(tree) = 0;
    end is_empty;
    
+   function is_null (tree : in T_Tree) return Boolean is
+   begin
+      return tree = null;
+   end is_null;
+   
    function get_data (tree : in T_Tree) return T is
    begin
       return tree.all.data;

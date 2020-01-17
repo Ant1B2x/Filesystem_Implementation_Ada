@@ -119,6 +119,11 @@ package body P_Folder is
       return get_nb_folders(folder) = 0 and get_nb_files(folder) = 0;
    end is_empty;
    
+   function is_null (folder : in T_Folder) return Boolean is
+   begin
+      return P_Folder_Tree.is_null(folder);
+   end is_null;
+   
    function is_root (folder : in T_Folder) return Boolean is
    begin
       return get_parent(folder) = null;

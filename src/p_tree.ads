@@ -18,6 +18,8 @@ package P_Tree is
    
    function is_empty (tree : in T_Tree) return Boolean;
    
+   function is_null (tree : in T_Tree) return Boolean;
+   
    function get_data (tree : in T_Tree) return T;
    
    procedure set_data (tree : in out T_Tree; data : in T);

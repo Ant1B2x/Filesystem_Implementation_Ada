@@ -9,6 +9,7 @@ with P_File; use P_File;
 package P_Folder is
    
    same_name_error : Exception;
+   invalid_folder_error: Exception;
 
    -- files of the folder   
    package P_Files is new P_Array (T => T_File);
@@ -53,6 +54,8 @@ package P_Folder is
    procedure set_parent (folder : in out T_Folder; parent : in T_Folder);
    
    function is_empty (folder : in T_Folder) return Boolean;
+   
+   function is_null (folder : in T_Folder) return Boolean;
    
    function is_root (folder : in T_Folder) return Boolean;
    

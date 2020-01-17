@@ -13,8 +13,7 @@ procedure Terminal is
    procedure run_command(command: String; current_dir: T_Folder) is
       substrings : T_Substrings;
       option_true : Boolean := False;
-      first_parameter : Unbounded_String;
-      second_parameter : Unbounded_String;
+      arguments : T_Substrings;
       num_element : Integer;
    begin
       substrings := split_string(command, " ");
@@ -29,21 +28,14 @@ procedure Terminal is
             if get_substring_to_string(substrings, 2) = "-r" then
                option_true := True;
                if num_element > 2 then
-                  first_parameter := get_substring(substrings, 3);
-                  if num_element = 4 then
-                     second_parameter := get_substring(substrings, 4);
-                  end if;
+                  arguments := get_substrings(substrings, 3, get_nb_substrings(substrings));
                end if;
             else
-               first_parameter := get_substring(substrings, 2);
-               if num_element = 3 then
-                  second_parameter := get_substring(substrings, 3);
-               end if;
+               arguments := get_substrings(substrings, 2, get_nb_substrings(substrings));
             end if;
          end if;
       else
-         first_parameter := To_Unbounded_String("");
-         second_parameter := To_Unbounded_String("");
+         arguments := create_substrings;
       end if;
 
       begin
@@ -59,16 +51,16 @@ procedure Terminal is
             when tar => put_line("tard");
             when help => put_line("aile peu");
 
-            --when ls => lsCommand(option_true, To_String(first_parameter), current_dir);
-            --when rm => rmCommand(option_true,To_String(first_parameter), current_dir);
+            --when ls => lsCommand(option_true, arguments, current_dir);
+            --when rm => rmCommand(option_true,arguments, current_dir);
             --when pwd => pwdCommand(current_dir);
-            --when  cd => cdCommand(To_String(first_parameter), current_dir);
-            --when mkdir => mkdirCommand(To_String(first_parameter), current_dir);
-            --when  cp => cpCommand(option_true, To_String(first_parameter), current_dir);
-            --when  mv => mvCommand(To_String(first_parameter), To_String(second_parameter), current_dir);
-            --when  tar => tarCommand(To_String(first_parameter), current_dir);
-            --when  touch => touchCommand(To_String(first_parameter), current_dir);
-            --when tar => tarCommand(To_String(first_parameter, current_dir);
+            --when  cd => cdCommand(arguments, current_dir);
+            --when mkdir => mkdirCommand(arguments, current_dir);
+            --when  cp => cpCommand(option_true, arguments, current_dir);
+            --when  mv => mvCommand(arguments, current_dir);
+            --when  tar => tarCommand(arguments, current_dir);
+            --when  touch => touchCommand(arguments, current_dir);
+            --when tar => tarCommand(arguments, current_dir);
             --when help => help_command(option_true, get_substring_to_string(substrings, 2));
          end case;
       exception

@@ -9,7 +9,7 @@ with Ada.Text_IO; use Ada.Text_IO;
 with P_Substrings; use P_Substrings;
 
 package P_Commands is
-   
+
    type encoded_commands is (ls, rm, pwd, cd, mkdir, cp, mv, tar, touch, help);
    
    function "+" (S : String) return Unbounded_String renames To_Unbounded_String;
@@ -38,5 +38,7 @@ package P_Commands is
    procedure help;
    procedure help_command (command : in String);
    procedure help_command (has_command : in Boolean; command : in String);
+private
+   function go_to_folder(original_directory: T_Folder; siblings: T_Substrings) return T_Folder;
    
 end P_Commands;
