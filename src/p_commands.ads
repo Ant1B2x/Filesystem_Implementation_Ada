@@ -37,6 +37,6 @@ package P_Commands is
    procedure touchCommand(firstParameter: String; currentDirectory: in out T_Folder);
    procedure help;
    procedure help_command (command : in String);
-   procedure help_command (has_option : in Boolean; command : in String);
+   procedure help_command (has_command : in Boolean; command : in String);
    
 end P_Commands;

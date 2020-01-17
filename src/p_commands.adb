@@ -234,9 +234,9 @@ package body P_Commands is
       end;
    end help_command;
    
-   procedure help_command (has_option : in Boolean; command : in String) is
+   procedure help_command (has_command : in Boolean; command : in String) is
    begin
-      if has_option then
+      if has_command then
          help_command(command);
       else
          help_command;
