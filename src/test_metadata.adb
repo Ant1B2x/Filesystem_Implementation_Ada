@@ -104,7 +104,7 @@ begin
    -- create root
    put_line("Create root:");
    metadata := create_root;
-   if get_name(metadata) = "/" then
+   if get_name(metadata) = ""&FILE_SEPARATOR then
       put_line("get_name(metadata) = ""/""");
    else
       put_line("get_name(metadata) is incoherent, create_root may contain errors");

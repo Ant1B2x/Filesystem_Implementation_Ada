@@ -3,7 +3,7 @@ package body P_Metadata is
    function create_root return T_Metadata is
       metadata : T_Metadata;
    begin
-      metadata.name := To_Unbounded_String("/");
+      metadata.name := To_Unbounded_String(""&FILE_SEPARATOR);
       set_rights(metadata, (RWX, RX, RX));
       set_size(metadata, FOLDER_SIZE);
       set_path(metadata, "");
@@ -32,9 +32,9 @@ package body P_Metadata is
          raise EmptyNameError;
       end if;
       
-      -- a name can't contain a '/'
+      -- a name can't contain a file separator or ' '
       for i in 1..name'length loop
-         if name(i) = '/' or name(i) = ' ' then
+         if name(i) = FILE_SEPARATOR or name(i) = ' ' then
             raise InvalidCharacterError;
          end if;
       end loop;

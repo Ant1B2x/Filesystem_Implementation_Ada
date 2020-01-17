@@ -81,11 +81,11 @@ package body P_Folder is
       
       absolute_path := To_Unbounded_String("");
       current := folder;
-      while not is_root(get_parent(current)) loop
+      while not is_null(get_parent(current)) and then not is_root(get_parent(current)) loop
          current := get_parent(current);
-         absolute_path := get_name(current) & "/" & absolute_path;
+         absolute_path := get_name(current) & FILE_SEPARATOR & absolute_path;
       end loop;
-      absolute_path := "/" & absolute_path;
+      absolute_path := FILE_SEPARATOR & absolute_path;
       
       return To_String(absolute_path);
       
