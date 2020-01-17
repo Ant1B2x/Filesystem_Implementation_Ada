@@ -17,7 +17,7 @@ procedure Terminal is
       second_parameter : Unbounded_String;
       num_element : Integer;
    begin
-      substrings := split_string(command, ' ');
+      substrings := split_string(command, " ");
 
       num_element := P_Substrings.get_nb_substrings(substrings);
       if num_element > 1 then

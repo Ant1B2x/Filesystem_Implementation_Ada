@@ -19,6 +19,9 @@ package P_Array is
      with Pre => get_nb_values(f_array) < NMAX_VALUES;
    
    procedure del_value (f_array : in out T_Array; value : in T);
+   
+   function get_values(f_array: in T_Array; index_first: in Integer; index_last: in Integer)return T_Array
+   with Pre => index_first > 0 and index_first <= index_last and index_last <= get_nb_values(f_array);
       
 private
    type T_Values is array (1..NMAX_VALUES) of T;

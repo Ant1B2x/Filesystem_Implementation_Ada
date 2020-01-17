@@ -3,7 +3,11 @@ package body P_Commands is
    procedure pwdCommand(firstParameter: String; currentDirectory: T_Folder) is
       absolutePath: Unbounded_String;
    begin
-      Put_Line(">" & get_path(currentDirectory) & "/" & get_name(currentDirectory));
+      if(not is_root(currentDirectory))then
+         Put_Line(get_path(currentDirectory) & FILE_SEPARATOR & get_name(currentDirectory));
+      else
+         Put_Line(get_name(currentDirectory));
+      end if;
    end pwdCommand;
    
    procedure lsRCommand(precedingPath: Unbounded_String; currentDirectory: T_Folder)is
@@ -14,7 +18,7 @@ package body P_Commands is
       -- Info.Set_Color (Standard_Output, Style => Reset_All);
       currentPath: Unbounded_String;
    begin
-      currentPath := precedingPath & "/" & get_name(currentDirectory);
+      currentPath := precedingPath & FILE_SEPARATOR & get_name(currentDirectory);
       Put_Line(To_String(currentPath));
       for i in 1.. get_nb_folders(currentDirectory) loop
          Put_Line(get_name(get_folder(currentDirectory,i)));
@@ -31,7 +35,7 @@ package body P_Commands is
    begin
       if(firstParameter = "-r")then
          for i in 1.. get_nb_folders(currentDirectory) loop
-            lsRCommand(To_Unbounded_String("/"), get_folder(currentDirectory,i));
+            lsRCommand(To_Unbounded_String(FILE_SEPARATOR), get_folder(currentDirectory,i));
          end loop;
       else
          Put_Line("Actuel :" & get_name(currentDirectory));

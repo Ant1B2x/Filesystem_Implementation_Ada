@@ -43,5 +43,15 @@ package body p_array is
          f_array.nb_values := f_array.nb_values - 1;
       end if;
    end del_value;
+   
+   function get_values(f_array: T_Array; index_first: Integer; index_last: Integer)return T_Array is
+      new_array: T_Array;
+   begin
+      -- Add to the new array the specified values
+      new_array.values := f_array.values(index_first..index_last);
+      -- Set nb_values to the right number
+      new_array.nb_values := (index_last - index_first + 1);
+      return new_array;
+   end get_values;
 
 end p_array;

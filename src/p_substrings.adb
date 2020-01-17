@@ -10,7 +10,7 @@ package body P_Substrings is
       P_Substrings_Array.add_value(substrings, substring);
    end add_substring;
 
-   function split_string (original : in String; separator : in Character) return T_Substrings is
+   function split_string (original : in String; separator : in String) return T_Substrings is
       substrings : T_Substrings;
       i: Integer; -- index
       substring_first : Integer;
@@ -48,5 +48,12 @@ package body P_Substrings is
    begin
       return To_String(get_substring(substrings, index));
    end get_substring_to_string;
+
+   function get_substrings(substrings: in T_Substrings; index_first: Integer; index_last: Integer) return T_Substrings is
+      new_substrings: T_Substrings;
+   begin
+      new_substrings := P_Substrings_Array.get_values(substrings, index_first, index_last);
+      return new_substrings;
+   end get_substrings;
 
 end P_Substrings;
