@@ -8,6 +8,7 @@ procedure test_folder is
    root : T_Folder;
    folder : T_Folder; -- inside root
    folder_sibling : T_Folder; -- inside folder
+   folder_data : T_Folder_Data;
 begin
    -- get root
    put_line("Get root:");
@@ -140,6 +141,7 @@ begin
    end if;
    new_line;
    
+   -- errors
    
    --function calculate_path (folder : in T_Folder) return String;
    

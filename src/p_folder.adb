@@ -81,7 +81,7 @@ package body P_Folder is
       
       absolute_path := To_Unbounded_String("");
       current := folder;
-      while not is_root(get_parent(current)) loop
+      while not is_null(get_parent(current)) and then not is_root(get_parent(current)) loop
          current := get_parent(current);
          absolute_path := get_name(current) & "/" & absolute_path;
       end loop;
@@ -164,12 +164,12 @@ package body P_Folder is
    begin
       
       -- check if an existing directory/file has the same name
-      if find_folder(folder, get_name(new_folder) ) = null
-        and find_file(folder, get_name(new_folder) ) = null then
-         P_Folder_Tree.add_sibling(folder, new_folder);
-      else
-         put_line("> A directory or a file already has the same name.");
+      if find_folder(folder, get_name(new_folder) ) /= null
+        or find_file(folder, get_name(new_folder) ) /= null then
+         raise same_name_error;
       end if;
+         
+      P_Folder_Tree.add_sibling(folder, new_folder);
       
    end add_folder;
    
@@ -207,14 +207,14 @@ package body P_Folder is
    begin
       
       -- check if an existing directory/file has the same name
-      if find_folder(folder, P_File.get_name(new_file) ) = null
-        and find_file(folder, P_File.get_name(new_file) ) = null then
-         folder_data := get_data(folder);
-         P_Files.add_value(folder_data.files, new_file);
-         set_data(folder, folder_data);
-      else
-         put_line("> A directory or a file already has the same name.");
+      if find_folder(folder, P_File.get_name(new_file) ) /= null
+        or find_file(folder, P_File.get_name(new_file) ) /= null then
+         raise same_name_error;
       end if;
+      
+      folder_data := get_data(folder);
+      P_Files.add_value(folder_data.files, new_file);
+      set_data(folder, folder_data);
       
    end add_file;
    
