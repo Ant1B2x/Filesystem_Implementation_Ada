@@ -78,4 +78,15 @@ begin
    end if;
    new_line;
    
+   -- get values
+   put_line("Get values:");
+   add_value(array_integer, 10);
+   add_value(array_integer, 40);
+   add_value(array_integer, 50);
+   put("Original array: ");
+   print_array(array_integer);
+   put("Get values from 2 to 4: ");
+   print_array(get_values(array_integer, 2, 4));
+   new_line;
+   
 end test_array;
