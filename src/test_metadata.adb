@@ -124,5 +124,6 @@ begin
    else
       put_line("get_path(metadata) = is incoherent, create_root may contain errors");
    end if;
+   new_line;
    
 end test_metadata;

@@ -52,6 +52,16 @@ begin
    end if;
    new_line;
    
+   -- set size & get size
+   put_line("Set size & get size:");
+   set_size(file, 23568);
+   if get_size(file) = 23568 then
+      put_line("get_size(file) = 23568");
+   else
+      put_line("get_size(file) is incoherent");
+   end if;
+   new_line;
+   
    -- set path & get path
    put_line("Set path and get path:");
    set_path(file, "/home/n7");
@@ -70,10 +80,6 @@ begin
    else
       put_line("get_data(file) is incoherent");
    end if;
-   new_line;
-   
-   -- get size
-   put_line("Get size:");
    if get_size(file) = 19 then
       put_line("get_size(file) = 19 (size of ""thisissomeotherdata"")");
    else
