@@ -24,6 +24,8 @@ package P_File is
    
    function get_size (file : in T_File) return Integer;
    
+   procedure set_size (file : in out T_File; size : in Integer);
+   
    function get_path (file : in T_File) return String;
    
    procedure set_path (file : in out T_File; path : in String);
@@ -38,8 +40,5 @@ private
       metadata : T_Metadata;
       data : String(1..SMAX_FILE);
    end record;
-   
-   -- size is only set via set_data
-   procedure set_size (file : in out T_File; size : in Integer);
    
 end P_File;
