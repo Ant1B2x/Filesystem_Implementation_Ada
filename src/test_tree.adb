@@ -32,44 +32,75 @@ begin
    new_line;
        
    -- add sibling & get nb siblings
-   put_line("get_nb_siblings");
+   put_line("Add sibling & get_nb_siblings:");
    tree_integer_sibling := create;
    set_data(tree_integer_sibling, 100);
    add_sibling(tree_integer, tree_integer_sibling);
-   
+   if get_nb_siblings(tree_integer) = 1 then
+      put_line("get_nb_siblings(tree_integer) = 1, we just added a new sibling");
+   else
+      put_line("add_sibling(tree_integer, tree_integer_sibling) didn't work, tree empty");
+   end if;
+   new_line;
    
    -- is empty
    put_line("Is empty:");
    if not is_empty(tree_integer) then
-      put_line("is_empty(tree_integer) = True");
+      put_line("is_empty(tree_integer) = False, we have 1 sibling");
    else
       put_line("is_empty(tree_integer) is incoherent");
    end if;
    new_line;
    
+   -- get sibling
+   put_line("Get sibling:");
+   if get_sibling(tree_integer, 1) = tree_integer_sibling then
+      put_line("get_sibling(tree_integer, 1) = tree_integer_sibling, returned correct sibling");
+   else
+      put_line("get_sibling(tree_integer, 1) is incoherent");
+   end if;
+   new_line;
+   
+   -- del sibling
+   put_line("Del sibling:");
+   del_sibling(tree_integer, tree_integer_sibling);
+   if is_empty(tree_integer) then
+      put_line("is_empty(tree_integer) = True, we deleted the sibling");
+   else
+      put_line("add_sibling(tree_integer, tree_integer_sibling) didn't work, tree not empty");
+   end if;
+   new_line;
+   
+   -- is null
+   put_line("Is null:");
+   if is_null(tree_integer_parent) then
+      put_line("is_null(tree_integer_parent) = True, we never initialized it");
+   else
+      put_line("is_null(tree_integer_parent) is incoherent");
+   end if;
+   new_line;
+   
+   -- set parent & get parent
+   put_line("Set parent & get parent:");
+   tree_integer_parent := create;
+   set_data(tree_integer_parent, 25);
+   set_parent(tree_integer, tree_integer_parent);
+   if get_parent(tree_integer) = tree_integer_parent then
+      put_line("get_parent(tree_integer) = tree_integer_parent");
+   else
+      put_line("get_parent(tree_integer) is incoherent");
+   end if;
+   new_line;
+   
    -- create with parent
    put_line("Create with parent:");
-   
-   
-   
-   --function create (parent : in T_Tree) return T_Tree;
-   
-   --function is_empty (tree : in T_Tree) return Boolean;
-   
-   --function get_parent (tree : in T_Tree) return T_Tree;
-   
-   --procedure set_parent (tree : in out T_Tree; parent : in T_Tree);
-   
-   --function get_sibling (tree : in T_Tree; index : in Integer) return T_Tree
-     --with Pre => index <= get_nb_siblings(tree);
-   
-   --function get_nb_siblings (tree : in T_Tree) return Integer;
-   
-   --procedure add_sibling (tree : in out T_Tree; sibling : in T_Tree);
-   
-   --procedure del_sibling (tree : in out T_Tree; sibling : in T_Tree);
-   
-   
-   
+   tree_integer := create(tree_integer_parent); -- reset tree_integer
+   set_data(tree_integer, 50);
+   if get_parent(tree_integer) = tree_integer_parent then
+      put_line("get_parent(tree_integer) = tree_integer_parent");
+   else
+      put_line("get_parent(tree_integer) is incoherent");
+   end if;
+   new_line;
    
 end test_tree;

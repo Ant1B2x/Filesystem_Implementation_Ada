@@ -4,7 +4,7 @@ with P_Constants; use P_Constants;
 package P_Metadata is
    
    -- raised when a name contain an invalid caracter
-   InvalidCaracterError : Exception;
+   InvalidCharacterError : Exception;
    EmptyNameError : Exception;
    
    type E_Rights is (R,W,X,RW,RX,WX,RWX);

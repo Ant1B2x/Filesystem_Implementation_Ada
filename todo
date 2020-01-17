@@ -10,8 +10,6 @@ supprimer encoded_commands de terminal
 
 programme de test pour les commandes
 programme de test pour les substrings (tester le cas : String vide (""))
-programme de test pour l'arbre générique
-programme de test pour les metadata
 programme de test pour le module dossier
 programme de test pour le module fichier
 

@@ -28,8 +28,7 @@ package P_Tree is
    
    procedure set_parent (tree : in out T_Tree; parent : in T_Tree);
    
-   function get_sibling (tree : in T_Tree; index : in Integer) return T_Tree
-     with Pre => index <= get_nb_siblings(tree);
+   function get_sibling (tree : in T_Tree; index : in Integer) return T_Tree;
    
    function get_nb_siblings (tree : in T_Tree) return Integer;
    

@@ -35,7 +35,7 @@ package body P_Metadata is
       -- a name can't contain a '/'
       for i in 1..name'length loop
          if name(i) = '/' or name(i) = ' ' then
-            raise InvalidCaracterError;
+            raise InvalidCharacterError;
          end if;
       end loop;
       
