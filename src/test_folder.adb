@@ -83,38 +83,67 @@ begin
    end if;
    new_line;
    
+   -- is null
+   put_line("Is null:");
+   if not is_null(folder) then
+      put_line("is_null(folder) = False");
+   else
+      put_line("is_null(folder) is incoherent");
+   end if;
+   
    -- set name & get name
    put_line("Set name & get name:");
    set_name(folder, "project_old");
-   if get_name(
+   if get_name(folder) = "project_old" then
+      put_line("get_name(folder) = ""project_old""");
+   else
+      put_line("get_name(folder) is incoherent");
+   end if;
+   new_line;
    
+   -- set rights & get rights
+   put_line("Set rights & get rights:");
+   set_rights(folder, (RWX, NONE, NONE));
+   if get_rights(folder) = (RWX, NONE, NONE) then
+      put_line("get_rights(folder) = (RWX, NONE, NONE)");
+   else
+      put_line("get_rights(folder) is incoherent");
+   end if;
+   new_line;
    
+   -- get size
+   put_line("Get size:");
+   if get_size(folder) = FOLDER_SIZE then
+      put_line("get_size(folder) = FOLDER_SIZE");
+   else
+      put_line("get_size(folder) is incoherent");
+   end if;
+   new_line;
    
+   -- set parent & get parent
+   put_line("Set & get parent:");
+   folder_sibling := create("drafts", root, (RWX, NONE, NONE));
+   set_parent(folder_sibling, folder);
+   if get_name(get_parent(folder_sibling)) = get_name(folder) then
+      put_line("get_name(get_parent(folder_sibling)) = get_name(folder)");
+   else
+      put_line("get_parent(folder_sibling) is incoherent");
+   end if;
+   new_line;
    
+   -- is empty
+   put_line("Is empty:");
+   if is_empty(folder) then
+      put_line("is_empty(folder) = True");
+   else
+      put_line("is_empty(folder) is incoherent");
+   end if;
+   new_line;
    
-   
-   
-   --function get_name (folder : in T_Folder) return String;
-   
-   --procedure set_name (folder : in out T_Folder; name : in String);
-   
-   --function get_rights (folder : in T_Folder) return T_Rights;
-   
-   --procedure set_rights (folder : in out T_Folder; rights : in T_Rights);
-   
-   --function get_size (folder : in T_Folder) return Integer;
    
    --function calculate_path (folder : in T_Folder) return String;
    
    --function get_path (folder : in T_Folder) return String;
-   
-   --function get_parent (folder : in T_Folder) return T_Folder;
-   
-   --procedure set_parent (folder : in out T_Folder; parent : in T_Folder);
-   
-   --function is_empty (folder : in T_Folder) return Boolean;
-   
-   --function is_null (folder : in T_Folder) return Boolean;
    
    --function get_folder (folder : in T_Folder; index : in Integer) return T_Folder;
    

@@ -73,6 +73,11 @@ begin
    
    -- is null
    put_line("Is null:");
+   if not is_null(tree_integer) then
+      put_line("is_null(tree_integer) = False");
+   else
+      put_line("is_null(tree_integer) is incoherent");
+   end if;
    if is_null(tree_integer_parent) then
       put_line("is_null(tree_integer_parent) = True, we never initialized it");
    else

@@ -7,7 +7,7 @@ package P_Metadata is
    InvalidCharacterError : Exception;
    EmptyNameError : Exception;
    
-   type E_Rights is (R,W,X,RW,RX,WX,RWX);
+   type E_Rights is (NONE,R,W,X,RW,RX,WX,RWX);
    type T_Rights is Array (1..3) of E_Rights;
    type T_Metadata is private;
    

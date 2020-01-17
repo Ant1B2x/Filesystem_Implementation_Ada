@@ -12,3 +12,5 @@ programme de test pour le module dossier
 
 commentaires dans le code
 uniformiser les tailles de fichier
+incohérence set parent & add folder
+levée d'exception quand noms similaires
