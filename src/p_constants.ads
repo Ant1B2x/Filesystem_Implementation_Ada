@@ -9,6 +9,6 @@ package P_Constants is
    -- folder size
    FOLDER_SIZE : constant Integer := 10*1024;
    -- file separator
-   FILE_SEPARATOR : constant String := "/";
+   FILE_SEPARATOR : constant Character := '/';
 
 end P_Constants;

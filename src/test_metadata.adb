@@ -46,12 +46,14 @@ begin
    put_line("Set name with invalid character:");
    begin
       set_name(metadata, "tp/file");
+      put_line("nothing raised, set_name should have raised InvalidCharacterError");
    exception
       when InvalidCharacterError =>
          put_line("InvalidCharacterError raised, can't have '/' in name");
    end;
    begin
       set_name(metadata, "tp file");
+      put_line("nothing raised, set_name should have raised InvalidCharacterError");
    exception
       when InvalidCharacterError =>
          put_line("InvalidCharacterError raised, can't have ' ' in name");
@@ -62,6 +64,7 @@ begin
    put_line("Set empty name:");
    begin
       set_name(metadata, "");
+      put_line("nothing raised, set_name should have raised EmptyNameError");
    exception
       when EmptyNameError =>
          put_line("EmptyNameError raised, the name can't be blank");

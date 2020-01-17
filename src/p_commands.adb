@@ -35,7 +35,7 @@ package body P_Commands is
    begin
       if(firstParameter = "-r")then
          for i in 1.. get_nb_folders(currentDirectory) loop
-            lsRCommand(To_Unbounded_String(FILE_SEPARATOR), get_folder(currentDirectory,i));
+            lsRCommand(To_Unbounded_String(""&FILE_SEPARATOR), get_folder(currentDirectory,i));
          end loop;
       else
          Put_Line("Actuel :" & get_name(currentDirectory));
@@ -247,12 +247,12 @@ package body P_Commands is
       end if;
    end help_command;
    
-   function go_to_folder(original_directory: T_Folder; siblings: T_Substrings) return T_Folder is
+   function go_to_folder (original_directory: T_Folder; siblings: T_Substrings) return T_Folder is
       current: T_Folder;
    begin
       if(get_nb_substrings(siblings) > 0)then
          -- check is the fisrt folder is the root folder => "/home/..." for example
-         if(get_substring_to_string(siblings, 1) = FILE_SEPARATOR)then
+         if(get_substring_to_string(siblings, 1)(1) = FILE_SEPARATOR)then
             -- start for root if it's true
             current := get_root;
          else

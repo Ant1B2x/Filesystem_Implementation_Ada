@@ -1,11 +1,11 @@
+with P_Constants; use P_Constants;
+
 generic
    type T is private;
 
 package P_Array is
    
    type T_Array is private;
-
-   NMAX_VALUES : constant Integer := 100;
    
    function create return T_Array
      with Post => get_nb_values(create'Result) = 0;

@@ -9,11 +9,10 @@ package P_Substrings is
    package P_Substrings_Array is new P_Array (T => Unbounded_String);
    subtype T_Substrings is P_Substrings_Array.T_Array;
 
+   -- create an empty array of substrings
    function create_substrings return T_Substrings;
 
-   procedure add_substring (substrings : in out T_Substrings; substring : in Unbounded_String);
-
-   function split_string (original : in String; separator : in String) return T_Substrings;
+   function split_string (original : in String; separator : in Character) return T_Substrings;
 
    function get_nb_substrings (substrings : in T_Substrings) return Integer;
 
@@ -22,5 +21,8 @@ package P_Substrings is
    function get_substring_to_string (substrings : in T_Substrings; index : in Integer) return String;
 
    function get_substrings(substrings: in T_Substrings; index_first: Integer; index_last: Integer) return T_Substrings;
+
+private
+   procedure add_substring (substrings : in out T_Substrings; substring : in String);
 
 end P_Substrings;

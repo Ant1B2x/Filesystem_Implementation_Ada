@@ -38,6 +38,7 @@ package P_Commands is
    procedure help;
    procedure help_command (command : in String);
    procedure help_command (has_command : in Boolean; command : in String);
+
 private
    function go_to_folder(original_directory: T_Folder; siblings: T_Substrings) return T_Folder;
    

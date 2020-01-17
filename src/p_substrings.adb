@@ -5,31 +5,32 @@ package body P_Substrings is
       return P_Substrings_Array.create;
    end create_substrings;
 
-   procedure add_substring (substrings : in out T_Substrings; substring : in Unbounded_String) is
-   begin
-      P_Substrings_Array.add_value(substrings, substring);
-   end add_substring;
-
-   function split_string (original : in String; separator : in String) return T_Substrings is
+   function split_string (original : in String; separator : in Character) return T_Substrings is
       substrings : T_Substrings;
       i: Integer; -- index
       substring_first : Integer;
    begin
       substrings := P_Substrings_Array.create;
+
+      -- if the original string is blank, return an empty array of substrings
+      if original = "" then
+         return substrings;
+      end if;
+
       i := 1;
       substring_first := 1;
       while i <= original'Length loop
-         if original(i)'Image = separator then
-            add_substring(substrings, To_Unbounded_String(original(substring_first..(i - 1))));
-            while i < original'Length and then original(i + 1)'Image = separator loop
+         if original(i) = separator then
+            add_substring(substrings, original(substring_first..(i - 1)));
+            while i < original'Length and then original(i + 1) = separator loop
                i := i + 1;
             end loop;
             substring_first := i + 1;
          end if;
          i := i + 1;
       end loop;
-      if original(original'Last)'Image /= separator then
-         add_substring(substrings, To_Unbounded_String(original(substring_first..original'Last)));
+      if original(original'Last) /= separator then
+         add_substring(substrings, original(substring_first..original'Last));
       end if;
       return substrings;
    end split_string;
@@ -55,5 +56,10 @@ package body P_Substrings is
       new_substrings := P_Substrings_Array.get_values(substrings, index_first, index_last);
       return new_substrings;
    end get_substrings;
+
+   procedure add_substring (substrings : in out T_Substrings; substring : in string) is
+   begin
+      P_Substrings_Array.add_value(substrings, To_Unbounded_String(substring));
+   end add_substring;
 
 end P_Substrings;

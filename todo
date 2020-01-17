@@ -5,7 +5,6 @@ gérer les créations avec des noms similaires (fichiers et dossiers) avec MV
 main interpréteur
 main menu
 
-array utilise P_Constants et supprimer constante
 supprimer encoded_commands de terminal
 
 programme de test pour les commandes
@@ -13,3 +12,4 @@ programme de test pour les substrings (tester le cas : String vide (""))
 programme de test pour le module dossier
 programme de test pour le module fichier
 
+commentaires dans le code
