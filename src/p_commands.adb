@@ -115,18 +115,38 @@ package body P_Commands is
    procedure mkdirCommand(arguments: T_Substrings; currentDirectory: in out T_Folder)is
       fils : T_Folder;
    begin
-      fils := create(get_substring_to_string(arguments,1), currentDirectory);
+      if(get_nb_substrings(arguments) /= 1)then
+         raise wrong_number_of_arguments;
+      end if;
+      fils := create(get_substring_to_string(arguments,1), go_to_folder(currentDirectory, get_substring_to_string(arguments, 1), True));
       add_folder(currentDirectory,fils);
    end mkdirCommand;
    
    procedure cpCommand(OptionTrue : Boolean; arguments: T_Substrings; currentDirectory: T_Folder);
-   procedure mvCommand(arguments: T_Substrings; currentDirectory: T_Folder);
+   
+   procedure mvCommand(arguments: T_Substrings; currentDirectory: in out T_Folder) is
+      source_folder: T_Folder;
+      original_name: Unbounded_String;
+      destination_folder: T_Folder;
+      new_name: Unbounded_String;
+      file: T_File;
+   begin
+      original_name := get_substring(split_string(get_substring_to_string(arguments, 1), FILE_SEPARATOR), get_nb_substrings(split_string(get_substring_to_string(arguments, 1), FILE_SEPARATOR)));
+      new_name := get_substring(split_string(get_substring_to_string(arguments, 2), FILE_SEPARATOR), get_nb_substrings(split_string(get_substring_to_string(arguments, 2), FILE_SEPARATOR)));
+      source_folder := go_to_folder(currentDirectory, get_substring_to_string(arguments, 1), True);
+      destination_folder := go_to_folder(currentDirectory, get_substring_to_string(arguments, 2), True);
+      file := find_file(destination_folder, To_String(original_name));
+      set_name(file, To_String(new_name));
+      add_file(source_folder, file);
+      del_file(currentDirectory, To_String(original_name));
+   end mvCommand;
+   
    procedure tarCommand(arguments: T_Substrings; currentDirectory: T_Folder);
    
    procedure touchCommand(arguments: T_Substrings; currentDirectory: in out T_Folder)is
       file : T_File;
    begin
-      file := create(get_substring_to_string(arguments,1), calculate_path(currentDirectory) & get_name(currentDirectory));
+      file := create(get_substring_to_string(arguments, 1), calculate_path(currentDirectory) & get_name(currentDirectory));
       add_file(currentDirectory,file);
    end touchCommand;
    
@@ -248,20 +268,30 @@ package body P_Commands is
       end if;
    end help_command;
    
-   function go_to_folder (original_directory: T_Folder; siblings: T_Substrings) return T_Folder is
-      current: T_Folder;
+   function go_to_folder (original_directory: in T_Folder; path: in String) return T_Folder is
    begin
-      if(get_nb_substrings(siblings) > 0)then
+      return go_to_folder(original_directory, path, False);
+   end go_to_folder;
+   
+   function go_to_folder (original_directory: in T_Folder; path: in String; stop_at_penultimate: in Boolean) return T_Folder is
+      current: T_Folder;
+      siblings: T_Substrings;
+      penultimate: Integer;
+   begin      
+      if(path'Length > 0)then
          -- check is the fisrt folder is the root folder => "/home/..." for example
-         if(get_substring_to_string(siblings, 1)(1) = FILE_SEPARATOR)then
+         if(path(1) = FILE_SEPARATOR)then
             -- start for root if it's true
             current := get_root;
          else
             -- else, start from the current folder
             current := original_directory;            
          end if;
+         -- case for mkdir, for example, can we want to stop at the penultimate of the path, and then create a folder.
+         penultimate := (if(stop_at_penultimate)then 1 else 0);
+         siblings := split_string(path, FILE_SEPARATOR);
          -- follow the path from the defined start
-         for i in 1..get_nb_substrings(siblings) loop
+         for i in 1..get_nb_substrings(siblings) - penultimate loop
             -- If the following sibling doesn't exist, raise an exception, otherwise, take the next sibling as current
             if(not is_null(find_folder(current, get_substring_to_string(siblings, i))))then
                current := find_folder(current, get_substring_to_string(siblings, i));

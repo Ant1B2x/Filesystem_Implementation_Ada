@@ -9,6 +9,8 @@ with Ada.Text_IO; use Ada.Text_IO;
 with P_Substrings; use P_Substrings;
 
 package P_Commands is
+   
+   wrong_number_of_arguments: Exception;
 
    type encoded_commands is (ls, rm, pwd, cd, mkdir, cp, mv, tar, touch, help);
    
@@ -32,7 +34,7 @@ package P_Commands is
    procedure cdCommand(arguments: T_Substrings; currentDirectory: T_Folder);
    procedure mkdirCommand(arguments: T_Substrings; currentDirectory: in out T_Folder);
    procedure cpCommand(OptionTrue : Boolean; arguments: T_Substrings; currentDirectory: T_Folder);
-   procedure mvCommand(arguments: T_Substrings; currentDirectory: T_Folder);
+   procedure mvCommand(arguments: T_Substrings; currentDirectory: in out T_Folder);
    procedure tarCommand(arguments: T_Substrings; currentDirectory: T_Folder);
    procedure touchCommand(arguments: T_Substrings; currentDirectory: in out T_Folder);
    procedure help;
@@ -40,6 +42,7 @@ package P_Commands is
    procedure help_command (has_command : in Boolean; command : in String);
 
 private
-   function go_to_folder(original_directory: T_Folder; siblings: T_Substrings) return T_Folder;
+   function go_to_folder(original_directory: in T_Folder; path: in String) return T_Folder;
+   function go_to_folder(original_directory: in T_Folder; path: in String; stop_at_penultimate: in Boolean) return T_Folder;
    
 end P_Commands;
