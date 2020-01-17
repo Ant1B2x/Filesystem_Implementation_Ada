@@ -46,7 +46,7 @@ package body P_Folder is
    
    function get_rights (folder : in T_Folder) return T_Rights is
    begin
-      return P_Metadata.get_rights( P_Folder_Tree.get_data(folder).metadata);
+      return P_Metadata.get_rights( P_Folder_Tree.get_data(folder).metadata );
    end get_rights;
    
    procedure set_rights (folder : in out T_Folder; rights : in T_Rights) is
@@ -81,11 +81,11 @@ package body P_Folder is
       
       absolute_path := To_Unbounded_String("");
       current := folder;
-      while not is_null(get_parent(current)) and then not is_root(get_parent(current)) loop
+      while not is_root(get_parent(current)) loop
          current := get_parent(current);
-         absolute_path := get_name(current) & FILE_SEPARATOR & absolute_path;
+         absolute_path := get_name(current) & "/" & absolute_path;
       end loop;
-      absolute_path := FILE_SEPARATOR & absolute_path;
+      absolute_path := "/" & absolute_path;
       
       return To_String(absolute_path);
       

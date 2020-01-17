@@ -35,7 +35,7 @@ package P_Commands is
    procedure mkdirCommand(arguments: T_Substrings; currentDirectory: in out T_Folder);
    procedure cpCommand(OptionTrue : Boolean; arguments: T_Substrings; currentDirectory: T_Folder);
    procedure mvCommand(arguments: T_Substrings; currentDirectory: in out T_Folder);
-   procedure tarCommand(arguments: T_Substrings; currentDirectory: T_Folder);
+   procedure tarCommand(arguments: T_Substrings; currentDirectory: in out T_Folder);
    procedure touchCommand(arguments: T_Substrings; currentDirectory: in out T_Folder);
    procedure help;
    procedure help_command (command : in String);
@@ -45,5 +45,6 @@ package P_Commands is
 private
    function go_to_folder(original_directory: in T_Folder; path: in String) return T_Folder;
    function go_to_folder(original_directory: in T_Folder; path: in String; stop_at_penultimate: in Boolean) return T_Folder;
+   procedure folder_deep_copy(folder_to_copy: T_Folder; folder_parent_of_clone: in out T_Folder);
    
 end P_Commands;

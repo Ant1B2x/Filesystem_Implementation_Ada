@@ -122,7 +122,18 @@ package body P_Commands is
       add_folder(currentDirectory,fils);
    end mkdirCommand;
    
-   procedure cpCommand(OptionTrue : Boolean; arguments: T_Substrings; currentDirectory: T_Folder);
+   -- Vérifier un petit coup, parce que ça a été fait assez vite alors que j'étais fatigué, donc son fonctionnement aurait la note :
+   -- random/20
+   -- Donc voilà, autant essayer une fois et voir si ça marche.
+   -- Mais après il faudra tout revérifier.
+   procedure cpCommand(OptionTrue : Boolean; arguments: T_Substrings; currentDirectory: T_Folder) is
+      source_folder: T_Folder;
+      destination_folder: T_Folder;
+   begin
+      source_folder := go_to_folder(currentDirectory, get_substring_to_string(arguments, 1), True);
+      destination_folder := go_to_folder(currentDirectory, get_substring_to_string(arguments, 2), True);
+      folder_deep_copy(source_folder, destination_folder);
+   end cpCommand;
    
    procedure mvCommand(arguments: T_Substrings; currentDirectory: in out T_Folder) is
       source_folder: T_Folder;
@@ -141,16 +152,16 @@ package body P_Commands is
       del_file(currentDirectory, To_String(original_name));
    end mvCommand;
    
-   procedure tarCommand(arguments: T_Substrings; currentDirectory: T_Folder)is
+   procedure tarCommand(arguments: T_Substrings; currentDirectory: in out T_Folder)is
       size: Integer;
       folder_to_tar: T_Folder;
       new_file : T_File;
    begin
-      folder_to_tar := go_to_folder(get_substring_to_string(arguments, 1));
-      size := calculate_size(go_to_folder(get_substring_to_string(arguments, 1)));
-      file := create(get_name(folder_to_tar) & ".tar", get_path(currentDirectory) & "/" & get_name(currentDirectory));
-      set_size(file, size);
-      add_file(folder, file);
+      folder_to_tar := go_to_folder(currentDirectory, get_substring_to_string(arguments, 1));
+      size := calculate_size(go_to_folder(currentDirectory, get_substring_to_string(arguments, 1)));
+      new_file := create(get_name(folder_to_tar) & ".tar", get_path(currentDirectory) & "/" & get_name(currentDirectory));
+      set_size(new_file, size);
+      add_file(currentDirectory, new_file);
    end tarCommand;
    
    procedure touchCommand(arguments: T_Substrings; currentDirectory: in out T_Folder)is
@@ -329,5 +340,28 @@ package body P_Commands is
       end loop;
       return current_folder_size;
    end calculate_size;
+   
+   procedure folder_deep_copy(folder_to_copy: T_Folder; folder_parent_of_clone: in out T_Folder) is
+      original_file : T_File;
+      new_file: T_File;
+      original_sibling: T_Folder;
+      new_sibling: T_Folder;
+      new_folder: T_Folder;
+   begin
+      new_folder := create(get_name(folder_to_copy), folder_parent_of_clone, get_rights(original_file));
+      for i in 1..get_nb_files(folder_to_copy) loop
+         original_file := get_file(folder_to_copy, i);
+         new_file := create(get_name(original_file), get_rights(original_file), get_path(new_folder) & FILE_SEPARATOR & get_name(new_folder), get_data(original_file));
+         set_size(new_file, get_size(new_file));
+         add_file(new_folder, new_file);
+      end loop;
+      
+      for i in 1..get_nb_folders(folder_to_copy) loop
+         original_sibling := get_folder(folder_to_copy, i);
+         new_sibling := create(get_name(original_sibling), new_folder, get_rights(original_file));
+         add_folder(new_folder, new_sibling);
+         folder_deep_copy(get_folder(folder_to_copy, i), new_sibling);
+      end loop;
+   end folder_deep_copy;
 
 end P_Commands;
