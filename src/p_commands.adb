@@ -1,6 +1,6 @@
 package body P_Commands is
 
-   procedure pwdCommand(firstParameter: String; currentDirectory: T_Folder) is
+   procedure pwdCommand(arguments: T_Substrings; currentDirectory: T_Folder) is
       absolutePath: Unbounded_String;
    begin
       if(not is_root(currentDirectory))then
@@ -31,9 +31,9 @@ package body P_Commands is
       end loop;
    end lsRCommand;
    
-   procedure lsCommand(OptionTrue : Boolean; firstParameter: String; currentDirectory: T_Folder)is
+   procedure lsCommand(OptionTrue : Boolean; arguments: T_Substrings; currentDirectory: T_Folder)is
    begin
-      if(firstParameter = "-r")then
+      if(get_substring_to_string(arguments,1) = "-r")then
          for i in 1.. get_nb_folders(currentDirectory) loop
             lsRCommand(To_Unbounded_String(""&FILE_SEPARATOR), get_folder(currentDirectory,i));
          end loop;
@@ -71,12 +71,12 @@ package body P_Commands is
    
    
    
-   procedure rmCommand(OptionTrue : Boolean;firstParameter: String; currentDirectory: in out T_Folder)is
+   procedure rmCommand(OptionTrue : Boolean;arguments: T_Substrings; currentDirectory: in out T_Folder)is
    begin
       if(OptionTrue)then
-         del_folder(currentDirectory,get_name(find_folder(currentDirectory,firstParameter)));
+         del_folder(currentDirectory,get_name(find_folder(currentDirectory,get_substring_to_string(arguments,1))));
       else
-         del_file(currentDirectory,get_name(find_file(currentDirectory,firstParameter)));
+         del_file(currentDirectory,get_name(find_file(currentDirectory,get_substring_to_string(arguments,1))));
       end if;
    end rmCommand;
    
@@ -85,24 +85,24 @@ package body P_Commands is
       Put_Line(get_name(currentDirectory));
    end pwdCommand;
    
-   procedure cdCommand(firstParameter: String; currentDirectory: T_Folder) is
+   procedure cdCommand(arguments: T_Substrings; currentDirectory: T_Folder) is
       folders: T_Substrings;
       current: T_Folder;
    begin
-      folders := split_string(firstParameter, FILE_SEPARATOR);
+      folders := split_string(get_substring_to_string(arguments,1), FILE_SEPARATOR);
       
       if(get_nb_substrings(folders) > 0)then
-         if(get_substring_to_string(folders, 1) = FILE_SEPARATOR)then
+         if(get_substring_to_string(folders, 1)(1) = FILE_SEPARATOR)then
             current := get_root;
             for i in 1..get_nb_substrings(folders) loop
-               if(find_folder(current, get_substring_to_string(folders, i)) /= null)then
+               if(not(is_null(find_folder(current, get_substring_to_string(folders, i)))))then
                   Put_Line("> The specified path is not valid");
                end if;
             end loop;
          else
             current := currentDirectory;
             for i in 1..get_nb_substrings(folders) loop
-               if(find_folder(current, get_substring_to_string(folders, i)) /= null)then
+               if(not is_null(find_folder(current, get_substring_to_string(folders, i))))then
                   Put_Line("> The specified path is not valid");
                end if;
             end loop;
@@ -112,20 +112,21 @@ package body P_Commands is
       end if;
    end cdCommand;
    
-   procedure mkdirCommand(firstParameter: String; currentDirectory: in out T_Folder)is
+   procedure mkdirCommand(arguments: T_Substrings; currentDirectory: in out T_Folder)is
       fils : T_Folder;
    begin
-      fils := create(firstParameter, currentDirectory);
+      fils := create(get_substring_to_string(arguments,1), currentDirectory);
       add_folder(currentDirectory,fils);
    end mkdirCommand;
    
-   procedure cpCommand(OptionTrue : Boolean; firstParameter: String; currentDirectory: T_Folder);
-   procedure mvCommand(firstParameter: String; secondParameter: String; currentDirectory: T_Folder);
-   procedure tarCommand(firstParameter: String; currentDirectory: T_Folder);
-   procedure touchCommand(firstParameter: String; currentDirectory: in out T_Folder)is
+   procedure cpCommand(OptionTrue : Boolean; arguments: T_Substrings; currentDirectory: T_Folder);
+   procedure mvCommand(arguments: T_Substrings; currentDirectory: T_Folder);
+   procedure tarCommand(arguments: T_Substrings; currentDirectory: T_Folder);
+   
+   procedure touchCommand(arguments: T_Substrings; currentDirectory: in out T_Folder)is
       file : T_File;
    begin
-      file := create(firstParameter, calculate_path(currentDirectory) & get_name(currentDirectory));
+      file := create(get_substring_to_string(arguments,1), calculate_path(currentDirectory) & get_name(currentDirectory));
       add_file(currentDirectory,file);
    end touchCommand;
    
@@ -271,6 +272,7 @@ package body P_Commands is
          return current;
       else
          Put_Line("You have to enter a parameter.");
+         return null;
       end if;
    end go_to_folder;
 

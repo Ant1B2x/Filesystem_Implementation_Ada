@@ -25,16 +25,16 @@ package P_Commands is
    procedure Sort is new Ada.Containers.Generic_Array_Sort (Natural, sonRecord, sons);
    procedure Sort2 is new Ada.Containers.Generic_Array_Sort(Natural, sonRecord, sons, "<");
 
-   procedure pwdCommand(firstParameter: String; currentDirectory: T_Folder);
-   procedure lsCommand(OptionTrue : Boolean; firstParameter: String; currentDirectory: T_Folder);
-   procedure rmCommand(OptionTrue : Boolean;firstParameter: String; currentDirectory:  in out T_Folder);
+   procedure pwdCommand(arguments: T_Substrings; currentDirectory: T_Folder);
+   procedure lsCommand(OptionTrue : Boolean; arguments: T_Substrings; currentDirectory: T_Folder);
+   procedure rmCommand(OptionTrue : Boolean;arguments: T_Substrings; currentDirectory:  in out T_Folder);
    procedure pwdCommand(currentDirectory: T_Folder);
-   procedure cdCommand(firstParameter: String; currentDirectory: T_Folder);
-   procedure mkdirCommand(firstParameter: String; currentDirectory: in out T_Folder);
-   procedure cpCommand(OptionTrue : Boolean; firstParameter: String; currentDirectory: T_Folder);
-   procedure mvCommand(firstParameter: String; secondParameter: String; currentDirectory: T_Folder);
-   procedure tarCommand(firstParameter: String; currentDirectory: T_Folder);
-   procedure touchCommand(firstParameter: String; currentDirectory: in out T_Folder);
+   procedure cdCommand(arguments: T_Substrings; currentDirectory: T_Folder);
+   procedure mkdirCommand(arguments: T_Substrings; currentDirectory: in out T_Folder);
+   procedure cpCommand(OptionTrue : Boolean; arguments: T_Substrings; currentDirectory: T_Folder);
+   procedure mvCommand(arguments: T_Substrings; currentDirectory: T_Folder);
+   procedure tarCommand(arguments: T_Substrings; currentDirectory: T_Folder);
+   procedure touchCommand(arguments: T_Substrings; currentDirectory: in out T_Folder);
    procedure help;
    procedure help_command (command : in String);
    procedure help_command (has_command : in Boolean; command : in String);
