@@ -40,6 +40,7 @@ package P_Commands is
    procedure help;
    procedure help_command (command : in String);
    procedure help_command (has_command : in Boolean; command : in String);
+   function calculate_size(folder: T_Folder) return Integer;
 
 private
    function go_to_folder(original_directory: in T_Folder; path: in String) return T_Folder;

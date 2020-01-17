@@ -141,7 +141,17 @@ package body P_Commands is
       del_file(currentDirectory, To_String(original_name));
    end mvCommand;
    
-   procedure tarCommand(arguments: T_Substrings; currentDirectory: T_Folder);
+   procedure tarCommand(arguments: T_Substrings; currentDirectory: T_Folder)is
+      size: Integer;
+      folder_to_tar: T_Folder;
+      new_file : T_File;
+   begin
+      folder_to_tar := go_to_folder(get_substring_to_string(arguments, 1));
+      size := calculate_size(go_to_folder(get_substring_to_string(arguments, 1)));
+      file := create(get_name(folder_to_tar) & ".tar", get_path(currentDirectory) & "/" & get_name(currentDirectory));
+      set_size(file, size);
+      add_file(folder, file);
+   end tarCommand;
    
    procedure touchCommand(arguments: T_Substrings; currentDirectory: in out T_Folder)is
       file : T_File;
@@ -305,5 +315,19 @@ package body P_Commands is
          return null;
       end if;
    end go_to_folder;
+   
+   function calculate_size(folder: T_Folder) return Integer is
+      current_folder_size: Integer;
+   begin
+      current_folder_size := FOLDER_SIZE;
+      for i in 1..get_nb_files(folder) loop
+         current_folder_size := current_folder_size + get_size(get_file(folder, i));
+      end loop;
+      
+      for i in 1..get_nb_folders(folder) loop
+         current_folder_size := current_folder_size + calculate_size(get_folder(folder, i));
+      end loop;
+      return current_folder_size;
+   end calculate_size;
 
 end P_Commands;

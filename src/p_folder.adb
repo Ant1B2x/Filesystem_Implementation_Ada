@@ -46,7 +46,7 @@ package body P_Folder is
    
    function get_rights (folder : in T_Folder) return T_Rights is
    begin
-      return P_Metadata.get_rights( P_Folder_Tree.get_data(folder).metadata );
+      return P_Metadata.get_rights( P_Folder_Tree.get_data(folder).metadata);
    end get_rights;
    
    procedure set_rights (folder : in out T_Folder; rights : in T_Rights) is
