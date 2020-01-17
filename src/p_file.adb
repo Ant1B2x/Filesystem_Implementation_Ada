@@ -27,24 +27,16 @@ package body P_File is
       file : T_File;
    begin
       
+      -- instantiate T_R_File
+      file := new T_R_File;
       -- set file properties
       set_name(file, name);
       set_rights(file, rights);
-      set_data(file, data);
       set_path(file, path);
+      set_data(file, data);
       
       return file;
    end create;
-   
-   function get_data (file : in T_File) return String is
-   begin
-      return file.all.data;
-   end get_data;
-   
-   procedure set_data (file : in out T_File; data : in String) is
-   begin
-      file.all.data := data;
-   end set_data;
    
    function get_name (file : in T_File) return String is
    begin
@@ -85,5 +77,16 @@ package body P_File is
    begin
       P_Metadata.set_path (file.all.metadata, path);
    end set_path;
+   
+   function get_data (file : in T_File) return String is
+   begin
+      return file.all.data(1..get_size(file));
+   end get_data;
+   
+   procedure set_data (file : in out T_File; data : in String) is
+   begin
+      file.all.data(1..data'length) := data;
+      set_size(file, data'length);
+   end set_data;
    
 end P_File;
