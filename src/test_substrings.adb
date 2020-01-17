@@ -19,11 +19,13 @@ begin
    -- split string
    put_line("Split string:");
    put_line("Splitting ""ab cd ef gh"" as substrings");
-   substrings := split_string("ab/cd/de", '/');
+   substrings := split_string(" . ", '.');
    
    -- get nb substrings
    put_line("Get nb substrings:");
    put(get_nb_substrings(substrings));
+   Put_Line("Hahaha");
+   Put_Line(get_substring_to_string(substrings, 1));
    
    
 

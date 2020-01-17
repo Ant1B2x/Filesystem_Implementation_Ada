@@ -21,7 +21,10 @@ package body P_Substrings is
       substring_first := 1;
       while i <= original'Length loop
          if original(i) = separator then
-            add_substring(substrings, original(substring_first..(i - 1)));
+            -- check if we really need to add string, because original(1..0) will be add, and we don't want this. Only separator should not be add.
+            if(substring_first <= (i - 1))then
+               add_substring(substrings, original(substring_first..(i - 1)));
+            end if;
             while i < original'Length and then original(i + 1) = separator loop
                i := i + 1;
             end loop;
