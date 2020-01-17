@@ -1,5 +1,7 @@
 package P_Constants is
    
+   -- maximum elements per array
+   NMAX_VALUES : constant Integer := 100;
    -- maximum string length
    LMAX_STRING : constant Integer := 100;
    -- maximum file size

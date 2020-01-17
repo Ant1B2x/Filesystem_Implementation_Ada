@@ -8,6 +8,8 @@ with P_Folder; use P_Folder;
 
 procedure Terminal is
 
+   type encoded_commands is (ls,rm,pwd,cd,mkdir,cp,mv,touch,tar,help);
+
    procedure run_command(command: String; current_dir: T_Folder) is
       substrings : T_Substrings;
       option_true : Boolean := False;

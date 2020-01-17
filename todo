@@ -5,6 +5,12 @@ gérer les créations avec des noms similaires (fichiers et dossiers) avec MV
 main interpréteur
 main menu
 
+array utilise P_Constants et supprimer constante
+supprimer encoded_commands de terminal
+
+programme de test pour le tableau générique
+programme de test pour les commandes
+programme de test pour les substrings
 programme de test pour l'arbre générique
 programme de test pour les metadata
 programme de test pour le module dossier
