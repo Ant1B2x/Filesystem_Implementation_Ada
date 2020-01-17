@@ -89,10 +89,10 @@ package body P_Commands is
       folders: T_Substrings;
       current: T_Folder;
    begin
-      folders := split_string(firstParameter, '/');
+      folders := split_string(firstParameter, FILE_SEPARATOR);
       
       if(get_nb_substrings(folders) > 0)then
-         if(get_substring_to_string(folders, 1) = "/")then
+         if(get_substring_to_string(folders, 1) = FILE_SEPARATOR)then
             current := get_root;
             for i in 1..get_nb_substrings(folders) loop
                if(find_folder(current, get_substring_to_string(folders, i)) /= null)then

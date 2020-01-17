@@ -19,16 +19,16 @@ package body P_Substrings is
       i := 1;
       substring_first := 1;
       while i <= original'Length loop
-         if original(i) = separator then
+         if original(i)'Image = separator then
             add_substring(substrings, To_Unbounded_String(original(substring_first..(i - 1))));
-            while i < original'Length and then original(i + 1) = separator loop
+            while i < original'Length and then original(i + 1)'Image = separator loop
                i := i + 1;
             end loop;
             substring_first := i + 1;
          end if;
          i := i + 1;
       end loop;
-      if original(original'Last) /= separator then
+      if original(original'Last)'Image /= separator then
          add_substring(substrings, To_Unbounded_String(original(substring_first..original'Last)));
       end if;
       return substrings;
