@@ -29,13 +29,13 @@ package body P_Metadata is
    begin
       
       if name'length = 0 then
-         raise EmptyNameError;
+         raise Empty_Name_Error;
       end if;
       
       -- a name can't contain a file separator or ' '
       for i in 1..name'length loop
          if name(i) = FILE_SEPARATOR or name(i) = ' ' then
-            raise InvalidCharacterError;
+            raise Invalid_Character_Error;
          end if;
       end loop;
       

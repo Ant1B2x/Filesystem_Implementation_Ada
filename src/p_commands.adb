@@ -1,26 +1,21 @@
 package body P_Commands is
    
-   function get_pwd(currentDirectory: T_Folder) return String is
+   function get_pwd (current_directory : in T_Folder) return String is
    begin
-      return (if(not is_root(currentDirectory))then calculate_path(currentDirectory) & get_name(currentDirectory) else "");
+      return calculate_path(current_directory) & get_name(current_directory);
    end get_pwd;
    
    procedure pwdCommand(currentDirectory: T_Folder)is
    begin
-      Put_Line (if(not is_root(currentDirectory))then get_pwd(currentDirectory) else get_name(currentDirectory));
+      Put_Line (get_pwd(currentDirectory));
    end pwdCommand;
    
    procedure lsRCommand(precedingPath: Unbounded_String; currentDirectory: T_Folder)is
-      -- Pour colorier : https://docs.adacore.com/gnatcoll-docs/terminals.html
-      -- with GNATCOLL.Terminal;  use GNATCOLL.Terminal;
-      -- Info.Set_Color (Standard_Output, Blue);
-      -- Put_Line ("A blue on yellow line");
-      -- Info.Set_Color (Standard_Output, Style => Reset_All);
       currentPath: Unbounded_String;
    begin
       currentPath := precedingPath & FILE_SEPARATOR & get_name(currentDirectory);
       New_Line;
-      Put_Line("Supposely wanted :" & get_pwd(currentDirectory));
+      Put_Line(To_String(currentPath) & FILE_SEPARATOR);
       
       lsCommand(False, create_substrings, currentDirectory);
       for i in 1.. get_nb_folders(currentDirectory) loop
@@ -28,50 +23,50 @@ package body P_Commands is
       end loop;
    end lsRCommand;
    
-   procedure lsCommand(OptionTrue : Boolean; arguments: T_Substrings; currentDirectory: T_Folder)is
-   begin
-      if(OptionTrue)then
-         New_Line;
-         lsCommand(False, create_substrings, currentDirectory);
-         for i in 1.. get_nb_folders(currentDirectory) loop
-            lsRCommand(To_Unbounded_String(""&FILE_SEPARATOR), get_folder(currentDirectory,i));
-         end loop;
-      else
-         -- Put_Line("Actuel :" & get_name(currentDirectory));
-         
-         -- folders
-         Put(ESC & "[36m");
-         for i in 1.. get_nb_folders(currentDirectory) loop
-            Put_Line("            " & get_name(get_folder(currentDirectory,i)));
-         end loop;
-         Put(ESC & "[0m");
-         
-         for i in 1.. get_nb_files(currentDirectory) loop
-            Put_Line("            " & get_name(get_file(currentDirectory, i)));
-         end loop;
-      end if;
-   end lsCommand;
-   
-   function get_folders_and_files(folder: T_Folder)return sons is
-      allSons: sons(1..2*LMAX_STRING);
+   function get_folders_and_files(folder: T_Folder) return T_Sibling_Records is
+      allSons: T_Sibling_Records(1..2*LMAX_STRING);
       index_global : Integer;
    begin
       index_global := 0;
       for i in 1.. get_nb_folders(folder) loop
          allSons(index_global).Name := To_Unbounded_String(get_name(get_folder(folder, i)));
-         allSons(index_global).isFolder := True;
+         allSons(index_global).is_folder := True;
          index_global := index_global + 1;
       end loop;
       
       for i in 1.. get_nb_files(folder) loop
          allSons(index_global).Name := To_Unbounded_String(get_name(get_file(folder, i)));
-         allSons(index_global).isFolder := False;
+         allSons(index_global).is_folder := False;
          index_global := index_global + 1;
       end loop;
-      Sort (allSons);
+      Sort2(allSons);
       return allSons;
    end get_folders_and_files;
    
+   procedure lsCommand(OptionTrue : Boolean; arguments: T_Substrings; currentDirectory: T_Folder)is
+   begin
+      if(OptionTrue)then
+         New_Line;
+         put_line(get_name(currentDirectory));
+         lsCommand(False, create_substrings, currentDirectory);
+         for i in 1.. get_nb_folders(currentDirectory) loop
+            lsRCommand(To_Unbounded_String(""&FILE_SEPARATOR), get_folder(currentDirectory,i));
+         end loop;
+      else
+         -- folders
+         put(ESC & "[36m");
+         for i in 1.. get_nb_folders(currentDirectory) loop
+            put(get_name(get_folder(currentDirectory,i)) & "  ");
+         end loop;
+         put(ESC & "[0m");
+         
+         -- files
+         for i in 1.. get_nb_files(currentDirectory) loop
+            put(get_name(get_file(currentDirectory, i)) & "  ");
+         end loop;
+         new_line;
+      end if;
+   end lsCommand; 
    
    
    procedure rmCommand(OptionTrue : Boolean;arguments: T_Substrings; currentDirectory: in out T_Folder)is
@@ -193,12 +188,12 @@ package body P_Commands is
       add_file(parent,file);
    end touchCommand;
    
-   function "<" (L, R : sonRecord) return Boolean is
+   function "<" (L, R : in T_R_Sibling) return Boolean is
    begin
-      if L.Name < R.Name then return True;
-      elsif L.Name = R.Name then if(l.isFolder)then return False; else return True; end if;
-      else return False;
-      end if;
+        if L.name < R.name then return True;
+        elsif L.name = R.name then if l.is_folder then return False; else return True; end if;
+        else return False;
+        end if;
    end "<";
    
    procedure help_command is
@@ -221,7 +216,6 @@ package body P_Commands is
 
    procedure help_command (command : in String) is
    begin
-      
       begin
          case encoded_commands'Value(command) is
             when pwd =>
@@ -291,8 +285,7 @@ package body P_Commands is
                put_line("SYNOPSIS");
                put_line("  tar FILE");
             when help =>
-               help_command;
-               
+               help_command;          
          end case;
       exception
          when Constraint_Error =>
@@ -302,10 +295,14 @@ package body P_Commands is
       end;
    end help_command;
    
-   procedure help_command (has_command : in Boolean; command : in String) is
+   procedure help_command (arguments : in T_Substrings) is
    begin
-      if has_command then
-         help_command(command);
+      if get_nb_substrings(arguments) > 1 then
+         raise Wrong_Arguments_Number_Error;
+      end if;
+      
+      if get_nb_substrings(arguments) = 1 then
+         help_command(get_substring_to_string(arguments, 1));
       else
          help_command;
       end if;

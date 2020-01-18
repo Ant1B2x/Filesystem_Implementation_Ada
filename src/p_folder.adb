@@ -85,10 +85,11 @@ package body P_Folder is
          current := get_parent(current);
          absolute_path := get_name(current) & FILE_SEPARATOR & absolute_path;
       end loop;
-      absolute_path := FILE_SEPARATOR & absolute_path;
+      
+      -- add leading '/' if we're not in the root folder
+      absolute_path := (if is_root(current) then absolute_path else FILE_SEPARATOR & absolute_path);
       
       return To_String(absolute_path);
-      
    end calculate_path;
    
    function get_path (folder : in T_Folder) return String is

@@ -3,7 +3,6 @@ with Ada.Text_IO; use Ada.Text_IO;
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 with P_Array;
 
--- Unbounded_string https://openclassrooms.com/fr/courses/900279-apprenez-a-programmer-avec-ada/894191-les-chaines-de-caracteres
 package P_Substrings is
 
    package P_Substrings_Array is new P_Array (T => Unbounded_String);
