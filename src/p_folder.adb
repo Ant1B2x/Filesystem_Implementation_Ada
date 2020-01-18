@@ -83,7 +83,7 @@ package body P_Folder is
       current := folder;
       while not is_null(get_parent(current)) and then not is_root(get_parent(current)) loop
          current := get_parent(current);
-         absolute_path := get_name(current) & FILE_SEPARATORF & absolute_path;
+         absolute_path := get_name(current) & FILE_SEPARATOR & absolute_path;
       end loop;
       absolute_path := FILE_SEPARATOR & absolute_path;
       

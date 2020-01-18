@@ -1,16 +1,20 @@
+with Ada.Text_IO; use Ada.Text_IO;
+with Ada.Characters.Latin_1; use Ada.Characters.Latin_1;
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
+with Ada.Strings.Maps.Constants;
+with Ada.Strings.Fixed;
+with Ada.Containers.Ordered_Sets;
+with Ada.Containers.Generic_Array_Sort;
+with Ada.Containers.Generic_Constrained_Array_Sort;
+
 with P_Constants; use P_Constants;
 with P_Folder; use P_Folder;
 with P_File; use P_File;
-with Ada.Containers.Ordered_Sets;
-with Ada.Containers.Generic_Constrained_Array_Sort;
-with Ada.Containers.Generic_Array_Sort;
-with Ada.Text_IO; use Ada.Text_IO;
 with P_Substrings; use P_Substrings;
 
 package P_Commands is
    
-   wrong_number_of_arguments: Exception;
+   Wrong_Arguments_Number_Error : Exception;
 
    type encoded_commands is (ls, rm, pwd, cd, mkdir, cp, mv, tar, touch, help);
    

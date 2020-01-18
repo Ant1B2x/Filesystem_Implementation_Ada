@@ -38,15 +38,14 @@ package body P_Commands is
          end loop;
       else
          -- Put_Line("Actuel :" & get_name(currentDirectory));
-         if(get_nb_folders(currentDirectory) > 0)then
-            Put_Line("  Dossier => ");
-         end if;
+         
+         -- folders
+         Put(ESC & "[36m");
          for i in 1.. get_nb_folders(currentDirectory) loop
             Put_Line("            " & get_name(get_folder(currentDirectory,i)));
          end loop;
-         if(get_nb_files(currentDirectory) > 0)then
-            Put_Line("  Fichier => ");
-         end if;
+         Put(ESC & "[0m");
+         
          for i in 1.. get_nb_files(currentDirectory) loop
             Put_Line("            " & get_name(get_file(currentDirectory, i)));
          end loop;
@@ -110,8 +109,9 @@ package body P_Commands is
       fils_name: Unbounded_String;
    begin
       if(get_nb_substrings(arguments) /= 1)then
-         raise wrong_number_of_arguments;
+         raise Wrong_Arguments_Number_Error;
       end if;
+      
       if(get_nb_substrings(split_string(get_substring_to_string(arguments, 1), FILE_SEPARATOR)) > 1) then
          parent := go_to_folder(currentDirectory, get_substring_to_string(arguments, 1), True);
       else
@@ -120,6 +120,9 @@ package body P_Commands is
       path := get_substring(arguments, 1);
       fils_name := get_substring(split_string(To_String(path), FILE_SEPARATOR), get_nb_substrings(split_string(To_String(path), FILE_SEPARATOR)));
       fils := create(To_String(fils_name), parent);
+   exception
+      when invalid_folder_error =>
+         put_line("cannot create directory '" & get_substring_to_string(arguments, 1) & "': No such file or directory");
    end mkdirCommand;
    
    -- Vérifier un petit coup, parce que ça a été fait assez vite alors que j'étais fatigué, donc son fonctionnement aurait la note :
@@ -178,7 +181,7 @@ package body P_Commands is
       file_name: Unbounded_String;
    begin
       if(get_nb_substrings(arguments) /= 1)then
-         raise wrong_number_of_arguments;
+         raise Wrong_Arguments_Number_Error;
       end if;
       if(get_nb_substrings(split_string(get_substring_to_string(arguments, 1), FILE_SEPARATOR)) > 1) then
          parent := go_to_folder(currentDirectory, get_substring_to_string(arguments, 1), True);
@@ -320,7 +323,7 @@ package body P_Commands is
    begin      
       if(path'Length > 0)then
          -- check is the fisrt folder is the root folder => "/home/..." for example
-         if(path(1) = FILE_SEPARATOR)then
+         if(path(path'First) = FILE_SEPARATOR)then
             -- start for root if it's true
             current := get_root;
          else
