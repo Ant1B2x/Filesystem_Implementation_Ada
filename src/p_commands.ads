@@ -31,7 +31,7 @@ package P_Commands is
    procedure lsCommand(OptionTrue : Boolean; arguments: T_Substrings; currentDirectory: T_Folder);
    procedure rmCommand(OptionTrue : Boolean;arguments: T_Substrings; currentDirectory:  in out T_Folder);
    procedure pwdCommand(currentDirectory: T_Folder);
-   procedure cdCommand(arguments: T_Substrings; currentDirectory: T_Folder);
+   procedure cdCommand(arguments: T_Substrings; currentDirectory: in out T_Folder);
    procedure mkdirCommand(arguments: T_Substrings; currentDirectory: in out T_Folder);
    procedure cpCommand(OptionTrue : Boolean; arguments: T_Substrings; currentDirectory: T_Folder);
    procedure mvCommand(arguments: T_Substrings; currentDirectory: in out T_Folder);

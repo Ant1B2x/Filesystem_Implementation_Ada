@@ -4,7 +4,7 @@ package body P_Commands is
       absolutePath: Unbounded_String;
    begin
       if(not is_root(currentDirectory))then
-         Put_Line(get_path(currentDirectory) & FILE_SEPARATOR & get_name(currentDirectory));
+         Put_Line(calculate_path(currentDirectory) & FILE_SEPARATOR & get_name(currentDirectory));
       else
          Put_Line(get_name(currentDirectory));
       end if;
@@ -82,10 +82,14 @@ package body P_Commands is
    
    procedure pwdCommand(currentDirectory: T_Folder)is
    begin
-      Put_Line(get_name(currentDirectory));
+      if(not is_root(currentDirectory))then
+         Put_Line(calculate_path(currentDirectory) & FILE_SEPARATOR & get_name(currentDirectory));
+      else
+         Put_Line(get_name(currentDirectory));
+      end if;
    end pwdCommand;
    
-   procedure cdCommand(arguments: T_Substrings; currentDirectory: T_Folder) is
+   procedure cdCommand(arguments: T_Substrings; currentDirectory: in out T_Folder) is
       folders: T_Substrings;
       current: T_Folder;
    begin
@@ -94,19 +98,11 @@ package body P_Commands is
       if(get_nb_substrings(folders) > 0)then
          if(get_substring_to_string(folders, 1)(1) = FILE_SEPARATOR)then
             current := get_root;
-            for i in 1..get_nb_substrings(folders) loop
-               if(not(is_null(find_folder(current, get_substring_to_string(folders, i)))))then
-                  Put_Line("> The specified path is not valid");
-               end if;
-            end loop;
          else
             current := currentDirectory;
-            for i in 1..get_nb_substrings(folders) loop
-               if(not is_null(find_folder(current, get_substring_to_string(folders, i))))then
-                  Put_Line("> The specified path is not valid");
-               end if;
-            end loop;
          end if;
+         currentDirectory := go_to_folder(original_directory => current,
+                                          path               => get_substring_to_string(arguments,1));
       else
          Put_Line("You have to enter a parameter.");
       end if;
@@ -115,13 +111,22 @@ package body P_Commands is
    procedure mkdirCommand(arguments: T_Substrings; currentDirectory: in out T_Folder)is
       fils : T_Folder;
       parent: T_Folder;
+      path: Unbounded_String;
+      fils_name: Unbounded_String;
    begin
       if(get_nb_substrings(arguments) /= 1)then
          raise wrong_number_of_arguments;
       end if;
-      parent := go_to_folder(currentDirectory, get_substring_to_string(arguments, 1), True);
-      fils := create(get_substring_to_string(arguments,1), parent);
-      add_folder(currentDirectory,fils);
+      if(get_nb_substrings(split_string(get_substring_to_string(arguments, 1), FILE_SEPARATOR)) > 1) then
+         parent := go_to_folder(currentDirectory, get_substring_to_string(arguments, 1), True);
+      else
+         parent := currentDirectory;
+      end if;
+      Put_Line(get_substring_to_string(arguments, 1));
+      Put_Line(Integer'Image(get_nb_substrings(split_string(get_substring_to_string(arguments, 1), FILE_SEPARATOR))));
+      path := get_substring(arguments, 1);
+      fils_name := get_substring(split_string(To_String(path), FILE_SEPARATOR), get_nb_substrings(split_string(To_String(path), FILE_SEPARATOR)));
+      fils := create(To_String(fils_name), parent);
    end mkdirCommand;
    
    -- Vérifier un petit coup, parce que ça a été fait assez vite alors que j'étais fatigué, donc son fonctionnement aurait la note :
@@ -140,8 +145,6 @@ package body P_Commands is
       
       -- creating a clone of the original folder
       new_sibling := create(get_name(source_folder), destination_folder, get_rights(source_folder));
-      -- adding this clone to the destination
-      add_folder(destination_folder, new_sibling);
       
       -- starting to copy all its contents
       folder_deep_copy(new_sibling, destination_folder);
@@ -369,7 +372,6 @@ package body P_Commands is
       for i in 1..get_nb_folders(folder_to_copy) loop
          original_sibling := get_folder(folder_to_copy, i);
          new_sibling := create(get_name(original_sibling), folder_parent_of_clone, get_rights(original_file));
-         add_folder(folder_parent_of_clone, new_sibling);
          folder_deep_copy(get_folder(folder_to_copy, i), new_sibling);
       end loop;
    end folder_deep_copy;

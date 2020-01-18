@@ -84,6 +84,7 @@ package body P_Folder is
       while not is_null(get_parent(current)) and then not is_root(get_parent(current)) loop
          current := get_parent(current);
          absolute_path := get_name(current) & "/" & absolute_path;
+         Put_Line(To_String(absolute_path));
       end loop;
       absolute_path := "/" & absolute_path;
       
@@ -147,6 +148,9 @@ package body P_Folder is
    -- T_Tree doit être en "protected" car on a besoin de savoir que c'est un pointeur
    function find_folder (folder : in T_Folder; folder_name : in String) return T_Folder is
    begin
+      if(folder_name ="..")then
+         return get_parent(folder);
+      end if;
       for i in 1..get_nb_folders(folder) loop
          if get_name ( get_folder(folder, i) ) = folder_name then 
             return get_folder(folder, i);
