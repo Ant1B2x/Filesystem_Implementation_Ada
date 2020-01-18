@@ -14,7 +14,7 @@ package P_Tree is
    
    function create return T_Tree;
    
-   function create (parent : in T_Tree) return T_Tree;
+   function create (parent : in out T_Tree) return T_Tree;
    
    function is_empty (tree : in T_Tree) return Boolean;
    
@@ -26,16 +26,14 @@ package P_Tree is
    
    function get_parent (tree : in T_Tree) return T_Tree;
    
-   procedure set_parent (tree : in out T_Tree; parent : in T_Tree);
-   
    function get_sibling (tree : in T_Tree; index : in Integer) return T_Tree;
    
    function get_nb_siblings (tree : in T_Tree) return Integer;
    
-   procedure add_sibling (tree : in out T_Tree; sibling : in T_Tree);
+   procedure add_sibling (tree : in out T_Tree; sibling : in out T_Tree);
    
-   procedure del_sibling (tree : in out T_Tree; sibling : in T_Tree);
-      
+   procedure del_sibling (tree : in out T_Tree; sibling : in out T_Tree);
+   
 private
    
    type T_Node is record
@@ -43,5 +41,8 @@ private
       parent : T_Tree;
       siblings : T_Siblings;
    end record;
+   
+   -- called by add_sibling and del_sibling
+   procedure set_parent (tree : in out T_Tree; parent : in T_Tree);
 
 end P_Tree;

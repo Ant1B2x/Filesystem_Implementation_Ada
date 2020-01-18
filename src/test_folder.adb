@@ -124,7 +124,7 @@ begin
    -- set parent & get parent
    put_line("Set & get parent:");
    folder_sibling := create("drafts", root, (RWX, NONE, NONE));
-   set_parent(folder_sibling, folder);
+   --set_parent(folder_sibling, folder);
    if get_name(get_parent(folder_sibling)) = get_name(folder) then
       put_line("get_name(get_parent(folder_sibling)) = get_name(folder)");
    else

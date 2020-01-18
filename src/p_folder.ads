@@ -29,9 +29,9 @@ package P_Folder is
    subtype T_Folder is P_Folder_Tree.T_Tree;
    use type T_Folder;
    
-   function create (name : in String; parent : in T_Folder) return T_Folder;
+   function create (name : in String; parent : in out T_Folder) return T_Folder;
    
-   function create (name : in String; parent : in T_Folder; rights : in T_Rights) return T_Folder;
+   function create (name : in String; parent : in out T_Folder; rights : in T_Rights) return T_Folder;
    
    function get_name (folder : in T_Folder) return String;
    
@@ -51,8 +51,6 @@ package P_Folder is
    
    function get_parent (folder : in T_Folder) return T_Folder;
    
-   procedure set_parent (folder : in out T_Folder; parent : in T_Folder);
-   
    function is_empty (folder : in T_Folder) return Boolean;
    
    function is_null (folder : in T_Folder) return Boolean;
@@ -70,7 +68,7 @@ package P_Folder is
    
    procedure set_data (folder : in out T_Folder; folder_data : in T_Folder_Data);
    
-   procedure add_folder (folder : in out T_Folder; new_folder : in T_Folder);
+   procedure add_folder (folder : in out T_Folder; new_folder : in out T_Folder);
    
    procedure del_folder (folder : in out T_Folder; folder_name : in String);
    
@@ -87,7 +85,7 @@ package P_Folder is
    procedure del_file (folder : in out T_Folder; file_name : in String);
    
 private
-   function create_root return T_Folder;
    ROOT : T_Folder;
+   function create_root return T_Folder;
    
 end P_Folder;

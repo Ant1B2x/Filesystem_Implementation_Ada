@@ -13,12 +13,12 @@ package body P_Folder is
       return folder;
    end create_root;
    
-   function create (name : in String; parent : in T_Folder) return T_Folder is
+   function create (name : in String; parent : in out T_Folder) return T_Folder is
    begin
       return create (name, parent, (RWX, RX, RX));
    end create;
    
-   function create (name : in String; parent : in T_Folder; rights : in T_Rights) return T_Folder is
+   function create (name : in String; parent : in out T_Folder; rights : in T_Rights) return T_Folder is
       folder : T_Folder;
       data : T_Folder_Data;
    begin
@@ -109,11 +109,6 @@ package body P_Folder is
       return P_Folder_Tree.get_parent(folder);
    end get_parent;
    
-   procedure set_parent (folder : in out T_Folder; parent : in T_Folder) is
-   begin
-      P_Folder_Tree.set_parent(folder, parent);
-   end set_parent;
-   
    function is_empty (folder : in T_Folder) return Boolean is
    begin
       return get_nb_folders(folder) = 0 and get_nb_files(folder) = 0;
@@ -160,7 +155,7 @@ package body P_Folder is
       P_Folder_Tree.set_data(folder, folder_data);
    end set_data;
    
-   procedure add_folder (folder : in out T_Folder; new_folder : in T_Folder) is
+   procedure add_folder (folder : in out T_Folder; new_folder : in out T_Folder) is
    begin
       
       -- check if an existing directory/file has the same name
@@ -174,10 +169,12 @@ package body P_Folder is
    end add_folder;
    
    procedure del_folder (folder : in out T_Folder; folder_name : in String) is
+      folder_sibling : T_Folder;
    begin
       for i in 1..get_nb_folders(folder) loop
          if get_name(get_folder(folder, i)) = folder_name then
-            P_Folder_Tree.del_sibling(folder, get_folder(folder, i));
+            folder_sibling := get_folder(folder, i);
+            P_Folder_Tree.del_sibling(folder, folder_sibling);
          end if;
       end loop;
    end del_folder;

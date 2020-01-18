@@ -41,6 +41,16 @@ begin
    else
       put_line("add_sibling(tree_integer, tree_integer_sibling) didn't work, tree empty");
    end if;
+   if get_sibling(tree_integer, 1) = tree_integer_sibling then
+      put_line("get_sibling(tree_integer, 1) = tree_integer_sibling");
+   else
+      put_line("get_sibling(tree_integer, 1) is incoherent");
+   end if;
+   if get_parent(tree_integer_sibling) = tree_integer then
+      put_line("get_parent(tree_integer_sibling) = tree_integer");
+   else
+      put_line("get_parent(tree_integer_sibling) is incoherent");
+   end if;
    new_line;
    
    -- is empty
@@ -69,6 +79,11 @@ begin
    else
       put_line("add_sibling(tree_integer, tree_integer_sibling) didn't work, tree not empty");
    end if;
+   if get_parent(tree_integer_sibling) = null then
+      put_line("get_parent(tree_integer_sibling) = null");
+   else
+      put_line("get_parent(tree_integer_sibling) is incoherent");
+   end if;
    new_line;
    
    -- is null
@@ -85,22 +100,16 @@ begin
    end if;
    new_line;
    
-   -- set parent & get parent
-   put_line("Set parent & get parent:");
+   -- create with parent & get parent
+   put_line("Create with parent & get parent:");
    tree_integer_parent := create;
-   set_data(tree_integer_parent, 25);
-   set_parent(tree_integer, tree_integer_parent);
-   if get_parent(tree_integer) = tree_integer_parent then
-      put_line("get_parent(tree_integer) = tree_integer_parent");
-   else
-      put_line("get_parent(tree_integer) is incoherent");
-   end if;
-   new_line;
-   
-   -- create with parent
-   put_line("Create with parent:");
    tree_integer := create(tree_integer_parent); -- reset tree_integer
    set_data(tree_integer, 50);
+   if get_sibling(tree_integer_parent, 1) = tree_integer then
+      put_line("get_sibling(tree_integer_parent, 1) = tree_integer");
+   else
+      put_line("get_sibling(tree_integer_parent, 1) is incoherent");
+   end if;
    if get_parent(tree_integer) = tree_integer_parent then
       put_line("get_parent(tree_integer) = tree_integer_parent");
    else

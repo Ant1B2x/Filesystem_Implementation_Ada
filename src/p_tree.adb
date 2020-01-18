@@ -9,11 +9,11 @@ package body P_Tree is
       return tree;
    end create;
    
-   function create (parent : in T_Tree) return T_Tree is
+   function create (parent : in out T_Tree) return T_Tree is
       tree : T_Tree;
    begin
       tree := create;
-      set_parent(tree, parent);
+      add_sibling(parent, tree);
       return tree;
    end create;
    
@@ -57,14 +57,16 @@ package body P_Tree is
       return P_Siblings.get_nb_values(tree.all.siblings);
    end get_nb_siblings;
    
-   procedure add_sibling (tree : in out T_Tree; sibling : in T_Tree) is
+   procedure add_sibling (tree : in out T_Tree; sibling : in out T_Tree) is
    begin
       P_Siblings.add_value(tree.all.siblings, sibling);
+      set_parent(sibling, tree);
    end add_sibling;
    
-   procedure del_sibling (tree : in out T_Tree; sibling : in T_Tree) is
+   procedure del_sibling (tree : in out T_Tree; sibling : in out T_Tree) is
    begin
       P_Siblings.del_value(tree.all.siblings, sibling);
+      set_parent(sibling, null);
    end del_sibling;
 
 end P_Tree;
