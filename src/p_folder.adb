@@ -22,6 +22,10 @@ package body P_Folder is
       folder : T_Folder;
       data : T_Folder_Data;
    begin
+      if has_son_with_this_name(parent, name) then
+         raise Same_Name_Error;
+      end if;
+      
       folder := P_Folder_Tree.create(parent);
       
       data.files := P_Files.create;
@@ -163,8 +167,7 @@ package body P_Folder is
    begin
       
       -- check if an existing directory/file has the same name
-      if find_folder(folder, get_name(new_folder) ) /= null
-        or find_file(folder, get_name(new_folder) ) /= null then
+      if has_son_with_this_name(folder, P_Folder.get_name(new_folder)) then
          raise same_name_error;
       end if;
       
@@ -208,8 +211,7 @@ package body P_Folder is
    begin
       
       -- check if an existing directory/file has the same name
-      if find_folder(folder, P_File.get_name(new_file) ) /= null
-        or find_file(folder, P_File.get_name(new_file) ) /= null then
+      if has_son_with_this_name(folder, P_File.get_name(new_file)) then
          raise same_name_error;
       end if;
       
@@ -230,5 +232,10 @@ package body P_Folder is
       end loop;
       set_data(folder, folder_data);
    end del_file;
+   
+   function has_son_with_this_name(folder: T_Folder; name: String) return Boolean is
+   begin
+      return find_folder(folder, name) /= null or find_file(folder, name) /= null;
+   end has_son_with_this_name;
    
 end P_Folder;

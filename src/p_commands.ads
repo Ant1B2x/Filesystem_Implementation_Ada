@@ -31,6 +31,20 @@ package P_Commands is
    procedure touchCommand (arguments: T_Substrings; currentDirectory: in out T_Folder);
    procedure help_command (arguments : in T_Substrings);
    function calculate_size (folder: T_Folder) return Integer;
+   
+   
+   function "+" (S : String) return Unbounded_String renames To_Unbounded_String;
+
+   type T_R_Sibling is record
+      name: Unbounded_String;
+      is_folder: Boolean;
+   end record;
+   type T_Sibling_Records is array (Natural range <>) of T_R_Sibling;
+   function "<" (L, R : in T_R_Sibling) return Boolean;
+   package Composite_Sets is new Ada.Containers.Ordered_Sets (T_R_Sibling);
+   procedure Sort is new Ada.Containers.Generic_Array_Sort (Natural, T_R_Sibling, T_Sibling_Records);
+   procedure Sort2 is new Ada.Containers.Generic_Array_Sort(Natural, T_R_Sibling, T_Sibling_Records, "<");
+   function get_folders_and_files(folder: T_Folder) return T_Sibling_Records;
 
 private
    procedure help_command;
@@ -40,18 +54,7 @@ private
    function go_to_folder(original_directory: in T_Folder; path: in String; stop_at_penultimate: in Boolean) return T_Folder;
    procedure folder_deep_copy(folder_to_copy: T_Folder; folder_parent_of_clone: in out T_Folder);
    
-   function "+" (S : String) return Unbounded_String renames To_Unbounded_String;
 
-   type T_R_Sibling is record
-      name: Unbounded_String;
-      is_folder: Boolean;
-   end record;
-   
-   type T_Sibling_Records is array (Natural range <>) of T_R_Sibling;
-   function "<" (L, R : in T_R_Sibling) return Boolean;
-   package Composite_Sets is new Ada.Containers.Ordered_Sets (T_R_Sibling);
-   procedure Sort is new Ada.Containers.Generic_Array_Sort (Natural, T_R_Sibling, T_Sibling_Records);
-   procedure Sort2 is new Ada.Containers.Generic_Array_Sort(Natural, T_R_Sibling, T_Sibling_Records, "<");
    
    
    

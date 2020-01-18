@@ -21,7 +21,7 @@ package P_Substrings is
 
    function get_substrings(substrings: in T_Substrings; index_first: Integer; index_last: Integer) return T_Substrings;
 
-private
+-- private -- J'ai enlevé le private pour faire des tests. A remettre si j'oublie de le faire.
    procedure add_substring (substrings : in out T_Substrings; substring : in String);
 
 end P_Substrings;

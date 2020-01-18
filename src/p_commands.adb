@@ -15,7 +15,7 @@ package body P_Commands is
    begin
       currentPath := precedingPath & FILE_SEPARATOR & get_name(currentDirectory);
       New_Line;
-      Put_Line(To_String(currentPath) & FILE_SEPARATOR);
+      Put_Line(To_String(currentPath) & ":");
       
       lsCommand(False, create_substrings, currentDirectory);
       for i in 1.. get_nb_folders(currentDirectory) loop
@@ -23,34 +23,14 @@ package body P_Commands is
       end loop;
    end lsRCommand;
    
-   function get_folders_and_files(folder: T_Folder) return T_Sibling_Records is
-      allSons: T_Sibling_Records(1..2*LMAX_STRING);
-      index_global : Integer;
-   begin
-      index_global := 0;
-      for i in 1.. get_nb_folders(folder) loop
-         allSons(index_global).Name := To_Unbounded_String(get_name(get_folder(folder, i)));
-         allSons(index_global).is_folder := True;
-         index_global := index_global + 1;
-      end loop;
-      
-      for i in 1.. get_nb_files(folder) loop
-         allSons(index_global).Name := To_Unbounded_String(get_name(get_file(folder, i)));
-         allSons(index_global).is_folder := False;
-         index_global := index_global + 1;
-      end loop;
-      Sort2(allSons);
-      return allSons;
-   end get_folders_and_files;
-   
    procedure lsCommand(OptionTrue : Boolean; arguments: T_Substrings; currentDirectory: T_Folder)is
    begin
       if(OptionTrue)then
          New_Line;
-         put_line(get_name(currentDirectory));
+         put_line(".:");
          lsCommand(False, create_substrings, currentDirectory);
          for i in 1.. get_nb_folders(currentDirectory) loop
-            lsRCommand(To_Unbounded_String(""&FILE_SEPARATOR), get_folder(currentDirectory,i));
+            lsRCommand(To_Unbounded_String("."), get_folder(currentDirectory,i));
          end loop;
       else
          -- folders
@@ -68,6 +48,25 @@ package body P_Commands is
       end if;
    end lsCommand; 
    
+   function get_folders_and_files(folder: T_Folder) return T_Sibling_Records is
+      allSons: T_Sibling_Records(1..(2*LMAX_STRING));
+      index_global : Integer;
+   begin
+      index_global := 1;
+      for i in 1.. get_nb_folders(folder) loop
+         allSons(index_global).Name := To_Unbounded_String(get_name(get_folder(folder, i)));
+         allSons(index_global).is_folder := True;
+         index_global := index_global + 1;
+      end loop;
+      
+      for i in 1.. get_nb_files(folder) loop
+         allSons(index_global).Name := To_Unbounded_String(get_name(get_file(folder, i)));
+         allSons(index_global).is_folder := False;
+         index_global := index_global + 1;
+      end loop;
+      Sort2(allSons);
+      return allSons;
+   end get_folders_and_files;
    
    procedure rmCommand(OptionTrue : Boolean;arguments: T_Substrings; currentDirectory: in out T_Folder)is
    begin
@@ -118,6 +117,8 @@ package body P_Commands is
    exception
       when invalid_folder_error =>
          put_line("cannot create directory '" & get_substring_to_string(arguments, 1) & "': No such file or directory");
+      when Same_Name_Error =>
+         Put_Line("cannot create directory '" & get_substring_to_string(arguments, 1) & "': File or directory with same name already exist");
    end mkdirCommand;
    
    -- Vérifier un petit coup, parce que ça a été fait assez vite alors que j'étais fatigué, donc son fonctionnement aurait la note :
@@ -190,10 +191,10 @@ package body P_Commands is
    
    function "<" (L, R : in T_R_Sibling) return Boolean is
    begin
-        if L.name < R.name then return True;
-        elsif L.name = R.name then if l.is_folder then return False; else return True; end if;
-        else return False;
-        end if;
+      if L.name < R.name then return True;
+      elsif L.name = R.name then if l.is_folder then return False; else return True; end if;
+      else return False;
+      end if;
    end "<";
    
    procedure help_command is

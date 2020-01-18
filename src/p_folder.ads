@@ -84,6 +84,8 @@ package P_Folder is
    
    procedure del_file (folder : in out T_Folder; file_name : in String);
    
+   function has_son_with_this_name(folder: T_Folder; name: String) return Boolean;
+   
 private
    ROOT : T_Folder;
    function create_root return T_Folder;
