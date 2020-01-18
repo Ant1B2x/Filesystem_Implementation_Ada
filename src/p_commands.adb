@@ -1,14 +1,4 @@
 package body P_Commands is
-
-   procedure pwdCommand(arguments: T_Substrings; currentDirectory: T_Folder) is
-      absolutePath: Unbounded_String;
-   begin
-      if(not is_root(currentDirectory))then
-         Put_Line(calculate_path(currentDirectory) & FILE_SEPARATOR & get_name(currentDirectory));
-      else
-         Put_Line(get_name(currentDirectory));
-      end if;
-   end pwdCommand;
    
    procedure lsRCommand(precedingPath: Unbounded_String; currentDirectory: T_Folder)is
       -- Pour colorier : https://docs.adacore.com/gnatcoll-docs/terminals.html
@@ -163,8 +153,8 @@ package body P_Commands is
       destination_folder := go_to_folder(currentDirectory, get_substring_to_string(arguments, 2), True);
       file := find_file(destination_folder, To_String(original_name));
       set_name(file, To_String(new_name));
-      add_file(source_folder, file);
       del_file(currentDirectory, To_String(original_name));
+      add_file(source_folder, file);
    end mvCommand;
    
    procedure tarCommand(arguments: T_Substrings; currentDirectory: in out T_Folder)is
@@ -181,9 +171,18 @@ package body P_Commands is
    
    procedure touchCommand(arguments: T_Substrings; currentDirectory: in out T_Folder)is
       file : T_File;
+      parent: T_Folder;
    begin
+      if(get_nb_substrings(arguments) /= 1)then
+         raise wrong_number_of_arguments;
+      end if;
+      if(get_nb_substrings(split_string(get_substring_to_string(arguments, 1), FILE_SEPARATOR)) > 1) then
+         parent := go_to_folder(currentDirectory, get_substring_to_string(arguments, 1), True);
+      else
+         parent := currentDirectory;
+      end if;
       file := create(get_substring_to_string(arguments, 1), calculate_path(currentDirectory) & get_name(currentDirectory));
-      add_file(currentDirectory,file);
+      add_file(parent,file);
    end touchCommand;
    
    function "<" (L, R : sonRecord) return Boolean is
