@@ -19,13 +19,10 @@ package body P_Commands is
       currentPath: Unbounded_String;
    begin
       currentPath := precedingPath & FILE_SEPARATOR & get_name(currentDirectory);
-      Put_Line(To_String(currentPath));
-      for i in 1.. get_nb_folders(currentDirectory) loop
-         Put_Line(get_name(get_folder(currentDirectory,i)));
-      end loop;
-      for i in 1.. get_nb_files(currentDirectory) loop
-         Put_Line(get_name(get_folder(currentDirectory,i)));
-      end loop;
+      New_Line;
+      Put_Line("Supposely wanted :" & get_pwd(currentDirectory));
+      
+      lsCommand(False, create_substrings, currentDirectory);
       for i in 1.. get_nb_folders(currentDirectory) loop
          lsRCommand(currentPath, get_folder(currentDirectory,i));
       end loop;
@@ -33,12 +30,14 @@ package body P_Commands is
    
    procedure lsCommand(OptionTrue : Boolean; arguments: T_Substrings; currentDirectory: T_Folder)is
    begin
-      if(get_substring_to_string(arguments,1) = "-r")then
+      if(OptionTrue)then
+         New_Line;
+         lsCommand(False, create_substrings, currentDirectory);
          for i in 1.. get_nb_folders(currentDirectory) loop
             lsRCommand(To_Unbounded_String(""&FILE_SEPARATOR), get_folder(currentDirectory,i));
          end loop;
       else
-         Put_Line("Actuel :" & get_name(currentDirectory));
+         -- Put_Line("Actuel :" & get_name(currentDirectory));
          if(get_nb_folders(currentDirectory) > 0)then
             Put_Line("  Dossier => ");
          end if;
@@ -176,6 +175,7 @@ package body P_Commands is
    procedure touchCommand(arguments: T_Substrings; currentDirectory: in out T_Folder)is
       file : T_File;
       parent: T_Folder;
+      file_name: Unbounded_String;
    begin
       if(get_nb_substrings(arguments) /= 1)then
          raise wrong_number_of_arguments;
@@ -185,7 +185,8 @@ package body P_Commands is
       else
          parent := currentDirectory;
       end if;
-      file := create(get_substring_to_string(arguments, 1), calculate_path(currentDirectory) & get_name(currentDirectory));
+      file_name := get_substring(split_string(To_String(get_substring(arguments, 1)), FILE_SEPARATOR), get_nb_substrings(split_string(To_String(get_substring(arguments, 1)), FILE_SEPARATOR)));
+      file := create(To_String(file_name), calculate_path(parent) & get_name(parent));
       add_file(parent,file);
    end touchCommand;
    

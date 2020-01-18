@@ -84,7 +84,6 @@ package body P_Folder is
       while not is_null(get_parent(current)) and then not is_root(get_parent(current)) loop
          current := get_parent(current);
          absolute_path := get_name(current) & "/" & absolute_path;
-         Put_Line(To_String(absolute_path));
       end loop;
       absolute_path := "/" & absolute_path;
       
