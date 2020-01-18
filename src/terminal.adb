@@ -4,13 +4,11 @@ with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 with P_Constants; use P_Constants;
 with P_Substrings; use P_Substrings;
 with P_Folder; use P_Folder;
---with P_Commands; use P_Commands;
+with P_Commands; use P_Commands;
 
 procedure Terminal is
 
-   type encoded_commands is (ls,rm,pwd,cd,mkdir,cp,mv,touch,tar,help);
-
-   procedure run_command(command: String; current_dir: T_Folder) is
+   procedure run_command(command: in String; current_dir: in out T_Folder) is
       substrings : T_Substrings;
       option_true : Boolean := False;
       arguments : T_Substrings;
@@ -40,28 +38,28 @@ procedure Terminal is
 
       begin
          case encoded_commands'Value(get_substring_to_string(substrings, 1)) is
-            when ls => put_line("aile hesse");
-            when rm => put_line("air aime");
-            when pwd => put_line("estewban");
-            when cd => put_line("sait dés");
-            when mkdir => put_line("aime qu'à dire");
-            when cp => put_line("sait pet");
-            when mv => put_line("aime vé");
-            when touch => put_line("toutche");
-            when tar => put_line("tard");
-            when help => put_line("aile peu");
+--              when ls => put_line("aile hesse");
+--              when rm => put_line("air aime");
+--              when pwd => put_line("estewban");
+--              when cd => put_line("sait dés");
+--              when mkdir => put_line("aime qu'à dire");
+--              when cp => put_line("sait pet");
+--              when mv => put_line("aime vé");
+--              when touch => put_line("toutche");
+--              when tar => put_line("tard");
+--              when help => put_line("aile peu");
 
-            --when ls => lsCommand(option_true, arguments, current_dir);
-            --when rm => rmCommand(option_true,arguments, current_dir);
-            --when pwd => pwdCommand(current_dir);
-            --when  cd => cdCommand(arguments, current_dir);
-            --when mkdir => mkdirCommand(arguments, current_dir);
-            --when  cp => cpCommand(option_true, arguments, current_dir);
-            --when  mv => mvCommand(arguments, current_dir);
-            --when  tar => tarCommand(arguments, current_dir);
-            --when  touch => touchCommand(arguments, current_dir);
-            --when tar => tarCommand(arguments, current_dir);
-            --when help => help_command(option_true, get_substring_to_string(substrings, 2));
+            when ls => lsCommand(option_true, arguments, current_dir);
+            when rm => rmCommand(option_true,arguments, current_dir);
+            when pwd => pwdCommand(current_dir);
+            when  cd => cdCommand(arguments, current_dir);
+            when mkdir => mkdirCommand(arguments, current_dir);
+            when  cp => cpCommand(option_true, arguments, current_dir);
+            when  mv => mvCommand(arguments, current_dir);
+
+            when  touch => touchCommand(arguments, current_dir);
+            when  tar => tarCommand(arguments, current_dir);
+            when help => help_command(option_true, get_substring_to_string(substrings, 2));
          end case;
       exception
          when Constraint_Error =>
@@ -71,16 +69,18 @@ procedure Terminal is
 
    end run_command;
 
+   root : T_Folder;
    command : String(1..LMAX_STRING);
    command_length : Integer;
 begin
 
+   root := get_root;
    loop
       put("> ");
       get_line(command, command_length);
       exit when command(1..command_length) = "exit";
 
-      run_command(command(1..command_length), P_Folder.get_root);
+      run_command(command(1..command_length), root);
    end loop;
 
 
