@@ -8,8 +8,8 @@ with P_File; use P_File;
 
 package P_Folder is
    
-   same_name_error : Exception;
-   invalid_folder_error: Exception;
+   Same_Name_Error : Exception;
+   Invalid_Folder_Error: Exception;
 
    -- files of the folder   
    package P_Files is new P_Array (T => T_File);
