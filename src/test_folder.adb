@@ -67,6 +67,11 @@ begin
    else
       put_line("get_parent(folder) is incoherent");
    end if;
+   if get_name(get_folder(root, 1)) = get_name(folder) then
+      put_line("get_name(get_folder(root, 1)) = get_name(folder)");
+   else
+      put_line("get_name(get_folder(root, 1)) is incoherent");
+   end if;
    if get_rights(folder) = (RWX, RWX, RX) then
       put_line("get_rights(folder) = (RWX, RWX, RX)");
    else
@@ -91,6 +96,7 @@ begin
    else
       put_line("is_null(folder) is incoherent");
    end if;
+   new_line;
    
    -- set name & get name
    put_line("Set name & get name:");
@@ -121,17 +127,6 @@ begin
    end if;
    new_line;
    
-   -- set parent & get parent
-   put_line("Set & get parent:");
-   folder_sibling := create("drafts", root, (RWX, NONE, NONE));
-   --set_parent(folder_sibling, folder);
-   if get_name(get_parent(folder_sibling)) = get_name(folder) then
-      put_line("get_name(get_parent(folder_sibling)) = get_name(folder)");
-   else
-      put_line("get_parent(folder_sibling) is incoherent");
-   end if;
-   new_line;
-   
    -- is empty
    put_line("Is empty:");
    if is_empty(folder) then
@@ -141,25 +136,71 @@ begin
    end if;
    new_line;
    
+   -- add folder
+   put_line("Add folder:");
+   folder_sibling := create("drafts", root, (RWX, NONE, NONE));
+   add_folder(folder, folder_sibling);
+   if not is_empty(folder) then
+      put_line("is_empty(folder) = False, we just added folder_sibling");
+   else
+      put_line("is_empty(folder) is incoherent");
+   end if;
+   new_line;
+   
+   -- get nb folders
+   put_line("Get nb folders:");
+   if get_nb_folders(folder) = 1 then
+      put_line("get_nb_folders(folder) = 1");
+   else
+      put_line("get_nb_folders(folder) is incoherent");
+   end if;
+   new_line;
+   
+   -- get folder
+   put_line("Get folder:");
+   if get_name(get_folder(folder, 1)) = get_name(folder_sibling) then
+      put_line("get_name(get_folder(folder, 1)) = get_name(folder_sibling)");
+   else
+      put_line("get_folder(folder, 1) is incoherent");
+   end if;
+   new_line;
+   
+   -- find folder
+   put_line("Find folder:");
+   if get_name(find_folder(folder, "drafts")) = "drafts" then
+      put_line("get_name(find_folder(folder, ""drafts"")) = ""drafts""");
+   else
+      put_line("get_name(find_folder(folder, ""drafts"")) is incoherent");
+   end if;
+   if is_null(find_folder(folder, "abcd")) then
+      put_line("is_null(find_folder(folder, ""abcd"") = True");
+   else
+      put_line("find_folder(folder, ""abcd"") is incoherent");
+   end if;
+   new_line;
+   
+   -- del folder
+   put_line("Del folder:");
+   del_folder(folder, "drafts");
+   if get_nb_folders(folder) = 0 then
+      put_line("get_nb_folders(folder) = 0");
+   else
+      put_line("get_nb_folders(folder) is incoherent, del_folder didn't work");
+   end if;
+   new_line;
+   
+   
    -- errors
    
    --function calculate_path (folder : in T_Folder) return String;
    
    --function get_path (folder : in T_Folder) return String;
    
-   --function get_folder (folder : in T_Folder; index : in Integer) return T_Folder;
-   
-   --function get_nb_folders (folder : in T_Folder) return Integer;
-   
-   --function find_folder (folder : in T_Folder; folder_name : in String) return T_Folder
    
    --function get_data (folder : in T_Folder) return T_Folder_Data;
    
    --procedure set_data (folder : in out T_Folder; folder_data : in T_Folder_Data);
    
-   --procedure add_folder (folder : in out T_Folder; new_folder : in T_Folder);
-   
-   --procedure del_folder (folder : in out T_Folder; folder_name : in String);
    
    --function get_file (folder : in T_Folder; index : in Integer) return T_File
    

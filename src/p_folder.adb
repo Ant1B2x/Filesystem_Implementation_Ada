@@ -124,6 +124,16 @@ package body P_Folder is
       return get_parent(folder) = null;
    end is_root;
    
+   function get_data (folder : in T_Folder) return T_Folder_Data is
+   begin
+      return P_Folder_Tree.get_data(folder);
+   end get_data;
+   
+   procedure set_data (folder : in out T_Folder; folder_data : in T_Folder_Data) is
+   begin
+      P_Folder_Tree.set_data(folder, folder_data);
+   end set_data;
+   
    function get_folder (folder : in T_Folder; index : in Integer) return T_Folder is
    begin
       return P_Folder_Tree.get_sibling(folder, index);
@@ -145,16 +155,6 @@ package body P_Folder is
       return null;
    end find_folder;
    
-   function get_data (folder : in T_Folder) return T_Folder_Data is
-   begin
-      return P_Folder_Tree.get_data(folder);
-   end get_data;
-   
-   procedure set_data (folder : in out T_Folder; folder_data : in T_Folder_Data) is
-   begin
-      P_Folder_Tree.set_data(folder, folder_data);
-   end set_data;
-   
    procedure add_folder (folder : in out T_Folder; new_folder : in out T_Folder) is
    begin
       
@@ -163,7 +163,7 @@ package body P_Folder is
         or find_file(folder, get_name(new_folder) ) /= null then
          raise same_name_error;
       end if;
-         
+      
       P_Folder_Tree.add_sibling(folder, new_folder);
       
    end add_folder;

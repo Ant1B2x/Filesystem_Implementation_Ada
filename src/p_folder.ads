@@ -57,16 +57,16 @@ package P_Folder is
    
    function is_root (folder : in T_Folder) return Boolean;
    
+   function get_data (folder : in T_Folder) return T_Folder_Data;
+   
+   procedure set_data (folder : in out T_Folder; folder_data : in T_Folder_Data);
+   
    function get_folder (folder : in T_Folder; index : in Integer) return T_Folder;
    
    function get_nb_folders (folder : in T_Folder) return Integer;
    
    function find_folder (folder : in T_Folder; folder_name : in String) return T_Folder
      with Pre => folder_name'length <= LMAX_STRING;
-   
-   function get_data (folder : in T_Folder) return T_Folder_Data;
-   
-   procedure set_data (folder : in out T_Folder; folder_data : in T_Folder_Data);
    
    procedure add_folder (folder : in out T_Folder; new_folder : in out T_Folder);
    
