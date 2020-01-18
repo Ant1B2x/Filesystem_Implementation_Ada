@@ -27,6 +27,7 @@ package P_Commands is
    procedure Sort is new Ada.Containers.Generic_Array_Sort (Natural, sonRecord, sons);
    procedure Sort2 is new Ada.Containers.Generic_Array_Sort(Natural, sonRecord, sons, "<");
 
+   function get_pwd(currentDirectory: T_Folder) return String;
    procedure pwdCommand(currentDirectory: T_Folder);
    procedure lsCommand(OptionTrue : Boolean; arguments: T_Substrings; currentDirectory: T_Folder);
    procedure rmCommand(OptionTrue : Boolean;arguments: T_Substrings; currentDirectory:  in out T_Folder);

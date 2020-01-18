@@ -69,18 +69,18 @@ procedure Terminal is
 
    end run_command;
 
-   root : T_Folder;
+   folder : T_Folder;
    command : String(1..LMAX_STRING);
    command_length : Integer;
 begin
 
-   root := get_root;
+   folder := get_root;
    loop
-      put("> ");
+      put(get_pwd(folder) & " > ");
       get_line(command, command_length);
       exit when command(1..command_length) = "exit";
 
-      run_command(command(1..command_length), root);
+      run_command(command(1..command_length), folder);
    end loop;
 
 

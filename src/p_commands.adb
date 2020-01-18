@@ -1,5 +1,15 @@
 package body P_Commands is
    
+   function get_pwd(currentDirectory: T_Folder) return String is
+   begin
+      return (if(not is_root(currentDirectory))then calculate_path(currentDirectory) & get_name(currentDirectory) else "");
+   end get_pwd;
+   
+   procedure pwdCommand(currentDirectory: T_Folder)is
+   begin
+      Put_Line (if(not is_root(currentDirectory))then get_pwd(currentDirectory) else get_name(currentDirectory));
+   end pwdCommand;
+   
    procedure lsRCommand(precedingPath: Unbounded_String; currentDirectory: T_Folder)is
       -- Pour colorier : https://docs.adacore.com/gnatcoll-docs/terminals.html
       -- with GNATCOLL.Terminal;  use GNATCOLL.Terminal;
@@ -29,12 +39,17 @@ package body P_Commands is
          end loop;
       else
          Put_Line("Actuel :" & get_name(currentDirectory));
+         if(get_nb_folders(currentDirectory) > 0)then
+            Put_Line("  Dossier => ");
+         end if;
          for i in 1.. get_nb_folders(currentDirectory) loop
-            Put_Line("    Dossier => " & get_name(get_folder(currentDirectory,i)));
+            Put_Line("            " & get_name(get_folder(currentDirectory,i)));
          end loop;
-         
+         if(get_nb_files(currentDirectory) > 0)then
+            Put_Line("  Fichier => ");
+         end if;
          for i in 1.. get_nb_files(currentDirectory) loop
-            Put_Line("    Fichier => " & get_name(get_file(currentDirectory, i)));
+            Put_Line("            " & get_name(get_file(currentDirectory, i)));
          end loop;
       end if;
    end lsCommand;
@@ -70,15 +85,6 @@ package body P_Commands is
       end if;
    end rmCommand;
    
-   procedure pwdCommand(currentDirectory: T_Folder)is
-   begin
-      if(not is_root(currentDirectory))then
-         Put_Line(calculate_path(currentDirectory) & FILE_SEPARATOR & get_name(currentDirectory));
-      else
-         Put_Line(get_name(currentDirectory));
-      end if;
-   end pwdCommand;
-   
    procedure cdCommand(arguments: T_Substrings; currentDirectory: in out T_Folder) is
       folders: T_Substrings;
       current: T_Folder;
@@ -112,8 +118,6 @@ package body P_Commands is
       else
          parent := currentDirectory;
       end if;
-      Put_Line(get_substring_to_string(arguments, 1));
-      Put_Line(Integer'Image(get_nb_substrings(split_string(get_substring_to_string(arguments, 1), FILE_SEPARATOR))));
       path := get_substring(arguments, 1);
       fils_name := get_substring(split_string(To_String(path), FILE_SEPARATOR), get_nb_substrings(split_string(To_String(path), FILE_SEPARATOR)));
       fils := create(To_String(fils_name), parent);
