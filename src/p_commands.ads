@@ -37,7 +37,7 @@ package P_Commands is
    procedure mvCommand(arguments: T_Substrings; currentDirectory: in out T_Folder);
    procedure tarCommand(arguments: T_Substrings; currentDirectory: in out T_Folder);
    procedure touchCommand(arguments: T_Substrings; currentDirectory: in out T_Folder);
-   procedure help;
+   procedure help_command;
    procedure help_command (command : in String);
    procedure help_command (has_command : in Boolean; command : in String);
    function calculate_size(folder: T_Folder) return Integer;

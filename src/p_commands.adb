@@ -114,11 +114,13 @@ package body P_Commands is
    
    procedure mkdirCommand(arguments: T_Substrings; currentDirectory: in out T_Folder)is
       fils : T_Folder;
+      parent: T_Folder;
    begin
       if(get_nb_substrings(arguments) /= 1)then
          raise wrong_number_of_arguments;
       end if;
-      fils := create(get_substring_to_string(arguments,1), go_to_folder(currentDirectory, get_substring_to_string(arguments, 1), True));
+      parent := go_to_folder(currentDirectory, get_substring_to_string(arguments, 1), True);
+      fils := create(get_substring_to_string(arguments,1), parent);
       add_folder(currentDirectory,fils);
    end mkdirCommand;
    
@@ -129,10 +131,20 @@ package body P_Commands is
    procedure cpCommand(OptionTrue : Boolean; arguments: T_Substrings; currentDirectory: T_Folder) is
       source_folder: T_Folder;
       destination_folder: T_Folder;
+      new_sibling: T_Folder;
    begin
+      -- file to copy
       source_folder := go_to_folder(currentDirectory, get_substring_to_string(arguments, 1), True);
+      -- file to put the copy in
       destination_folder := go_to_folder(currentDirectory, get_substring_to_string(arguments, 2), True);
-      folder_deep_copy(source_folder, destination_folder);
+      
+      -- creating a clone of the original folder
+      new_sibling := create(get_name(source_folder), destination_folder, get_rights(source_folder));
+      -- adding this clone to the destination
+      add_folder(destination_folder, new_sibling);
+      
+      -- starting to copy all its contents
+      folder_deep_copy(new_sibling, destination_folder);
    end cpCommand;
    
    procedure mvCommand(arguments: T_Substrings; currentDirectory: in out T_Folder) is
@@ -346,20 +358,18 @@ package body P_Commands is
       new_file: T_File;
       original_sibling: T_Folder;
       new_sibling: T_Folder;
-      new_folder: T_Folder;
    begin
-      new_folder := create(get_name(folder_to_copy), folder_parent_of_clone, get_rights(original_file));
       for i in 1..get_nb_files(folder_to_copy) loop
          original_file := get_file(folder_to_copy, i);
-         new_file := create(get_name(original_file), get_rights(original_file), get_path(new_folder) & FILE_SEPARATOR & get_name(new_folder), get_data(original_file));
+         new_file := create(get_name(original_file), get_rights(original_file), get_path(folder_parent_of_clone) & FILE_SEPARATOR & get_name(folder_parent_of_clone), get_data(original_file));
          set_size(new_file, get_size(new_file));
-         add_file(new_folder, new_file);
+         add_file(folder_parent_of_clone, new_file);
       end loop;
       
       for i in 1..get_nb_folders(folder_to_copy) loop
          original_sibling := get_folder(folder_to_copy, i);
-         new_sibling := create(get_name(original_sibling), new_folder, get_rights(original_file));
-         add_folder(new_folder, new_sibling);
+         new_sibling := create(get_name(original_sibling), folder_parent_of_clone, get_rights(original_file));
+         add_folder(folder_parent_of_clone, new_sibling);
          folder_deep_copy(get_folder(folder_to_copy, i), new_sibling);
       end loop;
    end folder_deep_copy;
