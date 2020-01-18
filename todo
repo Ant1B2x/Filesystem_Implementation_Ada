@@ -1,6 +1,7 @@
 module commandes
 
 gérer les créations avec des noms similaires (fichiers et dossiers) avec MV
+Faire en sorte de transmettres toutes les options, et que ce soient les programmes des command qui s'auto-gèrent leurs fonctions.
 
 main interpréteur
 main menu
