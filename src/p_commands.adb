@@ -5,98 +5,35 @@ package body P_Commands is
       return calculate_path(current_directory) & get_name(current_directory);
    end get_pwd;
    
-   procedure pwdCommand(currentDirectory: T_Folder)is
+   procedure pwd_command (current_directory: in T_Folder) is
    begin
-      Put_Line (get_pwd(currentDirectory));
-   end pwdCommand;
+      put_line( get_pwd(current_directory) );
+   end pwd_command;
    
-   procedure lsRCommand(precedingPath: Unbounded_String; currentDirectory: T_Folder)is
-      currentPath: Unbounded_String;
+   procedure ls_command (current_directory : in T_Folder; arguments : in T_Substrings; recursive : in Boolean) is
    begin
-      currentPath := precedingPath & FILE_SEPARATOR & get_name(currentDirectory);
-      New_Line;
-      Put_Line(To_String(currentPath) & ":");
-      
-      lsCommand(False, create_substrings, currentDirectory);
-      for i in 1.. get_nb_folders(currentDirectory) loop
-         lsRCommand(currentPath, get_folder(currentDirectory,i));
-      end loop;
-   end lsRCommand;
-   
-   procedure lsCommand(OptionTrue : Boolean; arguments: T_Substrings; currentDirectory: T_Folder)is
-   begin
-      if(OptionTrue)then
-         New_Line;
+      if recursive then
          put_line(".:");
-         lsCommand(False, create_substrings, currentDirectory);
-         for i in 1.. get_nb_folders(currentDirectory) loop
-            lsRCommand(To_Unbounded_String("."), get_folder(currentDirectory,i));
+         ls_command(current_directory, create_substrings, False);
+         for i in 1.. get_nb_folders(current_directory) loop
+            ls_r_command(get_folder(current_directory, i), To_Unbounded_String("."));
          end loop;
       else
-         display_folders_and_files(create_set(currentDirectory));
-         -- folders
---           for i in 1.. get_nb_folders(currentDirectory) loop
---              put(ESC & "[36m");
---              put(get_name(get_folder(currentDirectory,i)) & "  ");
---              put(ESC & "[0m");
---           end loop;
---           
---           -- files
---           for i in 1.. get_nb_files(currentDirectory) loop
---              put(get_name(get_file(currentDirectory, i)) & "  ");
---           end loop;
---           new_line;
+         display_folders_and_files(create_siblings_set(current_directory));
       end if;
-   end lsCommand;
+   end ls_command;
    
-   function create_t_r_sibling return T_R_Sibling is
-      new_t_r_sibling: T_R_Sibling;
+   procedure rm_command (current_directory : in out T_Folder; arguments : in T_Substrings; recursive : in Boolean) is
    begin
-      new_t_r_sibling.name := To_Unbounded_String("");
-      return new_t_r_sibling;
-   end create_t_r_sibling;
-   
-   function create_set(folder: T_Folder) return folders_and_files_name_set is
-      allSons: folders_and_files_name_set;
-      new_element: T_R_Sibling;
-   begin
-      for i in 1.. get_nb_folders(folder) loop
-         new_element := create_t_r_sibling;
-         new_element.name := To_Unbounded_String(get_name(get_folder(folder, i)));
-         new_element.is_folder := True;
-         allSons.Insert(new_element);
-      end loop;
-      
-      for i in 1.. get_nb_files(folder) loop
-         new_element := create_t_r_sibling;
-         new_element.name := To_Unbounded_String(get_name(get_file(folder, i)));
-         new_element.is_folder := False;
-         allSons.Insert(new_element);
-      end loop;
-      return allSons;
-   end create_set;
-   
-   procedure display_folders_and_files(set: folders_and_files_name_set) is
-   begin
-      for E of set loop
-         if(E.is_folder)then
-            put(ESC & "[94m");
-            put(To_String(E.name) & "  ");
-            put(ESC & "[0m");
-         else
-            put(To_String(E.name) & "  ");
-         end if;
-      end loop;
-   end display_folders_and_files;
-   
-   procedure rmCommand(OptionTrue : Boolean;arguments: T_Substrings; currentDirectory: in out T_Folder)is
-   begin
-      if(OptionTrue)then
-         del_folder(currentDirectory,get_name(find_folder(currentDirectory,get_substring_to_string(arguments,1))));
+      if recursive then
+         del_folder(current_directory, get_name(find_folder(current_directory, get_substring_to_string(arguments, 1))));
       else
-         del_file(currentDirectory,get_name(find_file(currentDirectory,get_substring_to_string(arguments,1))));
+         del_file(current_directory, get_name(find_file(current_directory, get_substring_to_string(arguments, 1))));
       end if;
-   end rmCommand;
+      
+   end rm_command;
+   
+   
    
    procedure cdCommand(arguments: T_Substrings; currentDirectory: in out T_Folder) is
       folders: T_Substrings;
@@ -136,7 +73,7 @@ package body P_Commands is
       fils_name := get_substring(split_string(To_String(path), FILE_SEPARATOR), get_nb_substrings(split_string(To_String(path), FILE_SEPARATOR)));
       fils := create(To_String(fils_name), parent);
    exception
-      when invalid_folder_error =>
+      when Invalid_Folder_Error =>
          put_line("cannot create directory '" & get_substring_to_string(arguments, 1) & "': No such file or directory");
       when Same_Name_Error =>
          Put_Line("cannot create directory '" & get_substring_to_string(arguments, 1) & "': File or directory with same name already exist");
@@ -218,6 +155,40 @@ package body P_Commands is
       end if;
    end "<";
    
+   procedure clear_command is
+   begin
+      put(ESC & "[2J");
+   end clear_command;
+   
+   procedure help_command (arguments : in T_Substrings) is
+   begin
+      if get_nb_substrings(arguments) > 1 then
+         raise Wrong_Arguments_Number_Error;
+      end if;
+      
+      if get_nb_substrings(arguments) = 1 then
+         help_command(get_substring_to_string(arguments, 1));
+      else
+         help_command;
+      end if;
+   end help_command;
+   
+     
+   
+   -- private functions & procedures
+   procedure ls_r_command (current_directory : in T_Folder; preceding_path : in Unbounded_String) is
+      current_path: Unbounded_String;
+   begin
+      current_path := preceding_path & FILE_SEPARATOR & get_name(current_directory);
+      new_line;
+      put_line(To_String(current_path) & ":");
+      
+      ls_command(current_directory, create_substrings, False);
+      for i in 1.. get_nb_folders(current_directory) loop
+         ls_r_command(get_folder(current_directory,i), current_path);
+      end loop;
+   end ls_r_command;
+   
    procedure help_command is
    begin
       put_line("Available commands:");
@@ -230,7 +201,9 @@ package body P_Commands is
       put_line("mv       move (rename) files"); -- not sure
       put_line("rm       remove files or directories");
       put_line("tar      archive a file");
+      put_line("clear    clear the terminal screen");
       put_line("help     show this menu");
+      put_line("exit     cause the shell to exit");
       new_line;
       put_line("You can get more help by specifying a command.");
       put_line("For example, try 'help ls'.");
@@ -306,37 +279,23 @@ package body P_Commands is
                new_line;
                put_line("SYNOPSIS");
                put_line("  tar FILE");
-            when help =>
-               help_command;     
             when clear =>
                put_line("NAME");
-               put_line("  clear - clear the terminal");
+               put_line("  clear - clear the terminal screen");
+               new_line;
+               put_line("SYNOPSIS");
+               put_line("  clear");
+            when help =>
+               help_command;
          end case;
       exception
          when Constraint_Error =>
-            put_line("The command you entered is invalid.");
+            put_line("No help entry for this command.");
             new_line;
             help_command;
       end;
    end help_command;
    
-   procedure help_command (arguments : in T_Substrings) is
-   begin
-      if get_nb_substrings(arguments) > 1 then
-         raise Wrong_Arguments_Number_Error;
-      end if;
-      
-      if get_nb_substrings(arguments) = 1 then
-         help_command(get_substring_to_string(arguments, 1));
-      else
-         help_command;
-      end if;
-   end help_command;
-   
-   procedure clear_command is
-   begin
-      put(ascii.esc & "[2J");
-   end clear_command;
    
    function go_to_folder (original_directory: in T_Folder; path: in String) return T_Folder is
    begin
@@ -347,7 +306,7 @@ package body P_Commands is
       current: T_Folder;
       siblings: T_Substrings;
       penultimate: Integer;
-   begin      
+   begin
       if(path'Length > 0)then
          -- check is the fisrt folder is the root folder => "/home/..." for example
          if(path(path'First) = FILE_SEPARATOR)then
@@ -409,5 +368,37 @@ package body P_Commands is
          folder_deep_copy(get_folder(folder_to_copy, i), new_sibling);
       end loop;
    end folder_deep_copy;
+   
+   function create_siblings_set (directory : in T_Folder) return T_Siblings_Set is
+      siblings_set : T_Siblings_Set;
+      new_element : T_R_Sibling;
+   begin
+      for i in 1.. get_nb_folders(directory) loop
+         new_element.name := To_Unbounded_String(get_name(get_folder(directory, i)));
+         new_element.is_folder := True;
+         siblings_set.insert(new_element);
+      end loop;
+      
+      for i in 1.. get_nb_files(directory) loop
+         new_element.name := To_Unbounded_String(get_name(get_file(directory, i)));
+         new_element.is_folder := False;
+         siblings_set.insert(new_element);
+      end loop;
+      return siblings_set;
+   end create_siblings_set;
+   
+   procedure display_folders_and_files (siblings_set : in T_Siblings_Set) is
+   begin
+      for sibling of siblings_set loop
+         if sibling.is_folder then
+            put(ESC & "[36m");
+            put(To_String(sibling.name) & "  ");
+            put(ESC & "[0m");
+         else
+            put(To_String(sibling.name) & "  ");
+         end if;
+      end loop;
+      new_line;
+   end display_folders_and_files;
 
 end P_Commands;

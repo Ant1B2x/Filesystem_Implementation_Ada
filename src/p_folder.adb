@@ -168,7 +168,7 @@ package body P_Folder is
       
       -- check if an existing directory/file has the same name
       if has_son_with_this_name(folder, P_Folder.get_name(new_folder)) then
-         raise same_name_error;
+         raise Same_Name_Error;
       end if;
       
       P_Folder_Tree.add_sibling(folder, new_folder);
@@ -212,7 +212,7 @@ package body P_Folder is
       
       -- check if an existing directory/file has the same name
       if has_son_with_this_name(folder, P_File.get_name(new_file)) then
-         raise same_name_error;
+         raise Same_Name_Error;
       end if;
       
       folder_data := get_data(folder);

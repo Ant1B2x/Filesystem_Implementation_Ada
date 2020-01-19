@@ -40,7 +40,7 @@ begin
    add_substring(arguments,"test2");
    mkdirCommand(arguments, folder);
    
-   pwdCommand(folder);
+   pwd_command(folder);
       
    arguments := create_substrings;
    add_substring(arguments,"test2/karibou");
@@ -70,10 +70,10 @@ begin
    
    
    New_Line;
-   lsCommand(False, arguments, folder);
+   ls_command(folder, arguments, False);
    
    New_Line;
-   lsCommand(True, arguments, folder);
+   ls_command(folder, arguments, False);
    
    clear_command;
    
@@ -83,6 +83,7 @@ begin
    
    Put_Line("**** Test de tri ***");
    Put_Line("./test2:");
-   display_folders_and_files(create_set(folder));
+   -- ce fichier sera delete de toute façon
+   --display_folders_and_files(create_set(folder));
 
 end test_sort;

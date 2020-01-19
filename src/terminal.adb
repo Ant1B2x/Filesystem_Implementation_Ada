@@ -36,9 +36,9 @@ procedure Terminal is
 
       begin
          case encoded_commands'Value(get_substring_to_string(substrings, 1)) is
-            when ls => lsCommand(option_true, arguments, current_dir);
-            when rm => rmCommand(option_true,arguments, current_dir);
-            when pwd => pwdCommand(current_dir);
+            when ls => ls_command(current_dir, arguments, option_true);
+            when rm => rm_command(current_dir, arguments, option_true);
+            when pwd => pwd_command(current_dir);
             when cd => cdCommand(arguments, current_dir);
             when mkdir => mkdirCommand(arguments, current_dir);
             when cp => cpCommand(option_true, arguments, current_dir);
