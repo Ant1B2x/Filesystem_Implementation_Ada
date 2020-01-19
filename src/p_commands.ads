@@ -42,11 +42,10 @@ package P_Commands is
    end record;
    type T_Sibling_Records is array (Natural range <>) of T_R_Sibling;
    function "<" (L, R : in T_R_Sibling) return Boolean;
-   package Composite_Sets is new Ada.Containers.Ordered_Sets (T_R_Sibling);
-   procedure Sort is new Ada.Containers.Generic_Array_Sort (Natural, T_R_Sibling, T_Sibling_Records);
-   procedure Sort2 is new Ada.Containers.Generic_Array_Sort(Natural, T_R_Sibling, T_Sibling_Records, "<");
-   function get_folders_and_files(folder: T_Folder) return T_Sibling_Records;
-   procedure display_folders_and_files(allSons: T_Sibling_Records);
+   package Composite_Sets is new Ada.Containers.Ordered_Sets (T_R_Sibling, "<");
+   subtype folders_and_files_name_set is Composite_Sets.Set;
+   procedure display_folders_and_files(set: folders_and_files_name_set);
+   function create_set(folder: T_Folder) return folders_and_files_name_set;
 
 private
    procedure help_command;

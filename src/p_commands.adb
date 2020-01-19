@@ -33,55 +33,60 @@ package body P_Commands is
             lsRCommand(To_Unbounded_String("."), get_folder(currentDirectory,i));
          end loop;
       else
-         
-         
-         display_folders_and_files(get_folders_and_files(currentDirectory));
---           -- folders
---           put(ESC & "[36m");
+         display_folders_and_files(create_set(currentDirectory));
+         -- folders
 --           for i in 1.. get_nb_folders(currentDirectory) loop
+--              put(ESC & "[36m");
 --              put(get_name(get_folder(currentDirectory,i)) & "  ");
+--              put(ESC & "[0m");
 --           end loop;
---           put(ESC & "[0m");
 --           
 --           -- files
 --           for i in 1.. get_nb_files(currentDirectory) loop
 --              put(get_name(get_file(currentDirectory, i)) & "  ");
 --           end loop;
-         new_line;
+--           new_line;
       end if;
-   end lsCommand; 
+   end lsCommand;
    
-   function get_folders_and_files(folder: T_Folder) return T_Sibling_Records is
-      allSons: T_Sibling_Records(1..(2*LMAX_STRING));
-      index_global : Integer;
+   function create_t_r_sibling return T_R_Sibling is
+      new_t_r_sibling: T_R_Sibling;
    begin
-      index_global := 1;
+      new_t_r_sibling.name := To_Unbounded_String("");
+      return new_t_r_sibling;
+   end create_t_r_sibling;
+   
+   function create_set(folder: T_Folder) return folders_and_files_name_set is
+      allSons: folders_and_files_name_set;
+      new_element: T_R_Sibling;
+   begin
       for i in 1.. get_nb_folders(folder) loop
-         allSons(index_global).Name := To_Unbounded_String(get_name(get_folder(folder, i)));
-         allSons(index_global).is_folder := True;
-         index_global := index_global + 1;
+         new_element := create_t_r_sibling;
+         new_element.name := To_Unbounded_String(get_name(get_folder(folder, i)));
+         new_element.is_folder := True;
+         allSons.Insert(new_element);
       end loop;
       
       for i in 1.. get_nb_files(folder) loop
-         allSons(index_global).Name := To_Unbounded_String(get_name(get_file(folder, i)));
-         allSons(index_global).is_folder := False;
-         index_global := index_global + 1;
+         new_element := create_t_r_sibling;
+         new_element.name := To_Unbounded_String(get_name(get_file(folder, i)));
+         new_element.is_folder := False;
+         allSons.Insert(new_element);
       end loop;
-      Sort2(allSons);
       return allSons;
-   end get_folders_and_files;
+   end create_set;
    
-   procedure display_folders_and_files(allSons: T_Sibling_Records) is
+   procedure display_folders_and_files(set: folders_and_files_name_set) is
    begin
-      for i in 1..allSons'Last loop
-      if(allSons(i).is_folder)then
-         put(ESC & "[94m");
-         put(To_String(allSons(i).name) & "  ");
-         put(ESC & "[0m");
-      else
-         Put(To_String(allSons(i).name) & "  ");
-      end if;
-   end loop;
+      for E of set loop
+         if(E.is_folder)then
+            put(ESC & "[94m");
+            put(To_String(E.name) & "  ");
+            put(ESC & "[0m");
+         else
+            put(To_String(E.name) & "  ");
+         end if;
+      end loop;
    end display_folders_and_files;
    
    procedure rmCommand(OptionTrue : Boolean;arguments: T_Substrings; currentDirectory: in out T_Folder)is

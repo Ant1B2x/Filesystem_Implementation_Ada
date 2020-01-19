@@ -8,10 +8,8 @@ with P_Folder; use P_Folder;
 with P_Commands; use P_Commands;
 
 procedure test_sort is
-
    folder : T_Folder;
    arguments: T_Substrings;
-   allSons: T_Sibling_Records(1..2*LMAX_STRING);
 begin
 
    folder := get_root;
@@ -77,22 +75,14 @@ begin
    New_Line;
    lsCommand(True, arguments, folder);
    
+   clear_command;
+   
    arguments := create_substrings;
    add_substring(arguments,"test2");
    cdCommand(arguments,folder);
    
-   allSons := get_folders_and_files(folder);
    Put_Line("**** Test de tri ***");
    Put_Line("./test2:");
-   for i in 1..allSons'Last loop
-      if(allSons(i).is_folder)then
-         put(ascii.esc & "[36m");
-         Put(To_String(allSons(i).name) & "  ");
-         put(ascii.esc & "[0m");
-      else
-         Put(To_String(allSons(i).name) & "  ");
-      end if;
-   end loop;
-
+   display_folders_and_files(create_set(folder));
 
 end test_sort;
