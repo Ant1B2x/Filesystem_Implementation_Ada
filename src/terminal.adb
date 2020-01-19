@@ -46,6 +46,7 @@ procedure Terminal is
             when touch => touchCommand(arguments, current_dir);
             when tar => tarCommand(arguments, current_dir);
             when help => help_command(arguments);
+            when clear => clear_command;
          end case;
       exception
          when Constraint_Error =>

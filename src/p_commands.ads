@@ -17,7 +17,7 @@ package P_Commands is
    
    Wrong_Arguments_Number_Error : Exception;
 
-   type encoded_commands is (ls, rm, pwd, cd, mkdir, cp, mv, tar, touch, help);
+   type encoded_commands is (ls, rm, pwd, cd, mkdir, cp, mv, tar, touch, help, clear);
 
    function get_pwd (current_directory : in T_Folder) return String;
    procedure pwdCommand (currentDirectory: T_Folder);
@@ -30,6 +30,7 @@ package P_Commands is
    procedure tarCommand (arguments: T_Substrings; currentDirectory: in out T_Folder);
    procedure touchCommand (arguments: T_Substrings; currentDirectory: in out T_Folder);
    procedure help_command (arguments : in T_Substrings);
+   procedure clear_command;
    function calculate_size (folder: T_Folder) return Integer;
    
    
@@ -45,6 +46,7 @@ package P_Commands is
    procedure Sort is new Ada.Containers.Generic_Array_Sort (Natural, T_R_Sibling, T_Sibling_Records);
    procedure Sort2 is new Ada.Containers.Generic_Array_Sort(Natural, T_R_Sibling, T_Sibling_Records, "<");
    function get_folders_and_files(folder: T_Folder) return T_Sibling_Records;
+   procedure display_folders_and_files(allSons: T_Sibling_Records);
 
 private
    procedure help_command;

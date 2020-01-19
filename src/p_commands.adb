@@ -33,17 +33,20 @@ package body P_Commands is
             lsRCommand(To_Unbounded_String("."), get_folder(currentDirectory,i));
          end loop;
       else
-         -- folders
-         put(ESC & "[36m");
-         for i in 1.. get_nb_folders(currentDirectory) loop
-            put(get_name(get_folder(currentDirectory,i)) & "  ");
-         end loop;
-         put(ESC & "[0m");
          
-         -- files
-         for i in 1.. get_nb_files(currentDirectory) loop
-            put(get_name(get_file(currentDirectory, i)) & "  ");
-         end loop;
+         
+         display_folders_and_files(get_folders_and_files(currentDirectory));
+--           -- folders
+--           put(ESC & "[36m");
+--           for i in 1.. get_nb_folders(currentDirectory) loop
+--              put(get_name(get_folder(currentDirectory,i)) & "  ");
+--           end loop;
+--           put(ESC & "[0m");
+--           
+--           -- files
+--           for i in 1.. get_nb_files(currentDirectory) loop
+--              put(get_name(get_file(currentDirectory, i)) & "  ");
+--           end loop;
          new_line;
       end if;
    end lsCommand; 
@@ -67,6 +70,19 @@ package body P_Commands is
       Sort2(allSons);
       return allSons;
    end get_folders_and_files;
+   
+   procedure display_folders_and_files(allSons: T_Sibling_Records) is
+   begin
+      for i in 1..allSons'Last loop
+      if(allSons(i).is_folder)then
+         put(ESC & "[94m");
+         put(To_String(allSons(i).name) & "  ");
+         put(ESC & "[0m");
+      else
+         Put(To_String(allSons(i).name) & "  ");
+      end if;
+   end loop;
+   end display_folders_and_files;
    
    procedure rmCommand(OptionTrue : Boolean;arguments: T_Substrings; currentDirectory: in out T_Folder)is
    begin
@@ -286,7 +302,10 @@ package body P_Commands is
                put_line("SYNOPSIS");
                put_line("  tar FILE");
             when help =>
-               help_command;          
+               help_command;     
+            when clear =>
+               put_line("NAME");
+               put_line("  clear - clear the terminal");
          end case;
       exception
          when Constraint_Error =>
@@ -308,6 +327,11 @@ package body P_Commands is
          help_command;
       end if;
    end help_command;
+   
+   procedure clear_command is
+   begin
+      put(ascii.esc & "[2J");
+   end clear_command;
    
    function go_to_folder (original_directory: in T_Folder; path: in String) return T_Folder is
    begin
