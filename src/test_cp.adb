@@ -52,6 +52,8 @@ begin
    add_substring(arguments,"test");
    cp_command(folder, arguments, True);
    Put_Line("Copie du testCP dans test :");
+   arguments := create_substrings;
+   
    ls_command(folder, arguments, True);
    
    Put_Line("Suppression de : testCP/Blou");
@@ -59,6 +61,7 @@ begin
    add_substring(arguments,"testCP/Blou");
    rm_command(folder, arguments, False);
    
+   arguments := create_substrings;
    ls_command(folder, arguments, True);
    
    
@@ -67,11 +70,33 @@ begin
    add_substring(arguments,"test/test2/AH");
    rm_command(folder, arguments, True);
    
+   arguments := create_substrings;
    ls_command(folder, arguments, True);
    
    Put_Line("Copie de : test/Blou dans test/test2");
    arguments := create_substrings;
-   add_substring(arguments,"test/Blou test/test2");
+   add_substring(arguments,"test/Blou test/test2/Blou");
    cp_command(folder, arguments, False);
+   
+   arguments := create_substrings;
+   ls_command(folder, arguments, True);
+   
+   Put_Line("Suppression de : test/test2/Blou");
+   arguments := create_substrings;
+   add_substring(arguments,"test/test2/Blou");
+   rm_command(folder, arguments, False);
+   
+   arguments := create_substrings;
+   add_substring(arguments,"test");
+   ls_command(folder, arguments, True);
+   
+   Put_Line("mv de : test/Blou test/test2/Blou");
+   arguments := create_substrings;
+   add_substring(arguments,"test/Blou test/test2/Blou");
+   mv_command(folder, arguments);
+   
+   arguments := create_substrings;
+   add_substring(arguments,"test");
+   ls_command(folder, arguments, True);
    
 end test_cp;

@@ -11,15 +11,20 @@ package body P_Commands is
    end pwd_command;
    
    procedure ls_command (current_directory : in T_Folder; arguments : in T_Substrings; recursive : in Boolean) is
+      current: T_Folder;
    begin
+      current := current_directory;
+      if(get_nb_substrings(arguments) > 0)then
+         cd_command(current, arguments);
+      end if;
       if recursive then
          put_line(".:");
-         ls_command(current_directory, create_substrings, False);
-         for i in 1.. get_nb_folders(current_directory) loop
-            ls_r_command(get_folder(current_directory, i), To_Unbounded_String("."));
+         ls_command(current, create_substrings, False);
+         for i in 1.. get_nb_folders(current) loop
+            ls_r_command(get_folder(current, i), To_Unbounded_String("."));
          end loop;
       else
-         display_folders_and_files(create_siblings_set(current_directory));
+         display_folders_and_files(create_siblings_set(current));
       end if;
    end ls_command;
    
@@ -95,10 +100,14 @@ package body P_Commands is
       destination_folder: T_Folder;
       original_file : T_File;
       new_file: T_File;
-      path: Unbounded_String;
-      name: Unbounded_String;
+      original_path: Unbounded_String;
+      original_name: Unbounded_String;
+      new_path: Unbounded_String;
+      new_name: Unbounded_String;
+      paths: T_Substrings;
    begin
       if(OptionTrue)then
+         
          -- folder to copy
          source_folder := go_to_folder(currentDirectory, get_substring_to_string(arguments, 1), False);
          -- folder to put the copy in
@@ -107,17 +116,23 @@ package body P_Commands is
          -- starting to copy all its contents
          folder_deep_copy(source_folder, destination_folder);
       else
+         paths := split_string(get_substring_to_string(arguments, 1), ' ');
          -- folder to copy
-         source_folder := go_to_folder(currentDirectory, get_substring_to_string(arguments, 1), True);
+         Put_Line("Depuis cp_command => argument, 1 : " & get_substring_to_string(paths, 1));
+         source_folder := go_to_folder(currentDirectory, get_substring_to_string(paths, 1), True);
          -- folder to put the copy in
-         destination_folder := go_to_folder(currentDirectory, get_substring_to_string(arguments, 2), True);
+         destination_folder := go_to_folder(currentDirectory, get_substring_to_string(paths, 2), True);
          
-         path := get_substring(arguments, 1);
-         name := get_substring(split_string(To_String(path), FILE_SEPARATOR), get_nb_substrings(split_string(To_String(path), FILE_SEPARATOR)));            
+         original_path := get_substring(paths, 1);
+         original_name := get_substring(split_string(To_String(original_path), FILE_SEPARATOR), get_nb_substrings(split_string(To_String(original_path), FILE_SEPARATOR)));
          
-         original_file := find_file(source_folder, To_String(name));
-         new_file := create(get_name(original_file), get_rights(original_file), get_path(destination_folder) & FILE_SEPARATOR & get_name(destination_folder), get_data(original_file));
-         set_size(new_file, get_size(new_file));
+         new_path := get_substring(paths, 2);
+         new_name := get_substring(split_string(To_String(new_path), FILE_SEPARATOR), get_nb_substrings(split_string(To_String(new_path), FILE_SEPARATOR)));
+         
+         
+         original_file := find_file(source_folder, To_String(new_name));
+         new_file := create(To_String(new_name), get_rights(original_file), get_path(destination_folder) & FILE_SEPARATOR & get_name(destination_folder), get_data(original_file));
+         set_size(new_file, get_size(original_file));
          add_file(destination_folder, new_file);
       end if;
    end cp_command;
@@ -128,15 +143,23 @@ package body P_Commands is
       destination_folder: T_Folder;
       new_name: Unbounded_String;
       file: T_File;
+      paths: T_Substrings;
    begin
-      original_name := get_substring(split_string(get_substring_to_string(arguments, 1), FILE_SEPARATOR), get_nb_substrings(split_string(get_substring_to_string(arguments, 1), FILE_SEPARATOR)));
-      new_name := get_substring(split_string(get_substring_to_string(arguments, 2), FILE_SEPARATOR), get_nb_substrings(split_string(get_substring_to_string(arguments, 2), FILE_SEPARATOR)));
-      source_folder := go_to_folder(currentDirectory, get_substring_to_string(arguments, 1), True);
-      destination_folder := go_to_folder(currentDirectory, get_substring_to_string(arguments, 2), True);
-      file := find_file(destination_folder, To_String(original_name));
+      
+      paths := split_string(get_substring_to_string(arguments, 1), ' ');
+      
+      Put_Line(get_substring_to_string(paths, 1));
+      original_name := get_substring(split_string(get_substring_to_string(paths, 1), FILE_SEPARATOR), get_nb_substrings(split_string(get_substring_to_string(paths, 1), FILE_SEPARATOR)));
+      new_name := get_substring(split_string(get_substring_to_string(paths, 2), FILE_SEPARATOR), get_nb_substrings(split_string(get_substring_to_string(paths, 2), FILE_SEPARATOR)));
+      
+      source_folder := go_to_folder(currentDirectory, get_substring_to_string(paths, 1), True);
+      destination_folder := go_to_folder(currentDirectory, get_substring_to_string(paths, 2), True);
+     
+      file := find_file(source_folder, To_String(original_name));
       set_name(file, To_String(new_name));
-      del_file(currentDirectory, To_String(original_name));
-      add_file(source_folder, file);
+
+      del_file(source_folder, To_String(original_name));
+      add_file(destination_folder, file);
    end mv_command;
    
    procedure tar_command(currentDirectory: in out T_Folder; arguments: T_Substrings)is
