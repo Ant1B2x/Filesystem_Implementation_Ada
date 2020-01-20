@@ -39,12 +39,12 @@ procedure Terminal is
             when ls => ls_command(current_dir, arguments, option_true);
             when rm => rm_command(current_dir, arguments, option_true);
             when pwd => pwd_command(current_dir);
-            when cd => cdCommand(arguments, current_dir);
-            when mkdir => mkdirCommand(arguments, current_dir);
-            when cp => cpCommand(option_true, arguments, current_dir);
-            when mv => mvCommand(arguments, current_dir);
-            when touch => touchCommand(arguments, current_dir);
-            when tar => tarCommand(arguments, current_dir);
+            when cd => cd_command(current_dir, arguments);
+            when mkdir => mkdir_command(current_dir, arguments);
+            when cp => cp_command(current_dir, arguments, option_true);
+            when mv => mv_command(current_dir, arguments);
+            when touch => touch_command(current_dir, arguments);
+            when tar => tar_command(current_dir, arguments);
             when help => help_command(arguments);
             when clear => clear_command;
          end case;

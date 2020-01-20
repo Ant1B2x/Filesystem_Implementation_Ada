@@ -155,6 +155,9 @@ package body P_Folder is
       if(folder_name ="..")then
          return get_parent(folder);
       end if;
+      if(folder_name =".")then
+         return folder;
+      end if;
       for i in 1..get_nb_folders(folder) loop
          if get_name ( get_folder(folder, i) ) = folder_name then 
             return get_folder(folder, i);

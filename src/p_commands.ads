@@ -22,12 +22,12 @@ package P_Commands is
    procedure ls_command (current_directory : in T_Folder; arguments : in T_Substrings; recursive : in Boolean);
    procedure rm_command (current_directory : in out T_Folder; arguments : in T_Substrings; recursive : in Boolean);
    
-   procedure cdCommand (arguments: T_Substrings; currentDirectory: in out T_Folder);
-   procedure mkdirCommand (arguments: T_Substrings; currentDirectory: in out T_Folder);
-   procedure cpCommand (OptionTrue : Boolean; arguments: T_Substrings; currentDirectory: T_Folder);
-   procedure mvCommand (arguments: T_Substrings; currentDirectory: in out T_Folder);
-   procedure tarCommand (arguments: T_Substrings; currentDirectory: in out T_Folder);
-   procedure touchCommand (arguments: T_Substrings; currentDirectory: in out T_Folder);
+   procedure cd_command (currentDirectory: in out T_Folder; arguments: T_Substrings);
+   procedure mkdir_command (currentDirectory: in out T_Folder; arguments: T_Substrings);
+   procedure cp_command (currentDirectory: in out T_Folder; arguments: T_Substrings; OptionTrue : Boolean);
+   procedure mv_command (currentDirectory: in out T_Folder;arguments: T_Substrings);
+   procedure tar_command (currentDirectory: in out T_Folder;arguments: T_Substrings);
+   procedure touch_command (currentDirectory: in out T_Folder;arguments: T_Substrings);
    
    procedure help_command (arguments : in T_Substrings);
    procedure clear_command;

@@ -18,53 +18,53 @@ begin
    
    arguments := create_substrings;
    add_substring(arguments,"test1");
-   mkdirCommand(arguments, folder);
+   mkdir_command(folder, arguments);
    
    arguments := create_substrings;
    add_substring(arguments,"test2");
-   mkdirCommand(arguments, folder);
+   mkdir_command(folder, arguments);
    
    arguments := create_substrings;
    add_substring(arguments,"test2/test4");
-   mkdirCommand(arguments, folder);
+   mkdir_command(folder, arguments);
    
    arguments := create_substrings;
    add_substring(arguments,"test2/test3");
-   mkdirCommand(arguments, folder);
+   mkdir_command(folder, arguments);
    
    arguments := create_substrings;
    add_substring(arguments,"test2");
-   mkdirCommand(arguments, folder);
+   mkdir_command(folder, arguments);
    
    arguments := create_substrings;
    add_substring(arguments,"test2");
-   mkdirCommand(arguments, folder);
+   mkdir_command(folder, arguments);
    
    pwd_command(folder);
       
    arguments := create_substrings;
    add_substring(arguments,"test2/karibou");
-   touchCommand(arguments, folder);
+   touch_command(folder, arguments);
    
    arguments := create_substrings;
    add_substring(arguments,"test2/bliblabloblu");
-   touchCommand(arguments, folder);
+   touch_command(folder, arguments);
      
    arguments := create_substrings;
    add_substring(arguments,"test2/ahehohu");
-   touchCommand(arguments, folder);
+   touch_command(folder, arguments);
    
    arguments := create_substrings;
    add_substring(arguments,"test2/test3/aaaatest2");
-   touchCommand(arguments, folder);
+   touch_command(folder, arguments);
    
    arguments := create_substrings;
    add_substring(arguments,"test2/test3/bbbaaa");
-   touchCommand(arguments, folder);
+   touch_command(folder, arguments);
    
    arguments := create_substrings;
    add_substring(arguments,"test2/test3/bababa");
-   touchCommand(arguments, folder);
+   touch_command(folder, arguments);
    
    
    
@@ -79,11 +79,10 @@ begin
    
    arguments := create_substrings;
    add_substring(arguments,"test2");
-   cdCommand(arguments,folder);
+   cd_command(folder, arguments);
    
    Put_Line("**** Test de tri ***");
    Put_Line("./test2:");
-   -- ce fichier sera delete de toute façon
-   --display_folders_and_files(create_set(folder));
+   ls_command(folder, arguments, True);
 
 end test_sort;
