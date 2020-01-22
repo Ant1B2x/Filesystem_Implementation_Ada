@@ -28,6 +28,7 @@ procedure Terminal is
             end if;
          else
             arguments := get_substrings(substrings, 2, get_nb_substrings(substrings));
+            Put_Line(get_substring_to_string(arguments, 1));
          end if;
 
       else

@@ -75,7 +75,8 @@ begin
    
    Put_Line("Copie de : test/Blou dans test/test2");
    arguments := create_substrings;
-   add_substring(arguments,"test/Blou test/test2/Blou");
+   add_substring(arguments,"test/Blou");
+   add_substring(arguments,"test/test2/Blou");
    cp_command(folder, arguments, False);
    
    arguments := create_substrings;
@@ -92,7 +93,8 @@ begin
    
    Put_Line("mv de : test/Blou test/test2/Blou");
    arguments := create_substrings;
-   add_substring(arguments,"test/Blou test/test2/Blou");
+   add_substring(arguments,"test/Blou");
+   add_substring(arguments,"test/test2/Blou");
    mv_command(folder, arguments);
    
    arguments := create_substrings;

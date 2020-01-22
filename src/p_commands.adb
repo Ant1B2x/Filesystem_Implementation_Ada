@@ -104,7 +104,6 @@ package body P_Commands is
       original_name: Unbounded_String;
       new_path: Unbounded_String;
       new_name: Unbounded_String;
-      paths: T_Substrings;
    begin
       if(OptionTrue)then
          
@@ -116,17 +115,16 @@ package body P_Commands is
          -- starting to copy all its contents
          folder_deep_copy(source_folder, destination_folder);
       else
-         paths := split_string(get_substring_to_string(arguments, 1), ' ');
          -- folder to copy
-         Put_Line("Depuis cp_command => argument, 1 : " & get_substring_to_string(paths, 1));
-         source_folder := go_to_folder(currentDirectory, get_substring_to_string(paths, 1), True);
+         Put_Line("Depuis cp_command => argument, 1 : " & get_substring_to_string(arguments, 1));
+         source_folder := go_to_folder(currentDirectory, get_substring_to_string(arguments, 1), True);
          -- folder to put the copy in
-         destination_folder := go_to_folder(currentDirectory, get_substring_to_string(paths, 2), True);
+         destination_folder := go_to_folder(currentDirectory, get_substring_to_string(arguments, 2), True);
          
-         original_path := get_substring(paths, 1);
+         original_path := get_substring(arguments, 1);
          original_name := get_substring(split_string(To_String(original_path), FILE_SEPARATOR), get_nb_substrings(split_string(To_String(original_path), FILE_SEPARATOR)));
          
-         new_path := get_substring(paths, 2);
+         new_path := get_substring(arguments, 2);
          new_name := get_substring(split_string(To_String(new_path), FILE_SEPARATOR), get_nb_substrings(split_string(To_String(new_path), FILE_SEPARATOR)));
          
          
@@ -143,17 +141,12 @@ package body P_Commands is
       destination_folder: T_Folder;
       new_name: Unbounded_String;
       file: T_File;
-      paths: T_Substrings;
    begin
+      original_name := get_substring(split_string(get_substring_to_string(arguments, 1), FILE_SEPARATOR), get_nb_substrings(split_string(get_substring_to_string(arguments, 1), FILE_SEPARATOR)));
+      new_name := get_substring(split_string(get_substring_to_string(arguments, 2), FILE_SEPARATOR), get_nb_substrings(split_string(get_substring_to_string(arguments, 2), FILE_SEPARATOR)));
       
-      paths := split_string(get_substring_to_string(arguments, 1), ' ');
-      
-      Put_Line(get_substring_to_string(paths, 1));
-      original_name := get_substring(split_string(get_substring_to_string(paths, 1), FILE_SEPARATOR), get_nb_substrings(split_string(get_substring_to_string(paths, 1), FILE_SEPARATOR)));
-      new_name := get_substring(split_string(get_substring_to_string(paths, 2), FILE_SEPARATOR), get_nb_substrings(split_string(get_substring_to_string(paths, 2), FILE_SEPARATOR)));
-      
-      source_folder := go_to_folder(currentDirectory, get_substring_to_string(paths, 1), True);
-      destination_folder := go_to_folder(currentDirectory, get_substring_to_string(paths, 2), True);
+      source_folder := go_to_folder(currentDirectory, get_substring_to_string(arguments, 1), True);
+      destination_folder := go_to_folder(currentDirectory, get_substring_to_string(arguments, 2), True);
      
       file := find_file(source_folder, To_String(original_name));
       set_name(file, To_String(new_name));
@@ -447,5 +440,11 @@ package body P_Commands is
       end loop;
       new_line;
    end display_folders_and_files;
+   
+   procedure get_options_parameter_and(arguments: in T_Substrings; options: in out T_Substrings; parameters: in out T_Substrings) is
+      all_arguments_splitted: T_Substrings;
+   begin
+      null;
+   end get_options_parameter_and;
 
 end P_Commands;
