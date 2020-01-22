@@ -149,9 +149,10 @@ package body P_Commands is
       destination_folder := go_to_folder(currentDirectory, get_substring_to_string(arguments, 2), True);
      
       file := find_file(source_folder, To_String(original_name));
-      set_name(file, To_String(new_name));
-
+      
       del_file(source_folder, To_String(original_name));
+      
+      set_name(file, To_String(new_name));
       add_file(destination_folder, file);
    end mv_command;
    
@@ -444,7 +445,16 @@ package body P_Commands is
    procedure get_options_parameter_and(arguments: in T_Substrings; options: in out T_Substrings; parameters: in out T_Substrings) is
       all_arguments_splitted: T_Substrings;
    begin
-      null;
+      for i in 1..get_nb_substrings(arguments);
+      if get_substring_to_string(substrings, 2) = "-r" then
+         option_true := True;
+         if num_element > 2 then
+            arguments := get_substrings(substrings, 3, get_nb_substrings(substrings));
+         end if;
+      else
+         arguments := get_substrings(substrings, 2, get_nb_substrings(substrings));
+         Put_Line(get_substring_to_string(arguments, 1));
+      end if;
    end get_options_parameter_and;
 
 end P_Commands;
