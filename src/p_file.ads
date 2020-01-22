@@ -28,12 +28,14 @@ package P_File is
    
    function get_path (file : in T_File) return String;
    
-   procedure set_path (file : in out T_File; path : in String);
-   
    function get_data (file : in T_File) return String;
    
    procedure set_data (file : in out T_File; data : in String)
      with Pre => data'length <= SMAX_FILE;
+   
+   function clone (file : in T_File; new_name : in String; new_path : in String) return T_File;
+   
+   function clone(file : in T_File; new_path : in String) return T_File;
    
 private
    type T_R_File is record

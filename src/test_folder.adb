@@ -82,6 +82,7 @@ begin
       put_line("get_size(folder) is incoherent");
    end if;
    if get_path(folder) = "/" then
+      
       put_line("get_path(folder) = ""/""");
    else
       put_line("get_path(folder) is incoherent");
@@ -124,10 +125,10 @@ begin
    else
       put_line("get_size(folder) is incoherent");
    end if;
-   new_line;
+   new_line;   
    
-   -- is empty
-   put_line("Is empty:");
+   -- is empty (true)
+   put_line("Is empty (true):");
    if is_empty(folder) then
       put_line("is_empty(folder) = True");
    else
@@ -135,10 +136,18 @@ begin
    end if;
    new_line;
    
-   -- add folder
-   put_line("Add folder:");
-   folder_sibling := create("drafts", root, (RWX, NONE, NONE));
-   add_folder(folder, folder_sibling);
+   -- create with parent & get parent
+   put_line("Create with parent & get parent:");
+   folder_sibling := create("drafts", folder, (RWX, NONE, NONE));
+   if get_name(get_parent(folder_sibling)) = get_name(folder) then
+      put_line("get_name(get_parent(folder_sibling)) = get_name(folder)");
+   else
+      put_line("get_parent(folder_sibling) is incoherent");
+   end if;
+   new_line;
+   
+   -- is empty (false)
+   put_line("Is empty (false):");
    if not is_empty(folder) then
       put_line("is_empty(folder) = False, we just added folder_sibling");
    else
@@ -178,6 +187,16 @@ begin
    end if;
    new_line;
    
+   -- get path
+   put_line("Get path:");
+   put_line(get_path(folder_sibling));
+   if get_path(folder_sibling) = FILE_SEPARATOR & get_name(folder) then
+      put_line("get_path(folder_sibling) = FILE_SEPARATOR & get_name(folder)");
+   else
+      put_line("get_path(folder_sibling) is incoherent");
+   end if;
+   new_line;
+   
    -- del folder
    put_line("Del folder:");
    del_folder(folder, "drafts");
@@ -187,14 +206,9 @@ begin
       put_line("get_nb_folders(folder) is incoherent, del_folder didn't work");
    end if;
    new_line;
+
    
-   
-   -- errors
-   
-   --function calculate_path (folder : in T_Folder) return String;
-   
-   --function get_path (folder : in T_Folder) return String;
-   
+   --Same_Name_Error : Exception;
    
    --function get_data (folder : in T_Folder) return T_Folder_Data;
    
@@ -202,14 +216,28 @@ begin
    
    
    --function get_file (folder : in T_Folder; index : in Integer) return T_File
+     --with Pre => index <= get_nb_files(folder);
    
    --function get_nb_files (folder : in T_Folder) return Integer;
    
    --function find_file (folder : in T_Folder; file_name : in String) return T_File
+     --with Pre => file_name'length <= LMAX_STRING;
    
    --procedure add_file (folder : in out T_Folder; new_file : in T_File);
    
    --procedure del_file (folder : in out T_Folder; file_name : in String);
+   
+   --function has_son_with_this_name(folder: T_Folder; name: String) return Boolean;
+    
+
+
+   
+   
+   
+   
+   
+   
+   
    
    
 end test_folder;

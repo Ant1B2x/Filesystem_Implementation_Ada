@@ -45,8 +45,6 @@ package P_Folder is
    
    function get_root return T_Folder;
    
-   function calculate_path (folder : in T_Folder) return String;
-   
    function get_path (folder : in T_Folder) return String;
    
    function get_parent (folder : in T_Folder) return T_Folder;
@@ -68,8 +66,6 @@ package P_Folder is
    function find_folder (folder : in T_Folder; folder_name : in String) return T_Folder
      with Pre => folder_name'length <= LMAX_STRING;
    
-   procedure add_folder (folder : in out T_Folder; new_folder : in out T_Folder);
-   
    procedure del_folder (folder : in out T_Folder; folder_name : in String);
    
    function get_file (folder : in T_Folder; index : in Integer) return T_File
@@ -89,5 +85,6 @@ package P_Folder is
 private
    ROOT : T_Folder;
    function create_root return T_Folder;
+   function calculate_path (folder : in T_Folder) return String;
    
 end P_Folder;

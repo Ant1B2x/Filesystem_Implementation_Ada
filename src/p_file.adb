@@ -26,15 +26,11 @@ package body P_File is
    function create (name : in String; rights : in T_Rights; path : in String; data : in String) return T_File is
       file : T_File;
    begin
-      
       -- instantiate T_R_File
       file := new T_R_File;
       -- set file properties
-      set_name(file, name);
-      set_rights(file, rights);
-      set_path(file, path);
+      file.all.metadata := P_Metadata.create(name, rights, 0, path);
       set_data(file, data);
-      
       return file;
    end create;
    
@@ -73,11 +69,6 @@ package body P_File is
       return P_Metadata.get_path(file.all.metadata);
    end get_path;
    
-   procedure set_path (file : in out T_File; path : in String) is
-   begin
-      P_Metadata.set_path (file.all.metadata, path);
-   end set_path;
-   
    function get_data (file : in T_File) return String is
    begin
       return file.all.data(1..get_size(file));
@@ -88,5 +79,18 @@ package body P_File is
       file.all.data(1..data'length) := data;
       set_size(file, data'length);
    end set_data;
+   
+   -- we pass a string instead of a folder because we can't have a crossed dependance
+   function clone (file : in T_File; new_name : in String; new_path : in String) return T_File is
+      new_file : T_File;
+   begin
+      new_file := create(new_name, get_rights(file), new_path, get_data(file));
+      return new_file;
+   end clone;
+   
+   function clone(file : in T_File; new_path : in String) return T_File is
+   begin
+      return clone(file, get_name(file), new_path);
+   end clone;
    
 end P_File;

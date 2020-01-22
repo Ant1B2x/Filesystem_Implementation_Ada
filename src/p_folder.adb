@@ -22,6 +22,7 @@ package body P_Folder is
       folder : T_Folder;
       data : T_Folder_Data;
    begin
+      -- we test here because add is in the tree package and we can't raise a specific Exception in a generic package
       if has_son_with_this_name(parent, name) then
          raise Same_Name_Error;
       end if;
@@ -29,7 +30,7 @@ package body P_Folder is
       folder := P_Folder_Tree.create(parent);
       
       data.files := P_Files.create;
-      data.metadata := P_Metadata.create(name, rights, FOLDER_SIZE, calculate_path(parent) );
+      data.metadata := P_Metadata.create(name, rights, FOLDER_SIZE, calculate_path(folder) );
       
       P_Folder_Tree.set_data(folder, data);
       return folder;
@@ -83,15 +84,17 @@ package body P_Folder is
       current: T_Folder;
    begin
       
+      -- return '/' if we're child of root folder
+      if is_root(get_parent(folder)) then
+         return ""&FILE_SEPARATOR;
+      end if;
+      
       absolute_path := To_Unbounded_String("");
       current := folder;
       while not is_null(get_parent(current)) and then not is_root(get_parent(current)) loop
          current := get_parent(current);
-         absolute_path := get_name(current) & FILE_SEPARATOR & absolute_path;
+         absolute_path := FILE_SEPARATOR & get_name(current) & absolute_path;
       end loop;
-      
-      -- add leading '/' if we're not in the root folder
-      absolute_path := (if is_root(current) then absolute_path else FILE_SEPARATOR & absolute_path);
       
       return To_String(absolute_path);
    end calculate_path;
@@ -165,18 +168,6 @@ package body P_Folder is
       end loop;
       return null;
    end find_folder;
-   
-   procedure add_folder (folder : in out T_Folder; new_folder : in out T_Folder) is
-   begin
-      
-      -- check if an existing directory/file has the same name
-      if has_son_with_this_name(folder, P_Folder.get_name(new_folder)) then
-         raise Same_Name_Error;
-      end if;
-      
-      P_Folder_Tree.add_sibling(folder, new_folder);
-      
-   end add_folder;
    
    procedure del_folder (folder : in out T_Folder; folder_name : in String) is
       folder_sibling : T_Folder;

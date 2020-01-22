@@ -10,6 +10,11 @@ supprimer encoded_commands de terminal
 
 programme de test pour les commandes
 programme de test pour le module dossier
+programme de test pour le module fichier
 
 commentaires dans le code
-uniformiser les tailles de fichier
+unniformiser les tailles de fichier
+
+
+si on a le temps:
+mkdir -p

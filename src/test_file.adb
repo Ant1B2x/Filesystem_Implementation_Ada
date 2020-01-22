@@ -64,7 +64,7 @@ begin
    
    -- set path & get path
    put_line("Set path and get path:");
-   set_path(file, "/home/n7");
+   --set_path(file, "/home/n7");
    if get_path(file) = "/home/n7" then
       put_line("get_path(file) = ""/home/n7""");
    else
