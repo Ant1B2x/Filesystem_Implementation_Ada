@@ -30,11 +30,10 @@ package body P_Commands is
    
    procedure rm_command (current_directory : in out T_Folder; arguments : in T_Substrings; recursive : in Boolean) is
       directory_to_del_from: T_Folder;
-      path: Unbounded_String;
       name: Unbounded_String;
    begin
-      path := get_substring(arguments, 1);
-      name := get_substring(split_string(To_String(path), FILE_SEPARATOR), get_nb_substrings(split_string(To_String(path), FILE_SEPARATOR)));            
+      -- name := get_substring(split_string(To_String(path), FILE_SEPARATOR), get_nb_substrings(split_string(To_String(path), FILE_SEPARATOR)));            
+      name := get_name_from_path(get_substring(arguments, 1));
       directory_to_del_from := go_to_folder(current_directory, get_substring_to_string(arguments, 1), True);
       
       if recursive then
@@ -69,7 +68,6 @@ package body P_Commands is
    procedure mkdir_command(currentDirectory: in out T_Folder; arguments: T_Substrings)is
       fils : T_Folder;
       parent: T_Folder;
-      path: Unbounded_String;
       fils_name: Unbounded_String;
    begin
       if(get_nb_substrings(arguments) /= 1)then
@@ -81,8 +79,7 @@ package body P_Commands is
       else
          parent := currentDirectory;
       end if;
-      path := get_substring(arguments, 1);
-      fils_name := get_substring(split_string(To_String(path), FILE_SEPARATOR), get_nb_substrings(split_string(To_String(path), FILE_SEPARATOR)));
+      fils_name := get_name_from_path(get_substring(arguments, 1));
       fils := create(To_String(fils_name), parent);
    exception
       when Invalid_Folder_Error =>
@@ -98,6 +95,7 @@ package body P_Commands is
    procedure cp_command(currentDirectory: in out T_Folder; arguments: T_Substrings; OptionTrue : Boolean) is
       source_folder: T_Folder;
       destination_folder: T_Folder;
+      new_folder: T_Folder;
       original_file : T_File;
       new_file: T_File;
       original_path: Unbounded_String;
@@ -110,10 +108,19 @@ package body P_Commands is
          -- folder to copy
          source_folder := go_to_folder(currentDirectory, get_substring_to_string(arguments, 1), False);
          -- folder to put the copy in
-         destination_folder := go_to_folder(currentDirectory, get_substring_to_string(arguments, 2), False);
+         destination_folder := go_to_folder(currentDirectory, get_substring_to_string(arguments, 2), True);
+         
+         -- new_path := get_substring(arguments, 2);
+         -- new_name := get_substring(split_string(To_String(new_path), FILE_SEPARATOR), get_nb_substrings(split_string(To_String(new_path), FILE_SEPARATOR)));
+         new_name := get_name_from_path(get_substring(arguments, 2));
+         
+         mkdir_command(destination_folder, get_substrings(arguments, 2, 2));
+         
+         new_folder := find_folder(destination_folder, To_String(new_name));
          
          -- starting to copy all its contents
-         folder_deep_copy(source_folder, destination_folder);
+         
+         folder_deep_copy(source_folder, new_folder);
       else
          -- folder to copy
          Put_Line("Depuis cp_command => argument, 1 : " & get_substring_to_string(arguments, 1));
@@ -121,12 +128,13 @@ package body P_Commands is
          -- folder to put the copy in
          destination_folder := go_to_folder(currentDirectory, get_substring_to_string(arguments, 2), True);
          
-         original_path := get_substring(arguments, 1);
-         original_name := get_substring(split_string(To_String(original_path), FILE_SEPARATOR), get_nb_substrings(split_string(To_String(original_path), FILE_SEPARATOR)));
+         -- original_path := get_substring(arguments, 1);
+         -- original_name := get_substring(split_string(To_String(original_path), FILE_SEPARATOR), get_nb_substrings(split_string(To_String(original_path), FILE_SEPARATOR)));
+         original_name := get_name_from_path(get_substring(arguments, 1));
          
-         new_path := get_substring(arguments, 2);
-         new_name := get_substring(split_string(To_String(new_path), FILE_SEPARATOR), get_nb_substrings(split_string(To_String(new_path), FILE_SEPARATOR)));
-         
+         -- new_path := get_substring(arguments, 2);
+         -- new_name := get_substring(split_string(To_String(new_path), FILE_SEPARATOR), get_nb_substrings(split_string(To_String(new_path), FILE_SEPARATOR)));
+         new_name := get_name_from_path(get_substring(arguments, 2));
          
          original_file := find_file(source_folder, To_String(new_name));
          new_file := create(To_String(new_name), get_rights(original_file), get_path(destination_folder) & FILE_SEPARATOR & get_name(destination_folder), get_data(original_file));
@@ -142,8 +150,11 @@ package body P_Commands is
       new_name: Unbounded_String;
       file: T_File;
    begin
-      original_name := get_substring(split_string(get_substring_to_string(arguments, 1), FILE_SEPARATOR), get_nb_substrings(split_string(get_substring_to_string(arguments, 1), FILE_SEPARATOR)));
-      new_name := get_substring(split_string(get_substring_to_string(arguments, 2), FILE_SEPARATOR), get_nb_substrings(split_string(get_substring_to_string(arguments, 2), FILE_SEPARATOR)));
+      -- original_name := get_substring(split_string(get_substring_to_string(arguments, 1), FILE_SEPARATOR), get_nb_substrings(split_string(get_substring_to_string(arguments, 1), FILE_SEPARATOR)));
+      -- new_name := get_substring(split_string(get_substring_to_string(arguments, 2), FILE_SEPARATOR), get_nb_substrings(split_string(get_substring_to_string(arguments, 2), FILE_SEPARATOR)));
+      original_name := get_name_from_path(get_substring_to_string(arguments, 1));
+      new_name := get_name_from_path(get_substring_to_string(arguments, 2));
+      
       
       source_folder := go_to_folder(currentDirectory, get_substring_to_string(arguments, 1), True);
       destination_folder := go_to_folder(currentDirectory, get_substring_to_string(arguments, 2), True);
@@ -181,7 +192,8 @@ package body P_Commands is
       else
          parent := currentDirectory;
       end if;
-      file_name := get_substring(split_string(To_String(get_substring(arguments, 1)), FILE_SEPARATOR), get_nb_substrings(split_string(To_String(get_substring(arguments, 1)), FILE_SEPARATOR)));
+      -- file_name := get_substring(split_string(To_String(get_substring(arguments, 1)), FILE_SEPARATOR), get_nb_substrings(split_string(To_String(get_substring(arguments, 1)), FILE_SEPARATOR)));
+      file_name := get_name_from_path(get_substring_to_string(arguments, 1));
       file := create(To_String(file_name), calculate_path(parent) & get_name(parent));
       add_file(parent,file);
    end touch_command;
@@ -445,16 +457,30 @@ package body P_Commands is
    procedure get_options_parameter_and(arguments: in T_Substrings; options: in out T_Substrings; parameters: in out T_Substrings) is
       all_arguments_splitted: T_Substrings;
    begin
-      for i in 1..get_nb_substrings(arguments);
-      if get_substring_to_string(substrings, 2) = "-r" then
-         option_true := True;
-         if num_element > 2 then
-            arguments := get_substrings(substrings, 3, get_nb_substrings(substrings));
+      -- For every argument
+      for i in 1..get_nb_substrings(arguments) loop
+         -- If it starts with a '-', then it's an option
+         if get_substring_to_string(arguments, i)(1) = '-' then
+            -- If we only have '-', we raise an error
+            if(get_substring_to_string(arguments, i)'Length < 2)then
+               raise invalid_option_error;
+            end if;
+            -- We start at 2 because we need to get all options, and not the '-' character
+            for j in 2..get_substring_to_string(arguments, i)'Length loop
+               -- We have to transform it into a string, because the (j) part return a Character, and we add it to the options array
+               add_substring(options, get_substring_to_string(arguments, i)(j)'Image);
+            end loop;
+         else
+            -- else it's an argument and we add it to the arguments array
+            add_substring(options, get_substring_to_string(arguments, i));
          end if;
-      else
-         arguments := get_substrings(substrings, 2, get_nb_substrings(substrings));
-         Put_Line(get_substring_to_string(arguments, 1));
-      end if;
+      end loop;
    end get_options_parameter_and;
+   
+   -- here whe chose to use Unbounded_String because we have to declare the name return, and we don't know his length
+   function get_name_from_path(path: Unbounded_String) return Unbounded_String is
+   begin
+      return get_substring(split_string(To_String(path), FILE_SEPARATOR), get_nb_substrings(split_string(To_String(path), FILE_SEPARATOR)));
+   end get_name_from_path;
 
 end P_Commands;

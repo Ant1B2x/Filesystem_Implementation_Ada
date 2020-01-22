@@ -42,6 +42,9 @@ private
    function calculate_size (folder: T_Folder) return Integer;
    procedure folder_deep_copy(folder_to_copy: T_Folder; folder_parent_of_clone: in out T_Folder);
    
+   procedure get_options_parameter_and(arguments: in T_Substrings; options: in out T_Substrings; parameters: in out T_Substrings);
+   function get_name_from_path(path: Unbounded_String) return Unbounded_String;
+   
    -- sort folders & files
    type T_R_Sibling is record
       name: Unbounded_String;
