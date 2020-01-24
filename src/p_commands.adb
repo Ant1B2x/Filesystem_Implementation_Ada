@@ -19,10 +19,14 @@ package body P_Commands is
    procedure ls_command (current_directory : in T_Folder; arguments : in T_Substrings; recursive : in Boolean) is
       current: T_Folder;
    begin
-      current := go_to_folder(current_directory, get_substring_to_string(arguments, 1));
+      if(get_substring_to_string(arguments, 1)'Length > 0)then
+         current := go_to_folder(current_directory, get_substring_to_string(arguments, 1));
+      else
+         current := current_directory;
+      end if;
       if recursive then
          put_line(".:");
-         ls_command(current, get_substrings(arguments, 1, 1), False);
+         display_folders_and_files(create_siblings_set(current));
          for i in 1.. get_nb_folders(current) loop
             ls_r_command(get_folder(current, i), To_Unbounded_String("."));
          end loop;
@@ -40,9 +44,17 @@ package body P_Commands is
       directory_to_del_from := go_to_folder(current_directory, get_substring_to_string(arguments, 1), True);
       
       if recursive then
-         del_folder(directory_to_del_from, get_name(find_folder(directory_to_del_from, To_String(name))));
+         begin
+            del_folder(directory_to_del_from, get_name(find_folder(directory_to_del_from, To_String(name))));
+         exception
+               when Constraint_Error => Put_Line("No folder of that name");
+         end;
       else
-         del_file(directory_to_del_from, get_name(find_file(directory_to_del_from, To_String(name))));
+         begin
+            del_file(directory_to_del_from, get_name(find_file(directory_to_del_from, To_String(name))));
+         exception
+            when Constraint_Error => Put_Line("No file of that name");
+         end;
       end if;
       
    end rm_command;
@@ -101,16 +113,17 @@ package body P_Commands is
          -- new_path := get_substring(arguments, 2);
          -- new_name := get_substring(split_string(To_String(new_path), FILE_SEPARATOR), get_nb_substrings(split_string(To_String(new_path), FILE_SEPARATOR)));
          new_name := get_name_from_path(get_substring(arguments, 2));
-         
-         mkdir_command(destination_folder, get_substrings(arguments, 2, 2));
+         Put_Line(get_substring_to_string(arguments, 2));
+         Put_Line("source_folder : " & get_name(source_folder));
+         Put_Line("destination_folder : " & get_name(destination_folder));
+         mkdir_command(currentDirectory, get_substrings(arguments, 2, 2));
          
          new_folder := find_folder(destination_folder, To_String(new_name));
          
          -- starting to copy all its contents
-         
          folder_deep_copy(source_folder, new_folder);
       else
-         -- folder to copy
+         -- file to copy
          source_folder := go_to_folder(currentDirectory, get_substring_to_string(arguments, 1), True);
          -- folder to put the copy in
          destination_folder := go_to_folder(currentDirectory, get_substring_to_string(arguments, 2), True);
@@ -119,8 +132,7 @@ package body P_Commands is
          -- original_name := get_substring(split_string(To_String(original_path), FILE_SEPARATOR), get_nb_substrings(split_string(To_String(original_path), FILE_SEPARATOR)));
          original_name := get_name_from_path(get_substring(arguments, 1));
          
-         -- new_path := get_substring(arguments, 2);
-         -- new_name := get_substring(split_string(To_String(new_path), FILE_SEPARATOR), get_nb_substrings(split_string(To_String(new_path), FILE_SEPARATOR)));
+         -- A remplacer par clone
          new_name := get_name_from_path(get_substring(arguments, 2));
          original_file := find_file(source_folder, To_String(original_name));
          new_file := create(To_String(new_name), get_rights(original_file), get_path(destination_folder) & FILE_SEPARATOR & get_name(destination_folder), get_data(original_file));
@@ -129,40 +141,46 @@ package body P_Commands is
       end if;
    end cp_command;
    
-   procedure mv_command(currentDirectory: in out T_Folder; arguments: T_Substrings) is
+   procedure mv_command(currentDirectory: in out T_Folder; arguments: T_Substrings; OptionTrue: Boolean) is
       source_folder: T_Folder;
       original_name: Unbounded_String;
       destination_folder: T_Folder;
       new_name: Unbounded_String;
       file: T_File;
    begin
-      -- original_name := get_substring(split_string(get_substring_to_string(arguments, 1), FILE_SEPARATOR), get_nb_substrings(split_string(get_substring_to_string(arguments, 1), FILE_SEPARATOR)));
-      -- new_name := get_substring(split_string(get_substring_to_string(arguments, 2), FILE_SEPARATOR), get_nb_substrings(split_string(get_substring_to_string(arguments, 2), FILE_SEPARATOR)));
       original_name := get_name_from_path(get_substring(arguments, 1));
       new_name := get_name_from_path(get_substring(arguments, 2));
       
-      
       source_folder := go_to_folder(currentDirectory, get_substring_to_string(arguments, 1), True);
       destination_folder := go_to_folder(currentDirectory, get_substring_to_string(arguments, 2), True);
-     
-      file := find_file(source_folder, To_String(original_name));
-      
-      del_file(source_folder, To_String(original_name));
-      
-      set_name(file, To_String(new_name));
-      add_file(destination_folder, file);
+      if(OptionTrue)then
+         cp_command(currentDirectory, arguments, True);
+         rm_command (currentDirectory, arguments, True);
+      else
+         file := find_file(source_folder, To_String(original_name));
+         
+         del_file(source_folder, To_String(original_name));
+         -- A remplacer par clone
+         set_name(file, To_String(new_name));
+         add_file(destination_folder, file);
+      end if;
    end mv_command;
    
    procedure tar_command(currentDirectory: in out T_Folder; arguments: T_Substrings)is
       size: Integer;
       folder_to_tar: T_Folder;
       new_file : T_File;
+      name: Unbounded_String;
    begin
       folder_to_tar := go_to_folder(currentDirectory, get_substring_to_string(arguments, 1));
       size := calculate_size(go_to_folder(currentDirectory, get_substring_to_string(arguments, 1)));
-      new_file := create(get_name(folder_to_tar) & ".tar", get_path(currentDirectory) & "/" & get_name(currentDirectory));
+      name := (if is_root(folder_to_tar) then To_Unbounded_String("root") else To_Unbounded_String(get_name(folder_to_tar)));
+      new_file := create(To_String(name) & ".tar", get_path(currentDirectory) & "/" & get_name(currentDirectory));
       set_size(new_file, size);
       add_file(currentDirectory, new_file);
+   exception
+      when Invalid_Folder_Error =>
+         Put_Line("It is not possible to compress an unexisting folder");
    end tar_command;
    
    procedure touch_command(currentDirectory: in out T_Folder; arguments: T_Substrings)is
@@ -220,7 +238,7 @@ package body P_Commands is
       new_line;
       put_line(To_String(current_path) & ":");
       
-      ls_command(current_directory, create_substrings, False);
+      display_folders_and_files(create_siblings_set(current_directory));
       for i in 1.. get_nb_folders(current_directory) loop
          ls_r_command(get_folder(current_directory,i), current_path);
       end loop;
