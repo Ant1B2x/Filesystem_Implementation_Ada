@@ -2,19 +2,13 @@ module commandes
 
 gérer les créations avec des noms similaires (fichiers et dossiers) avec MV
 Faire en sorte de transmettres toutes les options, et que ce soient les programmes des command qui s'auto-gèrent leurs fonctions.
+faire en sorte que le nombre max de fichiers et de dossiers soit de Z, et pas X fichiers et Y dossiers
 
-main interpréteur
 main menu
 
-supprimer encoded_commands de terminal
-
 programme de test pour les commandes
-programme de test pour le module dossier
 programme de test pour le module fichier
 
 commentaires dans le code
 unniformiser les tailles de fichier
 
-
-si on a le temps:
-mkdir -p
