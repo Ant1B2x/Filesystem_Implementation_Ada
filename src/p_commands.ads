@@ -14,6 +14,7 @@ with P_Substrings; use P_Substrings;
 package P_Commands is
    
    Wrong_Arguments_Number_Error : Exception;
+   invalid_option_error: Exception;
 
    type encoded_commands is (ls, rm, pwd, cd, mkdir, cp, mv, tar, touch, help, clear);
 

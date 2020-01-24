@@ -2,7 +2,7 @@ package body P_Commands is
    
    function get_pwd (current_directory : in T_Folder) return String is
    begin
-      return calculate_path(current_directory) & get_name(current_directory);
+      return get_path(current_directory) & get_name(current_directory);
    end get_pwd;
    
    procedure pwd_command (current_directory: in T_Folder) is
@@ -152,8 +152,8 @@ package body P_Commands is
    begin
       -- original_name := get_substring(split_string(get_substring_to_string(arguments, 1), FILE_SEPARATOR), get_nb_substrings(split_string(get_substring_to_string(arguments, 1), FILE_SEPARATOR)));
       -- new_name := get_substring(split_string(get_substring_to_string(arguments, 2), FILE_SEPARATOR), get_nb_substrings(split_string(get_substring_to_string(arguments, 2), FILE_SEPARATOR)));
-      original_name := get_name_from_path(get_substring_to_string(arguments, 1));
-      new_name := get_name_from_path(get_substring_to_string(arguments, 2));
+      original_name := get_name_from_path(get_substring(arguments, 1));
+      new_name := get_name_from_path(get_substring(arguments, 2));
       
       
       source_folder := go_to_folder(currentDirectory, get_substring_to_string(arguments, 1), True);
@@ -193,8 +193,8 @@ package body P_Commands is
          parent := currentDirectory;
       end if;
       -- file_name := get_substring(split_string(To_String(get_substring(arguments, 1)), FILE_SEPARATOR), get_nb_substrings(split_string(To_String(get_substring(arguments, 1)), FILE_SEPARATOR)));
-      file_name := get_name_from_path(get_substring_to_string(arguments, 1));
-      file := create(To_String(file_name), calculate_path(parent) & get_name(parent));
+      file_name := get_name_from_path(get_substring(arguments, 1));
+      file := create(To_String(file_name), get_path(parent) & get_name(parent));
       add_file(parent,file);
    end touch_command;
    
