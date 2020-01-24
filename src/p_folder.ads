@@ -9,7 +9,6 @@ with P_File; use P_File;
 package P_Folder is
    
    Same_Name_Error : Exception;
-   Invalid_Folder_Error: Exception;
 
    -- files of the folder   
    package P_Files is new P_Array (T => T_File);
@@ -81,6 +80,8 @@ package P_Folder is
    procedure del_file (folder : in out T_Folder; file_name : in String);
    
    function has_son_with_this_name(folder: T_Folder; name: String) return Boolean;
+   
+   function are_the_same(folder1: T_Folder; folder2: T_Folder) return Boolean;
    
 private
    ROOT : T_Folder;

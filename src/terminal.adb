@@ -14,6 +14,8 @@ procedure Terminal is
       option_true : Boolean := False;
       arguments : T_Substrings;
       num_element : Integer;
+      options: T_Substrings;
+      parameters: T_Substrings;
    begin
       substrings := split_string(command, ' ');
 
@@ -30,28 +32,31 @@ procedure Terminal is
             arguments := get_substrings(substrings, 2, get_nb_substrings(substrings));
          end if;
 
+         get_options_parameter_and_options(get_substrings(substrings, 2, get_nb_substrings(substrings)), options, parameters);
+
       else
-         arguments := create_substrings;
+         options := create_substrings;
+         parameters := create_substrings;
       end if;
 
       begin
          case encoded_commands'Value(get_substring_to_string(substrings, 1)) is
-            when ls => ls_command(current_dir, arguments, option_true);
-            when rm => rm_command(current_dir, arguments, option_true);
-            when pwd => pwd_command(current_dir);
-            when cd => cd_command(current_dir, arguments);
-            when mkdir => mkdir_command(current_dir, arguments);
-            when cp => cp_command(current_dir, arguments, option_true);
-            when mv => mv_command(current_dir, arguments, option_true);
-            when touch => touch_command(current_dir, arguments);
-            when tar => tar_command(current_dir, arguments);
-            when help => help_command(arguments);
+            when ls => ls_command(current_dir, options, parameters);
+            when rm => rm_command(current_dir, options, parameters);
+            when pwd => pwd_command(current_dir, options, parameters);
+            when cd => cd_command(current_dir, options, parameters);
+            when mkdir => mkdir_command(current_dir, options, parameters);
+            when cp => cp_command(current_dir, options, parameters);
+            when mv => mv_command(current_dir, options, parameters);
+            when touch => touch_command(current_dir, options, parameters);
+            when tar => tar_command(current_dir, options, parameters);
+            when help => help_command(options, parameters);
             when clear => clear_command;
          end case;
       exception
-         when Constraint_Error =>
-            put_line("command not found");
-            put_line("Try 'help' to see a list of available commands.");
+         -- when Constraint_Error =>
+            -- put_line("command not found");
+            -- put_line("Try 'help' to see a list of available commands.");
          when Wrong_Arguments_Number_Error =>
             put_line("missing operand");
             put_line("Try help '" & get_substring_to_string(substrings, 1) & "' for more information.");

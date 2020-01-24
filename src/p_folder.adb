@@ -232,4 +232,10 @@ package body P_Folder is
       return find_folder(folder, name) /= null or find_file(folder, name) /= null;
    end has_son_with_this_name;
    
+   function are_the_same(folder1: T_Folder; folder2: T_Folder) return Boolean is
+   begin
+      return get_parent(folder1) = get_parent(folder2) and then get_name(folder1) = get_name(folder2);
+   end are_the_same;
+   
+   
 end P_Folder;

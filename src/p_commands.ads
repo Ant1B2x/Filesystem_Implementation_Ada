@@ -14,24 +14,28 @@ with P_Substrings; use P_Substrings;
 package P_Commands is
    
    Wrong_Arguments_Number_Error : Exception;
+   Option_Not_Handled_Error: Exception;
    invalid_option_error: Exception;
+   Invalid_Folder_Error: Exception;
 
    type encoded_commands is (ls, rm, pwd, cd, mkdir, cp, mv, tar, touch, help, clear);
 
    function get_pwd (current_directory : in T_Folder) return String;
-   procedure pwd_command (current_directory: in T_Folder);
-   procedure ls_command (current_directory : in T_Folder; arguments : in T_Substrings; recursive : in Boolean);
-   procedure rm_command (current_directory : in out T_Folder; arguments : in T_Substrings; recursive : in Boolean);
+   procedure pwd_command (current_directory: in T_Folder; options : in T_Substrings; parameters : in T_Substrings);
+   procedure ls_command (current_directory : in T_Folder; options : in T_Substrings; parameters : in T_Substrings);
+   procedure rm_command (current_directory : in out T_Folder; options : in T_Substrings; parameters : in T_Substrings);
    
-   procedure cd_command (currentDirectory: in out T_Folder; arguments: T_Substrings);
-   procedure mkdir_command (currentDirectory: in out T_Folder; arguments: T_Substrings);
-   procedure cp_command (currentDirectory: in out T_Folder; arguments: T_Substrings; OptionTrue : Boolean);
-   procedure mv_command (currentDirectory: in out T_Folder;arguments: T_Substrings; OptionTrue : Boolean);
-   procedure tar_command (currentDirectory: in out T_Folder;arguments: T_Substrings);
-   procedure touch_command (currentDirectory: in out T_Folder;arguments: T_Substrings);
+   procedure cd_command (currentDirectory: in out T_Folder; options : in T_Substrings; parameters : in T_Substrings);
+   procedure mkdir_command (currentDirectory: in out T_Folder; options : in T_Substrings; parameters : in T_Substrings);
+   procedure cp_command (currentDirectory: in out T_Folder; options : in T_Substrings; parameters : in T_Substrings);
+   procedure mv_command (currentDirectory: in out T_Folder; options : in T_Substrings; parameters : in T_Substrings);
+   procedure tar_command (currentDirectory: in out T_Folder; options : in T_Substrings; parameters : in T_Substrings);
+   procedure touch_command (currentDirectory: in out T_Folder; options : in T_Substrings; parameters : in T_Substrings);
    
-   procedure help_command (arguments : in T_Substrings);
+   procedure help_command (options : in T_Substrings; parameters : in T_Substrings);
    procedure clear_command;
+   
+   procedure get_options_parameter_and_options(arguments: in T_Substrings; options: in out T_Substrings; parameters: in out T_Substrings);
 
 private
    procedure ls_r_command (current_directory : in T_Folder; preceding_path : in Unbounded_String);
@@ -42,9 +46,11 @@ private
    function go_to_folder(original_directory: in T_Folder; path: in String; stop_at_penultimate: in Boolean) return T_Folder;
    function calculate_size (folder: T_Folder) return Integer;
    procedure folder_deep_copy(folder_to_copy: T_Folder; folder_parent_of_clone: in out T_Folder);
+   function only_handled_options(options: in T_Substrings; options_handled: in String) return Boolean;
    
-   procedure get_options_parameter_and(arguments: in T_Substrings; options: in out T_Substrings; parameters: in out T_Substrings);
+   
    function get_name_from_path(path: Unbounded_String) return Unbounded_String;
+   function options_contain(options: in T_Substrings; option: in Character) return Boolean;
    
    -- sort folders & files
    type T_R_Sibling is record

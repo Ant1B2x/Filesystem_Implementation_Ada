@@ -9,80 +9,101 @@ with P_Commands; use P_Commands;
 
 procedure test_sort is
    folder : T_Folder;
-   arguments: T_Substrings;
+   parameters: T_Substrings;
+   options: T_Substrings;
 begin
 
    folder := get_root;
    
    put(ESC & "[31m" & get_pwd(folder) & " > " & ESC & "[0m");
    
-   arguments := create_substrings;
-   add_substring(arguments,"test1");
-   mkdir_command(folder, arguments);
+   parameters := create_substrings;
+   options := create_substrings;
+   add_substring(parameters,"test1");
+   mkdir_command(folder, parameters, options);
    
-   arguments := create_substrings;
-   add_substring(arguments,"test2");
-   mkdir_command(folder, arguments);
+   parameters := create_substrings;
+   options := create_substrings;
+   add_substring(parameters,"test2");
+   mkdir_command(folder, parameters, options);
    
-   arguments := create_substrings;
-   add_substring(arguments,"test2/test4");
-   mkdir_command(folder, arguments);
+   parameters := create_substrings;
+   options := create_substrings;
+   add_substring(parameters,"test2/test4");
+   mkdir_command(folder, parameters, options);
    
-   arguments := create_substrings;
-   add_substring(arguments,"test2/test3");
-   mkdir_command(folder, arguments);
+   parameters := create_substrings;
+   options := create_substrings;
+   add_substring(parameters,"test2/test3");
+   mkdir_command(folder, parameters, options);
    
-   arguments := create_substrings;
-   add_substring(arguments,"test2");
-   mkdir_command(folder, arguments);
+   parameters := create_substrings;
+   options := create_substrings;
+   add_substring(parameters,"test2");
+   mkdir_command(folder, parameters, options);
    
-   arguments := create_substrings;
-   add_substring(arguments,"test2");
-   mkdir_command(folder, arguments);
+   parameters := create_substrings;
+   options := create_substrings;
+   add_substring(parameters,"test2");
+   mkdir_command(folder, parameters, options);
    
-   pwd_command(folder);
+   parameters := create_substrings;
+   options := create_substrings;
+   pwd_command(folder, parameters, options);
       
-   arguments := create_substrings;
-   add_substring(arguments,"test2/karibou");
-   touch_command(folder, arguments);
+   parameters := create_substrings;
+   options := create_substrings;
+   add_substring(parameters,"test2/karibou");
+   touch_command(folder, parameters, options);
    
-   arguments := create_substrings;
-   add_substring(arguments,"test2/bliblabloblu");
-   touch_command(folder, arguments);
+   parameters := create_substrings;
+   options := create_substrings;
+   add_substring(parameters,"test2/bliblabloblu");
+   touch_command(folder, parameters, options);
      
-   arguments := create_substrings;
-   add_substring(arguments,"test2/ahehohu");
-   touch_command(folder, arguments);
+   parameters := create_substrings;
+   options := create_substrings;
+   add_substring(parameters,"test2/ahehohu");
+   touch_command(folder, parameters, options);
    
-   arguments := create_substrings;
-   add_substring(arguments,"test2/test3/aaaatest2");
-   touch_command(folder, arguments);
+   parameters := create_substrings;
+   options := create_substrings;
+   add_substring(parameters,"test2/test3/aaaatest2");
+   touch_command(folder, parameters, options);
    
-   arguments := create_substrings;
-   add_substring(arguments,"test2/test3/bbbaaa");
-   touch_command(folder, arguments);
+   parameters := create_substrings;
+   options := create_substrings;
+   add_substring(parameters,"test2/test3/bbbaaa");
+   touch_command(folder, parameters, options);
    
-   arguments := create_substrings;
-   add_substring(arguments,"test2/test3/bababa");
-   touch_command(folder, arguments);
+   parameters := create_substrings;
+   options := create_substrings;
+   add_substring(parameters,"test2/test3/bababa");
+   touch_command(folder, parameters, options);
    
    
    
    
    New_Line;
-   ls_command(folder, arguments, False);
+   parameters := create_substrings;
+   options := create_substrings;
+   ls_command(folder, parameters, options);
    
    New_Line;
-   ls_command(folder, arguments, False);
+   ls_command(folder, parameters, options);
    
    clear_command;
    
-   arguments := create_substrings;
-   add_substring(arguments,"test2");
-   cd_command(folder, arguments);
+   parameters := create_substrings;
+   options := create_substrings;
+   add_substring(parameters,"test2");
+   cd_command(folder, parameters, options);
    
    Put_Line("**** Test de tri ***");
    Put_Line("./test2:");
-   ls_command(folder, arguments, True);
+   parameters := create_substrings;
+   options := create_substrings;
+   add_substring(options,"-r");
+   ls_command(folder, parameters, options);
 
 end test_sort;

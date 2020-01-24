@@ -11,20 +11,32 @@ package body P_Commands is
       end if;
    end get_pwd;
    
-   procedure pwd_command (current_directory: in T_Folder) is
+   procedure pwd_command (current_directory: in T_Folder; options : in T_Substrings; parameters : in T_Substrings) is
    begin
-      put_line( get_pwd(current_directory) );
+      if(get_nb_substrings(options) > 0)then
+         raise Option_Not_Handled_Error;
+      end if;
+      if(get_nb_substrings(parameters) > 0)then
+         raise Wrong_Arguments_Number_Error;
+      end if;
+      put_line(get_pwd(current_directory) );
    end pwd_command;
    
-   procedure ls_command (current_directory : in T_Folder; arguments : in T_Substrings; recursive : in Boolean) is
+   procedure ls_command (current_directory : in T_Folder; options : in T_Substrings; parameters : in T_Substrings) is
       current: T_Folder;
    begin
-      if(get_substring_to_string(arguments, 1)'Length > 0)then
-         current := go_to_folder(current_directory, get_substring_to_string(arguments, 1));
+      if(not only_handled_options(options, "-rmf"))then
+         raise Option_Not_Handled_Error;
+      end if;
+      if(get_nb_substrings(parameters) > 1)then
+         raise Wrong_Arguments_Number_Error;
+      end if;
+      if(get_substring_to_string(parameters, 1)'Length > 0)then
+         current := go_to_folder(current_directory, get_substring_to_string(parameters, 1));
       else
          current := current_directory;
       end if;
-      if recursive then
+      if options_contain(options, 'r') then
          put_line(".:");
          display_folders_and_files(create_siblings_set(current));
          for i in 1.. get_nb_folders(current) loop
@@ -35,15 +47,20 @@ package body P_Commands is
       end if;
    end ls_command;
    
-   procedure rm_command (current_directory : in out T_Folder; arguments : in T_Substrings; recursive : in Boolean) is
+   procedure rm_command (current_directory : in out T_Folder; options : in T_Substrings; parameters : in T_Substrings) is
       directory_to_del_from: T_Folder;
       name: Unbounded_String;
-   begin
-      -- name := get_substring(split_string(To_String(path), FILE_SEPARATOR), get_nb_substrings(split_string(To_String(path), FILE_SEPARATOR)));            
-      name := get_name_from_path(get_substring(arguments, 1));
-      directory_to_del_from := go_to_folder(current_directory, get_substring_to_string(arguments, 1), True);
+   begin       
+      if(not only_handled_options(options, "-r"))then
+         raise Option_Not_Handled_Error;
+      end if;
+      if(get_nb_substrings(parameters) /= 1)then
+         raise Wrong_Arguments_Number_Error;
+      end if;
+      name := get_name_from_path(get_substring(parameters, 1));
+      directory_to_del_from := go_to_folder(current_directory, get_substring_to_string(parameters, 1), True);
       
-      if recursive then
+      if options_contain(options, 'r') then
          begin
             del_folder(directory_to_del_from, get_name(find_folder(directory_to_del_from, To_String(name))));
          exception
@@ -61,38 +78,47 @@ package body P_Commands is
    
    
    
-   procedure cd_command(currentDirectory: in out T_Folder; arguments: T_Substrings) is
+   procedure cd_command(currentDirectory: in out T_Folder; options : in T_Substrings; parameters : in T_Substrings) is
    begin
-      currentDirectory := go_to_folder(currentDirectory, get_substring_to_string(arguments, 1));
+      if(get_nb_substrings(options) > 0)then
+         raise Option_Not_Handled_Error;
+      end if;
+      if(get_nb_substrings(parameters) > 1)then
+         raise Wrong_Arguments_Number_Error;
+      end if;
+      currentDirectory := go_to_folder(currentDirectory, get_substring_to_string(parameters, 1));
    exception
       when Invalid_Folder_Error =>
          Put_Line("Can not move to this directory. It does not exist.");
    end cd_command;
    
-   procedure mkdir_command(currentDirectory: in out T_Folder; arguments: T_Substrings)is
+   procedure mkdir_command(currentDirectory: in out T_Folder; options : in T_Substrings; parameters : in T_Substrings)is
       fils : T_Folder;
       parent: T_Folder;
       fils_name: Unbounded_String;
    begin
-      if(get_nb_substrings(arguments) /= 1)then
+      if(get_nb_substrings(options) > 0)then
+         raise Option_Not_Handled_Error;
+      end if;
+      if(get_nb_substrings(parameters) /= 1)then
          raise Wrong_Arguments_Number_Error;
       end if;
       
-      parent := go_to_folder(currentDirectory, get_substring_to_string(arguments, 1), True);
-      fils_name := get_name_from_path(get_substring(arguments, 1));
+      parent := go_to_folder(currentDirectory, get_substring_to_string(parameters, 1), True);
+      fils_name := get_name_from_path(get_substring(parameters, 1));
       fils := create(To_String(fils_name), parent);
    exception
       when Invalid_Folder_Error =>
-         put_line("cannot create directory '" & get_substring_to_string(arguments, 1) & "': No such file or directory");
+         put_line("cannot create directory '" & get_substring_to_string(parameters, 1) & "': No such file or directory");
       when Same_Name_Error =>
-         Put_Line("cannot create directory '" & get_substring_to_string(arguments, 1) & "': File or directory with same name already exist");
+         Put_Line("cannot create directory '" & get_substring_to_string(parameters, 1) & "': File or directory with same name already exist");
    end mkdir_command;
    
    -- Vérifier un petit coup, parce que ça a été fait assez vite alors que j'étais fatigué, donc son fonctionnement aurait la note :
    -- random/20
    -- Donc voilà, autant essayer une fois et voir si ça marche.
    -- Mais après il faudra tout revérifier.
-   procedure cp_command(currentDirectory: in out T_Folder; arguments: T_Substrings; OptionTrue : Boolean) is
+   procedure cp_command(currentDirectory: in out T_Folder; options : in T_Substrings; parameters : in T_Substrings) is
       source_folder: T_Folder;
       destination_folder: T_Folder;
       new_folder: T_Folder;
@@ -103,37 +129,31 @@ package body P_Commands is
       new_path: Unbounded_String;
       new_name: Unbounded_String;
    begin
-      if(OptionTrue)then
-         
-         -- folder to copy
-         source_folder := go_to_folder(currentDirectory, get_substring_to_string(arguments, 1), False);
-         -- folder to put the copy in
-         destination_folder := go_to_folder(currentDirectory, get_substring_to_string(arguments, 2), True);
-         
-         -- new_path := get_substring(arguments, 2);
-         -- new_name := get_substring(split_string(To_String(new_path), FILE_SEPARATOR), get_nb_substrings(split_string(To_String(new_path), FILE_SEPARATOR)));
-         new_name := get_name_from_path(get_substring(arguments, 2));
-         Put_Line(get_substring_to_string(arguments, 2));
-         Put_Line("source_folder : " & get_name(source_folder));
-         Put_Line("destination_folder : " & get_name(destination_folder));
-         mkdir_command(currentDirectory, get_substrings(arguments, 2, 2));
+      if(not only_handled_options(options, "-r"))then
+         raise Option_Not_Handled_Error;
+      end if;
+      if(get_nb_substrings(parameters) /= 2)then
+         raise Wrong_Arguments_Number_Error;
+      end if;
+      
+      -- folder to get the copy from
+      source_folder := go_to_folder(currentDirectory, get_substring_to_string(parameters, 1), True);
+      -- folder to put the copy in
+      destination_folder := go_to_folder(currentDirectory, get_substring_to_string(parameters, 2), True);
+      
+      new_name := get_name_from_path(get_substring(parameters, 2));
+      
+      if(options_contain(options, 'r'))then
+         mkdir_command(currentDirectory, get_substrings(parameters, 2, 2), create_substrings);
          
          new_folder := find_folder(destination_folder, To_String(new_name));
          
          -- starting to copy all its contents
          folder_deep_copy(source_folder, new_folder);
       else
-         -- file to copy
-         source_folder := go_to_folder(currentDirectory, get_substring_to_string(arguments, 1), True);
-         -- folder to put the copy in
-         destination_folder := go_to_folder(currentDirectory, get_substring_to_string(arguments, 2), True);
+         original_name := get_name_from_path(get_substring(parameters, 1));
          
-         -- original_path := get_substring(arguments, 1);
-         -- original_name := get_substring(split_string(To_String(original_path), FILE_SEPARATOR), get_nb_substrings(split_string(To_String(original_path), FILE_SEPARATOR)));
-         original_name := get_name_from_path(get_substring(arguments, 1));
-         
-         -- A remplacer par clone
-         new_name := get_name_from_path(get_substring(arguments, 2));
+         -- ? A remplacer par clone ?
          original_file := find_file(source_folder, To_String(original_name));
          new_file := create(To_String(new_name), get_rights(original_file), get_path(destination_folder) & FILE_SEPARATOR & get_name(destination_folder), get_data(original_file));
          set_size(new_file, get_size(original_file));
@@ -141,21 +161,29 @@ package body P_Commands is
       end if;
    end cp_command;
    
-   procedure mv_command(currentDirectory: in out T_Folder; arguments: T_Substrings; OptionTrue: Boolean) is
+   procedure mv_command(currentDirectory: in out T_Folder; options : in T_Substrings; parameters : in T_Substrings) is
       source_folder: T_Folder;
       original_name: Unbounded_String;
       destination_folder: T_Folder;
       new_name: Unbounded_String;
       file: T_File;
    begin
-      original_name := get_name_from_path(get_substring(arguments, 1));
-      new_name := get_name_from_path(get_substring(arguments, 2));
+      if(not only_handled_options(options, "-r"))then
+         raise Option_Not_Handled_Error;
+      end if;
+      if(get_nb_substrings(parameters) /= 2)then
+         raise Wrong_Arguments_Number_Error;
+      end if;
       
-      source_folder := go_to_folder(currentDirectory, get_substring_to_string(arguments, 1), True);
-      destination_folder := go_to_folder(currentDirectory, get_substring_to_string(arguments, 2), True);
-      if(OptionTrue)then
-         cp_command(currentDirectory, arguments, True);
-         rm_command (currentDirectory, arguments, True);
+      original_name := get_name_from_path(get_substring(parameters, 1));
+      new_name := get_name_from_path(get_substring(parameters, 2));
+      
+      source_folder := go_to_folder(currentDirectory, get_substring_to_string(parameters, 1), True);
+      destination_folder := go_to_folder(currentDirectory, get_substring_to_string(parameters, 2), True);
+      
+      if(options_contain(options, 'r'))then
+         cp_command(currentDirectory, options, parameters);
+         rm_command (currentDirectory, options, parameters);
       else
          file := find_file(source_folder, To_String(original_name));
          
@@ -166,14 +194,20 @@ package body P_Commands is
       end if;
    end mv_command;
    
-   procedure tar_command(currentDirectory: in out T_Folder; arguments: T_Substrings)is
+   procedure tar_command(currentDirectory: in out T_Folder; options : in T_Substrings; parameters : in T_Substrings)is
       size: Integer;
       folder_to_tar: T_Folder;
       new_file : T_File;
       name: Unbounded_String;
    begin
-      folder_to_tar := go_to_folder(currentDirectory, get_substring_to_string(arguments, 1));
-      size := calculate_size(go_to_folder(currentDirectory, get_substring_to_string(arguments, 1)));
+      if(get_nb_substrings(options) > 0)then
+         raise Option_Not_Handled_Error;
+      end if;
+      if(get_nb_substrings(parameters) > 1)then
+         raise Wrong_Arguments_Number_Error;
+      end if;
+      folder_to_tar := go_to_folder(currentDirectory, get_substring_to_string(parameters, 1));
+      size := calculate_size(go_to_folder(currentDirectory, get_substring_to_string(parameters, 1)));
       name := (if is_root(folder_to_tar) then To_Unbounded_String("root") else To_Unbounded_String(get_name(folder_to_tar)));
       new_file := create(To_String(name) & ".tar", get_path(currentDirectory) & "/" & get_name(currentDirectory));
       set_size(new_file, size);
@@ -183,21 +217,23 @@ package body P_Commands is
          Put_Line("It is not possible to compress an unexisting folder");
    end tar_command;
    
-   procedure touch_command(currentDirectory: in out T_Folder; arguments: T_Substrings)is
+   procedure touch_command(currentDirectory: in out T_Folder; options : in T_Substrings; parameters : in T_Substrings)is
       file : T_File;
       parent: T_Folder;
       file_name: Unbounded_String;
    begin
-      if(get_nb_substrings(arguments) /= 1)then
+      if(get_nb_substrings(options) > 0)then
+         raise Option_Not_Handled_Error;
+      end if;
+      if(get_nb_substrings(parameters) /= 1)then
          raise Wrong_Arguments_Number_Error;
       end if;
-      if(get_nb_substrings(split_string(get_substring_to_string(arguments, 1), FILE_SEPARATOR)) > 1) then
-         parent := go_to_folder(currentDirectory, get_substring_to_string(arguments, 1), True);
+      if(get_nb_substrings(split_string(get_substring_to_string(parameters, 1), FILE_SEPARATOR)) > 1) then
+         parent := go_to_folder(currentDirectory, get_substring_to_string(parameters, 1), True);
       else
          parent := currentDirectory;
       end if;
-      -- file_name := get_substring(split_string(To_String(get_substring(arguments, 1)), FILE_SEPARATOR), get_nb_substrings(split_string(To_String(get_substring(arguments, 1)), FILE_SEPARATOR)));
-      file_name := get_name_from_path(get_substring(arguments, 1));
+      file_name := get_name_from_path(get_substring(parameters, 1));
       file := create(To_String(file_name), get_path(parent) & get_name(parent));
       add_file(parent,file);
    end touch_command;
@@ -215,14 +251,17 @@ package body P_Commands is
       put(ESC & "[2J");
    end clear_command;
    
-   procedure help_command (arguments : in T_Substrings) is
+   procedure help_command (options: t_Substrings; parameters : in T_Substrings) is
    begin
-      if get_nb_substrings(arguments) > 1 then
+      if get_nb_substrings(options) > 0 then
+         raise Option_Not_Handled_Error;
+      end if;
+      if get_nb_substrings(parameters) > 1 then
          raise Wrong_Arguments_Number_Error;
       end if;
       
-      if get_nb_substrings(arguments) = 1 then
-         help_command(get_substring_to_string(arguments, 1));
+      if get_nb_substrings(parameters) = 1 then
+         help_command(get_substring_to_string(parameters, 1));
       else
          help_command;
       end if;
@@ -363,18 +402,18 @@ package body P_Commands is
       penultimate: Integer;
    begin
       if(path'Length > 0)then
-         -- check is the fisrt folder is the root folder => "/home/..." for example
+         -- Check is the fisrt folder is the root folder => "/home/..." for example
          if(path(path'First) = FILE_SEPARATOR)then
-            -- start for root if it's true
+            -- Start for root if it's true
             current := get_root;
          else
-            -- else, start from the current folder
+            -- Else, start from the current folder
             current := original_directory;            
          end if;
-         -- case for mkdir, for example, can we want to stop at the penultimate of the path, and then create a folder.
+         -- Case for mkdir, for example, can we want to stop at the penultimate of the path, and then create a folder.
          penultimate := (if(stop_at_penultimate)then 1 else 0);
          siblings := split_string(path, FILE_SEPARATOR);
-         -- follow the path from the defined start
+         -- Follow the path from the defined start
          for i in 1..get_nb_substrings(siblings) - penultimate loop
             -- If the following sibling doesn't exist, raise an exception, otherwise, take the next sibling as current
             if(not is_null(find_folder(current, get_substring_to_string(siblings, i))))then
@@ -459,7 +498,7 @@ package body P_Commands is
       new_line;
    end display_folders_and_files;
    
-   procedure get_options_parameter_and(arguments: in T_Substrings; options: in out T_Substrings; parameters: in out T_Substrings) is
+   procedure get_options_parameter_and_options(arguments: in T_Substrings; options: in out T_Substrings; parameters: in out T_Substrings) is
    begin
       -- For every argument
       for i in 1..get_nb_substrings(arguments) loop
@@ -472,16 +511,59 @@ package body P_Commands is
             -- We start at 2 because we need to get all options, and not the '-' character
             for j in 2..get_substring_to_string(arguments, i)'Length loop
                -- We have to transform it into a string, because the (j) part return a Character, and we add it to the options array
-               add_substring(options, get_substring_to_string(arguments, i)(j)'Image);
+               add_substring(options, get_substring_to_string(arguments, i)(j) & "");
             end loop;
          else
-            -- else it's an argument and we add it to the arguments array
-            add_substring(options, get_substring_to_string(arguments, i));
+            -- Else it's an argument and we add it to the arguments array
+            add_substring(parameters, get_substring_to_string(arguments, i));
          end if;
       end loop;
-   end get_options_parameter_and;
+   end get_options_parameter_and_options;
    
-   -- here whe chose to use Unbounded_String because we have to declare the name return, and we don't know his length
+   function get_options(options_as_string: in String) return T_Substrings is
+      splited_option: T_Substrings;
+      options: T_Substrings;
+   begin
+      options := create_substrings;
+      splited_option := split_string(options_as_string, '-');
+      for i in 1.. get_nb_substrings(splited_option) loop
+         -- If there is multiple option wrote after a '-' (like '-rf')
+         if(get_substring_to_string(splited_option, i)'Length > 1)then
+            -- We add each one of them to the options
+            for j in 1.. get_substring_to_string(splited_option, i)'Length loop
+               add_substring(options, get_substring_to_string(splited_option, i)(j) & "");
+            end loop;
+         else
+            -- Else we add the option to the options
+            add_substring(options, get_substring_to_string(splited_option, i)(1) & "");
+         end if;
+      end loop;
+      return options;
+   end get_options;
+   
+   function options_contain(options: in T_Substrings; option: in Character) return Boolean is
+   begin
+      for i in 1..get_nb_substrings(options) loop
+         if(get_substring_to_string(options, i)(1) = option)then
+            return True;
+         end if;
+      end loop;
+      return False;
+   end options_contain;
+   
+   function only_handled_options(options: in T_Substrings; options_handled: in String) return Boolean is
+      options_handled_substrings: T_Substrings;
+   begin
+      options_handled_substrings := get_options(options_handled);
+      for i in 1..get_nb_substrings(options) loop
+         if(not options_contain(options_handled_substrings, get_substring_to_string(options, i)(1)))then
+            return False;
+         end if;
+      end loop;
+      return True;
+   end only_handled_options;
+   
+   -- Here we chose to use Unbounded_String because we have to declare the name return, and we don't know his length
    function get_name_from_path(path: Unbounded_String) return Unbounded_String is
    begin
       return get_substring(split_string(To_String(path), FILE_SEPARATOR), get_nb_substrings(split_string(To_String(path), FILE_SEPARATOR)));
