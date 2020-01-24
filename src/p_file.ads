@@ -35,7 +35,7 @@ package P_File is
    
    function clone (file : in T_File; new_name : in String; new_path : in String) return T_File;
    
-   function clone(file : in T_File; new_path : in String) return T_File;
+   function clone (file : in T_File; new_path : in String) return T_File;
    
 private
    type T_R_File is record

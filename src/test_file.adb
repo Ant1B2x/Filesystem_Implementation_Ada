@@ -5,6 +5,7 @@ with P_File; use P_File;
 
 procedure test_file is
    file : T_File;
+   file_bis : T_File;
 begin
    -- create
    put_line("Create:");
@@ -29,6 +30,15 @@ begin
       put_line("get_data(file) = ""thisissomeexecutabledata""");
    else
       put_line("get_data(file) is incoherent");
+   end if;
+   new_line;
+   
+   -- get path
+   put_line("Get path:");
+   if get_path(file) = "/usr/bin" then
+      put_line("get_path(file) = ""/usr/bin""");
+   else
+      put_line("get_path(file) is incoherent");
    end if;
    new_line;
    
@@ -62,16 +72,6 @@ begin
    end if;
    new_line;
    
-   -- set path & get path
-   put_line("Set path and get path:");
-   --set_path(file, "/home/n7");
-   if get_path(file) = "/home/n7" then
-      put_line("get_path(file) = ""/home/n7""");
-   else
-      put_line("get_path(file) is incoherent");
-   end if;
-   new_line;
-   
    -- set data & get data
    put_line("Set data & get data:");
    set_data(file, "thisissomeotherdata");
@@ -84,6 +84,36 @@ begin
       put_line("get_size(file) = 19 (size of ""thisissomeotherdata"")");
    else
       put_line("get_size(file) is incoherent");
+   end if;
+   new_line;
+   
+   -- clone
+   put_line("Clone:");
+   file_bis := clone(file, "/home/n7student/bin");
+   if get_path(file_bis) = "/home/n7student/bin" then
+      put_line("get_path(file_bis) = ""/home/n7student/bin""");
+   else
+      put_line("get_path(file_bis) is incoherent");
+   end if;
+   if get_name(file_bis) = get_name(file) then
+      put_line("get_name(file_bis) = get_name(file)");
+   else
+      put_line("get_name(file_bis) is incoherent");
+   end if;
+   if get_rights(file_bis) = get_rights(file) then
+      put_line("get_rights(file_bis) = get_rights(file)");
+   else
+      put_line("get_rights(file_bis) is incoherent");
+   end if;
+   if get_size(file_bis) = get_size(file) then
+      put_line("get_size(file_bis) = get_size(file)");
+   else
+      put_line("get_size(file_bis) is incoherent");
+   end if;
+   if get_data(file_bis) = get_data(file) then
+      put_line("get_data(file_bis) = get_data(file)");
+   else
+      put_line("get_data(file_bis) is incoherent");
    end if;
    new_line;
    
