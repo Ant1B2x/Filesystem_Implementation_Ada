@@ -26,7 +26,7 @@ package P_Commands is
    procedure cd_command (currentDirectory: in out T_Folder; arguments: T_Substrings);
    procedure mkdir_command (currentDirectory: in out T_Folder; arguments: T_Substrings);
    procedure cp_command (currentDirectory: in out T_Folder; arguments: T_Substrings; OptionTrue : Boolean);
-   procedure mv_command (currentDirectory: in out T_Folder;arguments: T_Substrings);
+   procedure mv_command (currentDirectory: in out T_Folder;arguments: T_Substrings; OptionTrue : Boolean);
    procedure tar_command (currentDirectory: in out T_Folder;arguments: T_Substrings);
    procedure touch_command (currentDirectory: in out T_Folder;arguments: T_Substrings);
    

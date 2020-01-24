@@ -42,7 +42,7 @@ procedure Terminal is
             when cd => cd_command(current_dir, arguments);
             when mkdir => mkdir_command(current_dir, arguments);
             when cp => cp_command(current_dir, arguments, option_true);
-            when mv => mv_command(current_dir, arguments);
+            when mv => mv_command(current_dir, arguments, option_true);
             when touch => touch_command(current_dir, arguments);
             when tar => tar_command(current_dir, arguments);
             when help => help_command(arguments);
@@ -55,6 +55,8 @@ procedure Terminal is
          when Wrong_Arguments_Number_Error =>
             put_line("missing operand");
             put_line("Try help '" & get_substring_to_string(substrings, 1) & "' for more information.");
+         when Invalid_Folder_Error =>
+            Put_Line("The specified path countain an unexisting folder. Can't go through it.");
       end;
 
    end run_command;
