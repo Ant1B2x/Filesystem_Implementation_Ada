@@ -2,12 +2,16 @@ with Ada.Text_IO; use Ada.Text_IO;
 with Ada.Integer_Text_IO; use Ada.Integer_Text_IO;
 with P_Constants; use P_Constants;
 with P_Metadata; use P_Metadata;
+with P_File; use P_File;
 with P_Folder; use P_Folder;
 
 procedure test_folder is
    root : T_Folder;
    folder : T_Folder; -- inside root
    folder_sibling : T_Folder; -- inside folder
+   folder_sibling_bis : T_Folder; -- inside folder
+   folder_data : T_Folder_Data; -- data of folder
+   file : T_File; -- inside folder
 begin
    -- get root
    put_line("Get root:");
@@ -207,37 +211,113 @@ begin
    end if;
    new_line;
 
+   -- add file & get file
+   put_line("Add file & get file:");
+   file := create("file_old.bak", (RW, R, R), get_path(folder), "thisissomedata");
+   add_file(folder, file);
+   if get_file(folder, 1) = file then
+      put_line("get_file(folder, 1) = file");
+   else
+      put_line("get_file(folder, 1) is incoherent");
+   end if;
+   new_line;
    
-   --Same_Name_Error : Exception;
+   -- get nb files
+   put_line("Get nb files:");
+   add_file(folder, create("executable_file.bak", (RWX, RX, RX), get_path(folder), "thisissomeexecutabledata"));
+   if get_nb_files(folder) = 2 then
+      put_line("get_nb_files(folder) = 2");
+   else
+      put_line("get_nb_files(folder) is incoherent");
+   end if;
+   new_line;
    
-   --function get_data (folder : in T_Folder) return T_Folder_Data;
+   -- del file
+   put_line("Del file:");
+   del_file(folder, "executable_file.bak");
+   if get_nb_files(folder) = 1 then
+      put_line("get_nb_files(folder) = 1, we still have one file left");
+   else
+      put_line("get_nb_files(folder) is incoherent");
+   end if;
+   new_line;
    
-   --procedure set_data (folder : in out T_Folder; folder_data : in T_Folder_Data);
+   -- find file
+   put_line("Find file:");
+   if find_file(folder, "file_old.bak") = file then
+      put_line("find_file(folder, ""file_old.bak"") = file");
+   else
+      put_line("find_file(folder, ""file_old.bak"") is incoherent");
+   end if;
+   new_line;
    
+   -- has son with same name
+   put_line("Has son with same name:");
+   if has_son_with_this_name(folder, "file_old.bak") then
+      put_line("has_son_with_this_name(folder, ""file_old.bak"")");
+   else
+      put_line("has_son_with_this_name(folder, ""file_old.bak"") is incoherent");
+   end if;
+   new_line;
    
-   --function get_file (folder : in T_Folder; index : in Integer) return T_File
-     --with Pre => index <= get_nb_files(folder);
+   -- get data
+   put_line("Get data:");
+   folder_data := get_data(folder);
+   if get_name(folder_data.metadata) = get_name(folder) then
+      put_line("get_name(folder_data.metadata) = get_name(folder)");
+   else
+      put_line("get_name(folder_data.metadata) is incoherent");
+   end if;
+   if get_rights(folder_data.metadata) = get_rights(folder) then
+      put_line("get_rights(folder_data.metadata) = get_rights(folder)");
+   else
+      put_line("get_rights(folder_data.metadata) is incoherent");
+   end if;
+   if get_size(folder_data.metadata) = get_size(folder) then
+      put_line("get_size(folder_data.metadata) = get_size(folder)");
+   else
+      put_line("get_size(folder_data.metadata) is incoherent");
+   end if;
+   if get_path(folder_data.metadata) = get_path(folder) then
+      put_line("get_path(folder_data.metadata) = get_path(folder)");
+   else
+      put_line("get_path(folder_data.metadata) is incoherent");
+   end if;
+   new_line;
    
-   --function get_nb_files (folder : in T_Folder) return Integer;
+   -- set data
+   put_line("Set data:");
+   set_name(folder_data.metadata, "new_folder_name");
+   set_data(folder, folder_data);
+   if get_name(folder) = "new_folder_name" then
+      put_line("get_name(folder) = ""new_folder_name""");
+   else
+      put_line("get_name(folder) is incoherent");
+   end if;
+   new_line;
    
-   --function find_file (folder : in T_Folder; file_name : in String) return T_File
-     --with Pre => file_name'length <= LMAX_STRING;
+   -- raising Same_Name_Error when adding a folder
+   put_line("Raising Same_Name_Error when adding a folder:");
+   folder_sibling := create("common_folder_name", folder);
+   begin
+      folder_sibling_bis := create("common_folder_name", folder);
+      put_line("Nothing raised, creating a folder should have raised Same_Name_Error");
+   exception
+      when Same_Name_Error =>
+         put_line("Same_Name_Error raised, you can't have two folders with the same name in the same folder");
+   end;
+   new_line;
    
-   --procedure add_file (folder : in out T_Folder; new_file : in T_File);
-   
-   --procedure del_file (folder : in out T_Folder; file_name : in String);
-   
-   --function has_son_with_this_name(folder: T_Folder; name: String) return Boolean;
+   -- raising Same_Name_Error when adding a file
+   put_line("Raising Same_Name_Error when adding a file:");
+   add_file(folder, create("common_file_name", (RW, R, R), get_path(folder), "data"));
+   begin
+      add_file(folder, create("common_file_name", (RWX, RX, RX), get_path(folder), "executabledata"));
+      put_line("Nothing raised, add_file should have raised Same_Name_Error");
+   exception
+      when Same_Name_Error =>
+         put_line("Same_Name_Error raised, you can't have two files with the same name in the same folder");
+   end;
+   new_line;
     
-
-
-   
-   
-   
-   
-   
-   
-   
-   
-   
 end test_folder;
