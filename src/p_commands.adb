@@ -2,7 +2,13 @@ package body P_Commands is
    
    function get_pwd (current_directory : in T_Folder) return String is
    begin
-      return get_path(current_directory) & get_name(current_directory);
+      if(is_root(current_directory))then
+         return ""&FILE_SEPARATOR;
+      elsif(is_root(get_parent(current_directory)))then
+         return FILE_SEPARATOR & get_name(current_directory);
+      else
+         return get_path(current_directory) & FILE_SEPARATOR & get_name(current_directory);
+      end if;
    end get_pwd;
    
    procedure pwd_command (current_directory: in T_Folder) is
@@ -13,13 +19,10 @@ package body P_Commands is
    procedure ls_command (current_directory : in T_Folder; arguments : in T_Substrings; recursive : in Boolean) is
       current: T_Folder;
    begin
-      current := current_directory;
-      if(get_nb_substrings(arguments) > 0)then
-         cd_command(current, arguments);
-      end if;
+      current := go_to_folder(current_directory, get_substring_to_string(arguments, 1));
       if recursive then
          put_line(".:");
-         ls_command(current, create_substrings, False);
+         ls_command(current, get_substrings(arguments, 1, 1), False);
          for i in 1.. get_nb_folders(current) loop
             ls_r_command(get_folder(current, i), To_Unbounded_String("."));
          end loop;
@@ -47,22 +50,11 @@ package body P_Commands is
    
    
    procedure cd_command(currentDirectory: in out T_Folder; arguments: T_Substrings) is
-      folders: T_Substrings;
-      current: T_Folder;
    begin
-      folders := split_string(get_substring_to_string(arguments,1), FILE_SEPARATOR);
-      
-      if(get_nb_substrings(folders) > 0)then
-         if(get_substring_to_string(folders, 1)(1) = FILE_SEPARATOR)then
-            current := get_root;
-         else
-            current := currentDirectory;
-         end if;
-         currentDirectory := go_to_folder(original_directory => current,
-                                          path               => get_substring_to_string(arguments,1));
-      else
-         Put_Line("You have to enter a parameter.");
-      end if;
+      currentDirectory := go_to_folder(currentDirectory, get_substring_to_string(arguments, 1));
+   exception
+      when Invalid_Folder_Error =>
+         Put_Line("Can not move to this directory. It does not exist.");
    end cd_command;
    
    procedure mkdir_command(currentDirectory: in out T_Folder; arguments: T_Substrings)is
@@ -74,11 +66,7 @@ package body P_Commands is
          raise Wrong_Arguments_Number_Error;
       end if;
       
-      if(get_nb_substrings(split_string(get_substring_to_string(arguments, 1), FILE_SEPARATOR)) > 1) then
-         parent := go_to_folder(currentDirectory, get_substring_to_string(arguments, 1), True);
-      else
-         parent := currentDirectory;
-      end if;
+      parent := go_to_folder(currentDirectory, get_substring_to_string(arguments, 1), True);
       fils_name := get_name_from_path(get_substring(arguments, 1));
       fils := create(To_String(fils_name), parent);
    exception
@@ -123,7 +111,6 @@ package body P_Commands is
          folder_deep_copy(source_folder, new_folder);
       else
          -- folder to copy
-         Put_Line("Depuis cp_command => argument, 1 : " & get_substring_to_string(arguments, 1));
          source_folder := go_to_folder(currentDirectory, get_substring_to_string(arguments, 1), True);
          -- folder to put the copy in
          destination_folder := go_to_folder(currentDirectory, get_substring_to_string(arguments, 2), True);
@@ -135,8 +122,7 @@ package body P_Commands is
          -- new_path := get_substring(arguments, 2);
          -- new_name := get_substring(split_string(To_String(new_path), FILE_SEPARATOR), get_nb_substrings(split_string(To_String(new_path), FILE_SEPARATOR)));
          new_name := get_name_from_path(get_substring(arguments, 2));
-         
-         original_file := find_file(source_folder, To_String(new_name));
+         original_file := find_file(source_folder, To_String(original_name));
          new_file := create(To_String(new_name), get_rights(original_file), get_path(destination_folder) & FILE_SEPARATOR & get_name(destination_folder), get_data(original_file));
          set_size(new_file, get_size(original_file));
          add_file(destination_folder, new_file);
@@ -381,7 +367,8 @@ package body P_Commands is
          end loop;
          return current;
       else
-         Put_Line("You have to enter a parameter.");
+         Put_Line("BOUH !");
+         raise Wrong_Arguments_Number_Error;
          return null;
       end if;
    end go_to_folder;
@@ -455,7 +442,6 @@ package body P_Commands is
    end display_folders_and_files;
    
    procedure get_options_parameter_and(arguments: in T_Substrings; options: in out T_Substrings; parameters: in out T_Substrings) is
-      all_arguments_splitted: T_Substrings;
    begin
       -- For every argument
       for i in 1..get_nb_substrings(arguments) loop

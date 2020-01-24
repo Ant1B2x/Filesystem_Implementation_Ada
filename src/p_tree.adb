@@ -60,6 +60,7 @@ package body P_Tree is
    procedure add_sibling (tree : in out T_Tree; sibling : in out T_Tree) is
       sibling_parent : T_Tree;
    begin
+      -- I delete me from my last parent
       if not is_null(get_parent(sibling)) then
          sibling_parent := get_parent(sibling);
          del_sibling(sibling_parent, sibling);

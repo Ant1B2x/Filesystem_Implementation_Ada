@@ -28,7 +28,6 @@ procedure Terminal is
             end if;
          else
             arguments := get_substrings(substrings, 2, get_nb_substrings(substrings));
-            Put_Line(get_substring_to_string(arguments, 1));
          end if;
 
       else
@@ -71,7 +70,9 @@ begin
       get_line(command, command_length);
       exit when command(1..command_length) = "exit";
 
-      run_command(command(1..command_length), folder);
+      if command_length > 0 then
+         run_command(command(1..command_length), folder);
+      end if;
    end loop;
 
 
