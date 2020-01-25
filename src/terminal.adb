@@ -46,7 +46,7 @@ procedure Terminal is
             -- put_line("command not found");
             -- put_line("Try 'help' to see a list of available commands.");
          when Wrong_Arguments_Number_Error =>
-            put_line("missing operand");
+            put_line("Wrong number of operand");
             put_line("Try help '" & get_substring_to_string(substrings, 1) & "' for more information.");
          when Invalid_Folder_Error =>
             Put_Line("The specified path countain an unexisting folder. Can't go through it.");

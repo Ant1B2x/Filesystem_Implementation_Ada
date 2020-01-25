@@ -184,7 +184,7 @@ package body P_Commands is
       
       if(options_contain(options, 'r'))then
          cp_command(currentDirectory, options, parameters);
-         rm_command (currentDirectory, options, parameters);
+         rm_command (currentDirectory, options, get_substrings(parameters, 1, 1));
       else
          file := find_file(source_folder, To_String(original_name));
          
