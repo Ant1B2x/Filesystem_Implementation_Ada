@@ -25,7 +25,7 @@ package body P_Commands is
    procedure ls_command (current_directory : in T_Folder; options : in T_Substrings; parameters : in T_Substrings) is
       current: T_Folder;
    begin
-      if(not only_handled_options(options, "-rmf"))then
+      if(not only_handled_options(options, "-r"))then
          raise Option_Not_Handled_Error;
       end if;
       if(get_nb_substrings(parameters) > 1)then
@@ -103,7 +103,6 @@ package body P_Commands is
       if(get_nb_substrings(parameters) /= 1)then
          raise Wrong_Arguments_Number_Error;
       end if;
-      
       parent := go_to_folder(currentDirectory, get_substring_to_string(parameters, 1), True);
       fils_name := get_name_from_path(get_substring(parameters, 1));
       fils := create(To_String(fils_name), parent);
@@ -136,21 +135,23 @@ package body P_Commands is
          raise Wrong_Arguments_Number_Error;
       end if;
       
-      -- folder to get the copy from
-      source_folder := go_to_folder(currentDirectory, get_substring_to_string(parameters, 1), True);
       -- folder to put the copy in
       destination_folder := go_to_folder(currentDirectory, get_substring_to_string(parameters, 2), True);
-      
       new_name := get_name_from_path(get_substring(parameters, 2));
       
       if(options_contain(options, 'r'))then
-         mkdir_command(currentDirectory, get_substrings(parameters, 2, 2), create_substrings);
+         -- folder to get the copy from
+         source_folder := go_to_folder(currentDirectory, get_substring_to_string(parameters, 1), False);
+         
+         mkdir_command(currentDirectory, create_substrings, get_substrings(parameters, 2, 2));
          
          new_folder := find_folder(destination_folder, To_String(new_name));
-         
          -- starting to copy all its contents
          folder_deep_copy(source_folder, new_folder);
       else
+         
+         -- folder to get the copy from
+         source_folder := go_to_folder(currentDirectory, get_substring_to_string(parameters, 1), True);
          original_name := get_name_from_path(get_substring(parameters, 1));
          
          -- ? A remplacer par clone ?
@@ -454,14 +455,13 @@ package body P_Commands is
       for i in 1..get_nb_files(folder_to_copy) loop
          original_file := get_file(folder_to_copy, i);
          new_file := create(get_name(original_file), get_rights(original_file), get_path(folder_parent_of_clone) & FILE_SEPARATOR & get_name(folder_parent_of_clone), get_data(original_file));
-         set_size(new_file, get_size(new_file));
+         set_size(new_file, get_size(original_file));
          add_file(folder_parent_of_clone, new_file);
       end loop;
-      -- Put_Line("Avant copie dossier");
       for i in 1..get_nb_folders(folder_to_copy) loop
          original_sibling := get_folder(folder_to_copy, i);
          new_sibling := create(get_name(original_sibling), folder_parent_of_clone, get_rights(original_sibling));
-         -- Put_Line("Relance deep_copy");
+         -- Put_Line("Relance deep_copy pour : " & get_name(get_folder(folder_to_copy, i)) & " depuis " & get_name(folder_to_copy));
          folder_deep_copy(get_folder(folder_to_copy, i), new_sibling);
       end loop;
    end folder_deep_copy;
@@ -543,7 +543,10 @@ package body P_Commands is
    
    function options_contain(options: in T_Substrings; option: in Character) return Boolean is
    begin
+      -- Put_Line("options_contain : ");
+      -- Put_Line("   option : " & option);
       for i in 1..get_nb_substrings(options) loop
+         -- Put_Line("   get_substring_to_string(options, i)(1) : " & get_substring_to_string(options, i)(1));
          if(get_substring_to_string(options, i)(1) = option)then
             return True;
          end if;
@@ -555,7 +558,9 @@ package body P_Commands is
       options_handled_substrings: T_Substrings;
    begin
       options_handled_substrings := get_options(options_handled);
+      -- Put_Line("only_handled_options : ");
       for i in 1..get_nb_substrings(options) loop
+         -- Put_Line("   get_substring_to_string(options, i)(1) : " & get_substring_to_string(options, i)(1));
          if(not options_contain(options_handled_substrings, get_substring_to_string(options, i)(1)))then
             return False;
          end if;

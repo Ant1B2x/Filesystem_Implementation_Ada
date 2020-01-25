@@ -12,28 +12,16 @@ procedure Terminal is
    procedure run_command(command: in String; current_dir: in out T_Folder) is
       substrings : T_Substrings;
       option_true : Boolean := False;
-      arguments : T_Substrings;
       num_element : Integer;
-      options: T_Substrings;
-      parameters: T_Substrings;
+      options: T_Substrings := create_substrings;
+      parameters: T_Substrings := create_substrings;
    begin
       substrings := split_string(command, ' ');
 
-      num_element := P_Substrings.get_nb_substrings(substrings);
+      num_element := get_nb_substrings(substrings);
+
       if num_element > 1 then
-         -- help command case
-
-         if get_substring_to_string(substrings, 2) = "-r" then
-            option_true := True;
-            if num_element > 2 then
-               arguments := get_substrings(substrings, 3, get_nb_substrings(substrings));
-            end if;
-         else
-            arguments := get_substrings(substrings, 2, get_nb_substrings(substrings));
-         end if;
-
          get_options_parameter_and_options(get_substrings(substrings, 2, get_nb_substrings(substrings)), options, parameters);
-
       else
          options := create_substrings;
          parameters := create_substrings;
