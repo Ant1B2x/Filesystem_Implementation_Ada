@@ -63,7 +63,7 @@ procedure Menu is
          exit when path_length > 0;
       end loop;
       parameters := create_substrings;
-      add_substring(parameters, path);
+      add_substring(parameters, path(1..path_length));
       cd_command(current_directory, create_substrings, parameters);
    end cd_menu;
    
@@ -257,7 +257,7 @@ procedure Menu is
       print_prompt;
       get_line(path, path_length);
       parameters := create_substrings;
-      add_substring(parameters, path);
+      add_substring(parameters, path(1..path_length));
       tar_command(current_directory, create_substrings, parameters);
    end tar_menu;
    

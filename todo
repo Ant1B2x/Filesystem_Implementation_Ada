@@ -16,6 +16,6 @@ remplacer ESC par Ascii.ASC
 
 séparation arguments => options / paramètres plus tôt ?
 
-r dans ls mais -r dans cp...
 find file et find folder lèvent des exceptions et sont catch
-tester tar de menu ?
+
+ls -r . bizarre
