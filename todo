@@ -1,13 +1,21 @@
-module commandes
+module commandes + refractos
 
-gérer les créations avec des noms similaires (fichiers et dossiers) avec MV
 Faire en sorte de transmettres toutes les options, et que ce soient les programmes des command qui s'auto-gèrent leurs fonctions.
 faire en sorte que le nombre max de fichiers et de dossiers soit de Z, et pas X fichiers et Y dossiers
-
-main menu
 
 programme de test pour les commandes
 
 commentaires dans le code
-unniformiser les tailles de fichier
+uniformiser les tailles de fichier
 
+mettre à jour help de mv
+mettre à jour help de tar (dossier pas fichier)
+
+dossier test à part
+remplacer ESC par Ascii.ASC
+
+séparation arguments => options / paramètres plus tôt ?
+
+r dans ls mais -r dans cp...
+find file et find folder lèvent des exceptions et sont catch
+tester tar de menu ?

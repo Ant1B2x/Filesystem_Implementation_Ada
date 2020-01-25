@@ -2,7 +2,7 @@ project Projet_Sgf is
 
    for Source_Dirs use ("src");
    for Object_Dir use "obj";
-   for Main use ("test_cp", "terminal.adb", "test_array", "test_file", "test_folder", "test_metadata", "test_sort.adb", "test_substrings", "test_tree");
+   for Main use ("menu", "test_cp", "terminal.adb", "test_array", "test_file", "test_folder", "test_metadata", "test_sort.adb", "test_substrings", "test_tree");
 
 end Projet_Sgf;
 
