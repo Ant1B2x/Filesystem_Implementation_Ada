@@ -1,9 +1,9 @@
-with Ada.Text_IO; use Ada.Text_IO;
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
-with P_Constants; use P_Constants;
-with P_Metadata; use P_Metadata;
+
 with P_Tree;
 with P_Array;
+with P_Constants; use P_Constants;
+with P_Metadata; use P_Metadata;
 with P_File; use P_File;
 
 package P_Folder is
@@ -95,8 +95,9 @@ package P_Folder is
    -- Return :
    --    Integer : The size as bytes
    -- Preconditions : /
-   -- Postconditions : /
-   function get_size (folder : in T_Folder) return Integer;
+   -- Postconditions : the result is equal to the generic size of a folder
+   function get_size (folder : in T_Folder) return Integer
+   with Post => get_size'Result = FOLDER_SIZE;
    
    -- Role : Method to get the Singloton "root".
    -- Root can only be created once, and get_root will always return the same instance of root, or create it if it does not exist.

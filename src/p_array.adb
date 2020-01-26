@@ -18,7 +18,7 @@ package body p_array is
    end get_value;
    
    function get_values(f_array: T_Array; index_first: Integer; index_last: Integer)return T_Array is
-      new_array: T_Array;
+      new_array : T_Array;
    begin
       -- Set nb_values to the right number
       new_array.nb_values := (index_last - index_first + 1);

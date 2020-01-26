@@ -6,10 +6,10 @@ package P_Constants is
    NMAX_FOLDERS_FILES : constant Integer := 2*NMAX_VALUES;
    -- maximum string length
    LMAX_STRING : constant Integer := 100;
-   -- maximum file size
-   SMAX_FILE : constant Integer := 1000000000; -- 1Go
-   -- folder size
-   FOLDER_SIZE : constant Integer := 10000; -- 10Ko
+   -- maximum file size = 1Go
+   SMAX_FILE : constant Integer := 1000*1000*1000;
+   -- folder size = 10Ko
+   FOLDER_SIZE : constant Integer := 10*1000;
    -- file separator
    FILE_SEPARATOR : constant Character := '/';
 

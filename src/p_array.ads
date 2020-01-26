@@ -49,7 +49,7 @@ package P_Array is
    -- Postconditions : T_Array.nb_values = index_last - index_first + 1
    function get_values (f_array: in T_Array; index_first: in Integer; index_last: in Integer) return T_Array
      with Pre => index_first > 0 and index_first <= index_last and index_last <= get_nb_values(f_array),
-     Post => T_Array.nb_values = index_last - index_first + 1;
+     Post => get_nb_values(get_values'Result) = index_last - index_first + 1;
    
    -- Role : Add an entity to the f_array
    -- Parameters :

@@ -31,7 +31,7 @@ procedure Menu is
    
    procedure print_main_menu (current_directory : in T_Folder) is
    begin
-      put_line("You are in: " & ASCII.ESC & "[95m" & get_pwd(current_directory) & ASCII.ESC & "[0m");
+      put_line("You are in: " & ASCII.ESC & "[31m" & get_pwd(current_directory) & ASCII.ESC & "[0m");
       put_line("What do you want to do?");
       put_line("1) Print name of current/working directory");
       put_line("2) Change the working directory");
