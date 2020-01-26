@@ -58,6 +58,8 @@ package body P_Commands is
    exception
       when Invalid_Folder_Error =>
          put_line("a specified path is incorrect, no such directory");
+      When Same_Name_Error =>
+         put_line("cannot create file or directory: A file or directory with same name already exists");
       when Empty_Option_Error =>
          put_line("empty option");
          put_line("Try help '" & get_substring_to_string(splitted_line, 1) & "' for more information.");
@@ -380,10 +382,10 @@ package body P_Commands is
    
    procedure pwd_command (current_directory: in T_Folder; options : in T_Substrings; parameters : in T_Substrings) is
    begin
-      if get_nb_substrings(options) > 0 then
+      if get_nb_substrings(options) /= 0 then
          raise Not_Handled_Option_Error;
       end if;
-      if get_nb_substrings(parameters) > 0 then
+      if get_nb_substrings(parameters) /= 0 then
          raise Wrong_Parameters_Number_Error;
       end if;
       put_line(get_pwd(current_directory));
@@ -391,13 +393,19 @@ package body P_Commands is
    
    procedure cd_command(current_directory: in out T_Folder; options : in T_Substrings; parameters : in T_Substrings) is
    begin
-      if get_nb_substrings(options) > 0 then
+      if get_nb_substrings(options) /= 0 then
          raise Not_Handled_Option_Error;
       end if;
       if get_nb_substrings(parameters) > 1 then
          raise Wrong_Parameters_Number_Error;
       end if;
-      current_directory := go_to_folder(current_directory, get_substring_to_string(parameters, 1));
+      -- if a path is specified, cd to this path
+      if get_substring_to_string(parameters, 1)'Length > 0 then
+         current_directory := go_to_folder(current_directory, get_substring_to_string(parameters, 1));
+      else
+      -- if no path is specified, cd to root directory
+         current_directory := get_root;
+      end if;
    end cd_command;
    
    procedure ls_command (current_directory : in T_Folder; options : in T_Substrings; parameters : in T_Substrings) is
@@ -417,73 +425,71 @@ package body P_Commands is
       else
          current := current_directory;
       end if;
+      -- if options contain r, do a recursive ls on each subfolder
       if contains_option(options, 'r') then
-         put_line(":");
+         put_line(".:");
          display_folders_and_files(create_siblings_set(current));
          for i in 1.. get_nb_folders(current) loop
             ls_r_command(get_folder(current, i), To_Unbounded_String("."));
          end loop;
+      -- else, do a standard ls
       else
          display_folders_and_files(create_siblings_set(current));
       end if;
    end ls_command;
    
-   -- private functions & procedures
    procedure ls_r_command (current_directory : in T_Folder; preceding_path : in Unbounded_String) is
-      current_path: Unbounded_String;
+      current_path : Unbounded_String;
    begin
+      -- print current path and ":"
       current_path := preceding_path & FILE_SEPARATOR & get_name(current_directory);
       new_line;
       put_line(To_String(current_path) & ":");
-      
+      -- print current directory content
       display_folders_and_files(create_siblings_set(current_directory));
       for i in 1.. get_nb_folders(current_directory) loop
          ls_r_command(get_folder(current_directory,i), current_path);
       end loop;
    end ls_r_command;
    
-   procedure mkdir_command(currentDirectory: in out T_Folder; options : in T_Substrings; parameters : in T_Substrings)is
-      fils : T_Folder;
-      parent: T_Folder;
-      fils_name: Unbounded_String;
+   procedure mkdir_command (current_directory : in out T_Folder; options : in T_Substrings; parameters : in T_Substrings) is
+      new_directory : T_Folder;
+      new_directory_name : Unbounded_String;
+      parent : T_Folder;
    begin
-      if(get_nb_substrings(options) > 0)then
+      if get_nb_substrings(options) /= 0 then
          raise Not_Handled_Option_Error;
       end if;
-      if(get_nb_substrings(parameters) /= 1)then
+      if get_nb_substrings(parameters) /= 1 then
          raise Wrong_Parameters_Number_Error;
       end if;
-      parent := go_to_folder(currentDirectory, get_substring_to_string(parameters, 1), True);
-      fils_name := get_name_from_path(get_substring(parameters, 1));
-      fils := create(To_String(fils_name), parent);
-   exception
-      when Invalid_Folder_Error =>
-         put_line("cannot create directory '" & get_substring_to_string(parameters, 1) & "': No such file or directory");
-      when Same_Name_Error =>
-         Put_Line("cannot create directory '" & get_substring_to_string(parameters, 1) & "': File or directory with same name already exist");
+      -- go to the parent of the new directory
+      parent := go_to_folder(current_directory, get_substring_to_string(parameters, 1), True);
+      -- create the new directory with the given name
+      new_directory_name := get_name_from_path(get_substring(parameters, 1));
+      new_directory := create(To_String(new_directory_name), parent);
    end mkdir_command;
    
-   procedure touch_command(currentDirectory: in out T_Folder; options : in T_Substrings; parameters : in T_Substrings)is
-      file : T_File;
+   procedure touch_command(current_directory : in out T_Folder; options : in T_Substrings; parameters : in T_Substrings)is
+      new_file : T_File;
+      new_file_name: Unbounded_String;
       parent: T_Folder;
-      file_name: Unbounded_String;
    begin
-      if(get_nb_substrings(options) > 0)then
+      if get_nb_substrings(options) /= 0 then
          raise Not_Handled_Option_Error;
       end if;
-      if(get_nb_substrings(parameters) /= 1)then
+      if get_nb_substrings(parameters) /= 1 then
          raise Wrong_Parameters_Number_Error;
       end if;
-      if(get_nb_substrings(split_string(get_substring_to_string(parameters, 1), FILE_SEPARATOR)) > 1) then
-         parent := go_to_folder(currentDirectory, get_substring_to_string(parameters, 1), True);
-      else
-         parent := currentDirectory;
-      end if;
-      file_name := get_name_from_path(get_substring(parameters, 1));
-      file := create(To_String(file_name), get_path(parent) & get_name(parent));
-      add_file(parent,file);
+      -- go to the parent of the new file
+      parent := go_to_folder(current_directory, get_substring_to_string(parameters, 1), True);
+      -- create the new file with the given name
+      new_file_name := get_name_from_path(get_substring(parameters, 1));
+      new_file := create(To_String(new_file_name), get_path(parent) & get_name(parent));
+      add_file(parent, new_file);
    end touch_command;
    
+   -- continuer ici demain
    procedure cp_command(currentDirectory: in out T_Folder; options : in T_Substrings; parameters : in T_Substrings) is
       source_folder: T_Folder;
       destination_folder: T_Folder;
@@ -613,9 +619,6 @@ package body P_Commands is
       new_file := create(To_String(name) & ".tar", get_path(currentDirectory) & "/" & get_name(currentDirectory));
       set_size(new_file, size);
       add_file(currentDirectory, new_file);
-   exception
-      when Invalid_Folder_Error =>
-         Put_Line("It is not possible to compress an unexisting folder");
    end tar_command;
    
    procedure clear_command is
@@ -625,15 +628,16 @@ package body P_Commands is
    
    procedure help_command (options: t_Substrings; parameters : in T_Substrings) is
    begin
-      if get_nb_substrings(options) > 0 then
+      if get_nb_substrings(options) /= 0 then
          raise Not_Handled_Option_Error;
       end if;
       if get_nb_substrings(parameters) > 1 then
          raise Wrong_Parameters_Number_Error;
       end if;
-      
+      -- if a command is given, print the specific help of this command
       if get_nb_substrings(parameters) = 1 then
          print_specific_help(get_substring_to_string(parameters, 1));
+      -- else, print the global help
       else
          print_global_help;
       end if;

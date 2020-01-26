@@ -7,7 +7,7 @@ generic
 package P_Tree is
    
    type T_Node is private;
-   type T_Tree is access T_Node;
+   type T_Tree is access T_Node; -- T_Tree should be in "protected" because we need to know that it's a pointer
    
    package P_Siblings is new P_Array (T => T_Tree);
    subtype T_Siblings is P_Siblings.T_Array;

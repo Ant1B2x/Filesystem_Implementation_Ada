@@ -233,7 +233,7 @@ private
    -- Return : /
    -- Preconditions : /
    -- Postconditions : /
-   procedure mkdir_command (currentDirectory: in out T_Folder; options : in T_Substrings; parameters : in T_Substrings);
+   procedure mkdir_command (current_directory : in out T_Folder; options : in T_Substrings; parameters : in T_Substrings);
    
    -- Role : Create a new file. Need a path with name as last entity.
    -- Parameters :
@@ -243,7 +243,7 @@ private
    -- Return /
    -- Preconditions : /
    -- Postconditions : /
-   procedure touch_command (currentDirectory: in out T_Folder; options : in T_Substrings; parameters : in T_Substrings);
+   procedure touch_command (current_directory: in out T_Folder; options : in T_Substrings; parameters : in T_Substrings);
    
    -- Role : Copy a file , or a directory with "-r" option. 
    -- Use 2 parameters (path from copy and path to copy), and you have to specify the name of the new copy. 

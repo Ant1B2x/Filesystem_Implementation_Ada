@@ -1,5 +1,5 @@
 package body P_Folder is
-   
+  
    function create_root return T_Folder is
       folder : T_Folder;
       data : T_Folder_Data;
@@ -157,13 +157,16 @@ package body P_Folder is
       return P_Folder_Tree.get_nb_siblings(folder);
    end get_nb_folders;
    
-   -- T_Tree doit être en "protected" car on a besoin de savoir que c'est un pointeur
    function find_folder (folder : in T_Folder; folder_name : in String) return T_Folder is
    begin
-      if(folder_name ="..")then
-         return get_parent(folder);
+      if folder_name = ".." then
+         if is_root(folder) then
+            return folder;
+         else
+            return get_parent(folder);
+         end if;
       end if;
-      if(folder_name =".")then
+      if folder_name = "." then
          return folder;
       end if;
       for i in 1..get_nb_folders(folder) loop
