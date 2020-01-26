@@ -1,6 +1,5 @@
 module commandes + refractos
 
-Faire en sorte de transmettres toutes les options, et que ce soient les programmes des command qui s'auto-gèrent leurs fonctions.
 faire en sorte que le nombre max de fichiers et de dossiers soit de Z, et pas X fichiers et Y dossiers
 
 programme de test pour les commandes
@@ -14,8 +13,7 @@ mettre à jour help de tar (dossier pas fichier)
 dossier test à part
 remplacer ESC par Ascii.ASC
 
-séparation arguments => options / paramètres plus tôt ?
+=> séparation arguments => options / paramètres plus tôt ?
 
 find file et find folder lèvent des exceptions et sont catch
 
-ls -r . bizarre
