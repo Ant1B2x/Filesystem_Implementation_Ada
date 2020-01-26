@@ -1,5 +1,4 @@
 with Ada.Text_IO; use Ada.Text_IO;
-with Ada.Characters.Latin_1; use Ada.Characters.Latin_1;
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 with Ada.Strings.Maps.Constants;
 with Ada.Strings.Fixed;
@@ -19,7 +18,13 @@ package P_Commands is
    Invalid_Folder_Error: Exception;
 
    type encoded_commands is (ls, rm, pwd, cd, mkdir, cp, mv, tar, touch, help, clear);
-
+   
+   function command_to_string (encoded_command : in encoded_commands) return String;
+   
+   procedure run_command(current_directory : in out T_Folder; command: in String);
+   
+private
+   
    -- Role : Its a function returning the correct path. As it is use in command and in Terminal, it has to be a function
    -- Parameters :
    --    current_directory (in T_Folder) : Folder to get path from
@@ -158,8 +163,7 @@ package P_Commands is
    -- Preconditions : /
    -- Postconditions : /
    procedure get_options_parameter_and_options(arguments: in T_Substrings; options: in out T_Substrings; parameters: in out T_Substrings);
-
-private
+   
    -- Role : It's a recursive procedure used when the recursive ls is needed.
    -- Parameters :
    --    current_directory (T_Folder) : The current folder to display the content from

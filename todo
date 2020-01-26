@@ -10,10 +10,6 @@ uniformiser les tailles de fichier
 mettre à jour help de mv
 mettre à jour help de tar (dossier pas fichier)
 
-dossier test à part
-remplacer ESC par Ascii.ASC
-
-=> séparation arguments => options / paramètres plus tôt ?
-
 find file et find folder lèvent des exceptions et sont catch
 
+tar chemin vide

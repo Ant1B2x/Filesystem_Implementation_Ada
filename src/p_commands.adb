@@ -1,5 +1,55 @@
 package body P_Commands is
    
+   procedure run_command(current_directory : in out T_Folder; command: in String) is
+      substrings : T_Substrings;
+      option_true : Boolean := False;
+      num_element : Integer;
+      options: T_Substrings := create_substrings;
+      parameters: T_Substrings := create_substrings;
+   begin
+      substrings := split_string(command, ' ');
+
+      num_element := get_nb_substrings(substrings);
+
+      if num_element > 1 then
+         get_options_parameter_and_options(get_substrings(substrings, 2, get_nb_substrings(substrings)), options, parameters);
+      else
+         options := create_substrings;
+         parameters := create_substrings;
+      end if;
+
+      begin
+         case encoded_commands'Value(get_substring_to_string(substrings, 1)) is
+            when ls => ls_command(current_directory, options, parameters);
+            when rm => rm_command(current_directory, options, parameters);
+            when pwd => pwd_command(current_directory, options, parameters);
+            when cd => cd_command(current_directory, options, parameters);
+            when mkdir => mkdir_command(current_directory, options, parameters);
+            when cp => cp_command(current_directory, options, parameters);
+            when mv => mv_command(current_directory, options, parameters);
+            when touch => touch_command(current_directory, options, parameters);
+            when tar => tar_command(current_directory, options, parameters);
+            when help => help_command(options, parameters);
+            when clear => clear_command;
+         end case;
+      exception
+         when Constraint_Error =>
+            put_line("command not found");
+            put_line("Try 'help' to see a list of available commands.");
+         when Wrong_Arguments_Number_Error =>
+            put_line("Wrong number of operand");
+            put_line("Try help '" & get_substring_to_string(substrings, 1) & "' for more information.");
+         when Invalid_Folder_Error =>
+            Put_Line("The specified path countain an unexisting folder. Can't go through it.");
+      end;
+
+   end run_command;
+   
+   function command_to_string (encoded_command : in encoded_commands) return String is
+   begin
+      return encoded_commands'Image(encoded_command);
+   end command_to_string;
+   
    function get_pwd (current_directory : in T_Folder) return String is
    begin
       if(is_root(current_directory))then
@@ -249,7 +299,7 @@ package body P_Commands is
    
    procedure clear_command is
    begin
-      put(ESC & "[2J");
+      put(ASCII.ESC & "[2J");
    end clear_command;
    
    procedure help_command (options: t_Substrings; parameters : in T_Substrings) is
@@ -488,9 +538,9 @@ package body P_Commands is
    begin
       for sibling of siblings_set loop
          if sibling.is_folder then
-            put(ESC & "[95m");
+            put(ASCII.ESC & "[95m");
             put(To_String(sibling.name) & "  ");
-            put(ESC & "[0m");
+            put(ASCII.ESC & "[0m");
          else
             put(To_String(sibling.name) & "  ");
          end if;
