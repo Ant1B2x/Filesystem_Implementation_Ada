@@ -13,17 +13,13 @@ with P_Substrings; use P_Substrings;
 package P_Commands is
    
    Wrong_Arguments_Number_Error : Exception;
-   Option_Not_Handled_Error: Exception;
-   invalid_option_error: Exception;
-   Invalid_Folder_Error: Exception;
+   Option_Not_Handled_Error : Exception;
+   Invalid_Option_Error : Exception;
+   Invalid_Folder_Error : Exception;
 
    type encoded_commands is (ls, rm, pwd, cd, mkdir, cp, mv, tar, touch, help, clear);
    
    function command_to_string (encoded_command : in encoded_commands) return String;
-   
-   procedure run_command(current_directory : in out T_Folder; command: in String);
-   
-private
    
    -- Role : Its a function returning the correct path. As it is use in command and in Terminal, it has to be a function
    -- Parameters :
@@ -33,6 +29,12 @@ private
    -- Preconditions : /
    -- Postconditions : /
    function get_pwd (current_directory : in T_Folder) return String;
+   
+   procedure run_command(current_directory : in out T_Folder; command: in String);
+   
+private
+   
+   
    -- Role : Print the path of the current folder
    -- Parameters :
    --    current_directory (T_Folder) : The current folder to display the path from

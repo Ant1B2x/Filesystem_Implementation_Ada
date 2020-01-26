@@ -247,7 +247,7 @@ begin
          when 9 =>
             tar_menu(current_directory);
          when 10 =>
-            clear_command;
+            run_command(current_directory, command_to_string(clear));
          when others =>
             null;
       end case;

@@ -20,40 +20,40 @@ begin
    parameters := create_substrings;
    options := create_substrings;
    add_substring(parameters,"testCP");
-   mkdir_command(folder, options, parameters);
+   --mkdir_command(folder, options, parameters);
    parameters := create_substrings;
    options := create_substrings;
    add_substring(parameters,"testCP/test1");
-   mkdir_command(folder, options, parameters);
+   --mkdir_command(folder, options, parameters);
    
    parameters := create_substrings;
    options := create_substrings;
    add_substring(parameters,"testCP/Blou");
-   touch_command(folder, options, parameters);
+   --touch_command(folder, options, parameters);
    
    parameters := create_substrings;
    options := create_substrings;
    add_substring(parameters,"test");
-   mkdir_command(folder, options, parameters);
+   --mkdir_command(folder, options, parameters);
    
    parameters := create_substrings;
    options := create_substrings;
    add_substring(parameters,"testCP/test1/hum");
-   mkdir_command(folder, options, parameters);
+   --mkdir_command(folder, options, parameters);
    
    parameters := create_substrings;
    options := create_substrings;
    add_substring(parameters,"testCP/test2");
-   mkdir_command(folder, options, parameters);
+   --mkdir_command(folder, options, parameters);
    
    parameters := create_substrings;
    options := create_substrings;
    add_substring(parameters,"testCP/test2/AH");
-   mkdir_command(folder, options, parameters);
+   --mkdir_command(folder, options, parameters);
    parameters := create_substrings;
    options := create_substrings;
    add_substring(parameters,".");
-   ls_command(folder, options, parameters);
+   --ls_command(folder, options, parameters);
    
    
    Put_Line("Copie du testCP dans test :");
@@ -62,24 +62,24 @@ begin
    add_substring(options,"r");
    add_substring(parameters,"testCP");
    add_substring(parameters,"test/test");
-   cp_command(folder, options, parameters);
+   --cp_command(folder, options, parameters);
    parameters := create_substrings;
    options := create_substrings;
    add_substring(options,"r");
    add_substring(parameters,".");
-   ls_command(folder, options, parameters);
+   --ls_command(folder, options, parameters);
    
    Put_Line("Suppression de : testCP/Blou");
    parameters := create_substrings;
    options := create_substrings;
    add_substring(parameters,"testCP/Blou");
-   rm_command(folder, options, parameters);
+   --rm_command(folder, options, parameters);
    
    parameters := create_substrings;
    options := create_substrings;
    add_substring(options,"r");
    add_substring(parameters,".");
-   ls_command(folder, options, parameters);
+   --ls_command(folder, options, parameters);
    
    
    Put_Line("Suppression de : test/test/test2/AH");
@@ -87,50 +87,50 @@ begin
    options := create_substrings;
    add_substring(options,"r");
    add_substring(parameters,"test/test/test2/AH");
-   rm_command(folder, options, parameters);
+   --rm_command(folder, options, parameters);
    
    parameters := create_substrings;
    options := create_substrings;
    add_substring(options,"r");
    add_substring(parameters,".");
-   ls_command(folder, options, parameters);
+   --ls_command(folder, options, parameters);
    
    Put_Line("Copie de : test/test/Blou dans test/test/test2");
    parameters := create_substrings;
    options := create_substrings;
    add_substring(parameters,"test/test/Blou");
    add_substring(parameters,"test/test/test2/Blou");
-   cp_command(folder, options, parameters);
+   --cp_command(folder, options, parameters);
    
    parameters := create_substrings;
    options := create_substrings;
    add_substring(options,"r");
    add_substring(parameters,".");
-   ls_command(folder, options, parameters);
+   --ls_command(folder, options, parameters);
    
    Put_Line("Suppression de : test/test/test2/Blou");
    parameters := create_substrings;
    options := create_substrings;
    add_substring(parameters,"test/test/test2/Blou");
-   rm_command(folder, options, parameters);
+   --rm_command(folder, options, parameters);
    
    parameters := create_substrings;
    options := create_substrings;
    add_substring(options,"r");
    add_substring(parameters,".");
-   ls_command(folder, options, parameters);
+   --ls_command(folder, options, parameters);
    
    Put_Line("mv de : test/test/Blou test/test/test2/Blou");
    parameters := create_substrings;
    options := create_substrings;
    add_substring(parameters,"test/test/Blou");
    add_substring(parameters,"test/test/test2/Blou");
-   mv_command(folder, options, parameters);
+   --mv_command(folder, options, parameters);
    
    parameters := create_substrings;
    options := create_substrings;
    add_substring(options,"r");
    add_substring(parameters,".");
-   ls_command(folder, options, parameters);
+   --ls_command(folder, options, parameters);
    
 end test_cp;

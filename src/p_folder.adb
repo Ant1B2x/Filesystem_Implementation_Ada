@@ -27,6 +27,11 @@ package body P_Folder is
          raise Same_Name_Error;
       end if;
       
+      -- check if the parent directory is full
+      if get_nb_files(parent) + get_nb_folders(parent) = NMAX_FOLDERS_FILES then
+         raise Full_Folder_Error;
+      end if;
+      
       folder := P_Folder_Tree.create(parent);
       
       data.files := P_Files.create;
@@ -209,6 +214,11 @@ package body P_Folder is
          raise Same_Name_Error;
       end if;
       
+      -- check if the directory is full
+      if get_nb_files(folder) + get_nb_folders(folder) = NMAX_FOLDERS_FILES then
+         raise Full_Folder_Error;
+      end if;
+      
       folder_data := get_data(folder);
       P_Files.add_value(folder_data.files, new_file);
       set_data(folder, folder_data);
@@ -231,11 +241,6 @@ package body P_Folder is
    begin
       return find_folder(folder, name) /= null or find_file(folder, name) /= null;
    end has_son_with_this_name;
-   
-   function are_the_same(folder1: T_Folder; folder2: T_Folder) return Boolean is
-   begin
-      return get_parent(folder1) = get_parent(folder2) and then get_name(folder1) = get_name(folder2);
-   end are_the_same;
    
    
 end P_Folder;

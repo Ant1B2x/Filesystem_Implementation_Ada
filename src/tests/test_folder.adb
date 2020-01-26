@@ -319,5 +319,27 @@ begin
          put_line("Same_Name_Error raised, you can't have two files with the same name in the same folder");
    end;
    new_line;
+   
+   -- raising File_Not_Found_Error when finding file
+--     put_line("Raising File_Not_Found_Error when finding file:");
+--     begin
+--        file := find_file(folder, "idonotexist");
+--        put_line("Nothing raised, find_file should have raised File_Not_Found_Error");
+--     exception
+--        when File_Not_Found_Error =>
+--           put_line("File_Not_Found_Error raised, folder doesn't contain ""idonotexist"" file");
+--     end;
+--     new_line;
+   
+   -- raising Folder_Not_Found_Error when finding folder
+--     put_line("Raising Folder_Not_Found_Error when finding folder:");
+--     begin
+--        folder_sibling := find_folder(folder, "idonotexist");
+--        put_line("Nothing raised, find_folder should have raised Folder_Not_Found_Error");
+--     exception
+--        when Folder_Not_Found_Error =>
+--           put_line("Folder_Not_Found_Error raised, folder doesn't contain ""idonotexist"" folder");
+--     end;
+--     new_line;
     
 end test_folder;

@@ -257,8 +257,12 @@ package body P_Commands is
       if(get_nb_substrings(parameters) > 1)then
          raise Wrong_Arguments_Number_Error;
       end if;
-      folder_to_tar := go_to_folder(currentDirectory, get_substring_to_string(parameters, 1));
-      size := calculate_size(go_to_folder(currentDirectory, get_substring_to_string(parameters, 1)));
+      if(get_substring_to_string(parameters, 1)'Length > 0)then
+         folder_to_tar := go_to_folder(currentDirectory, get_substring_to_string(parameters, 1));
+      else
+         folder_to_tar := currentDirectory;
+      end if;
+      size := calculate_size(folder_to_tar);
       name := (if is_root(folder_to_tar) then To_Unbounded_String("root") else To_Unbounded_String(get_name(folder_to_tar)));
       new_file := create(To_String(name) & ".tar", get_path(currentDirectory) & "/" & get_name(currentDirectory));
       set_size(new_file, size);
@@ -345,7 +349,7 @@ package body P_Commands is
       put_line("cp       copy files and directories"); -- not sure
       put_line("mv       move (rename) files"); -- not sure
       put_line("rm       remove files or directories");
-      put_line("tar      archive a file");
+      put_line("tar      archive a directory");
       put_line("clear    clear the terminal screen");
       put_line("help     show this menu");
       put_line("exit     cause the shell to exit");
@@ -407,7 +411,11 @@ package body P_Commands is
                put_line("  mv - move (rename) files");
                new_line;
                put_line("SYNOPSIS");
-               put_line("  mv SOURCE DEST");
+               put_line("  mv [-r] SOURCE DEST");
+               new_line;
+               put_line("OPTIONS");
+               put_line("  -r");
+               put_line("      move a directory, move file if omitted");
             when rm =>
                put_line("NAME");
                put_line("  rm - remove files or directories");
@@ -420,7 +428,7 @@ package body P_Commands is
                put_line("      remove a directory, remove file if omitted");
             when tar =>
                put_line("NAME");
-               put_line("  tar - archive a file");
+               put_line("  tar - archive a directory");
                new_line;
                put_line("SYNOPSIS");
                put_line("  tar FILE");
