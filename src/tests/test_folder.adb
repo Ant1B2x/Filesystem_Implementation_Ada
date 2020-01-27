@@ -41,6 +41,11 @@ begin
    else
       put_line("get_path(root) is incoherent");
    end if;
+   if get_pwd(root) = "/" then
+      put_line("get_pwd(root) = ""/""");
+   else
+      put_line("get_pwd(root) is incoherent");
+   end if;
    if is_empty(root) then
       put_line("is_empty(root) = True");
    else
@@ -85,11 +90,15 @@ begin
    else
       put_line("get_size(folder) is incoherent");
    end if;
-   if get_path(folder) = "/" then
-      
+   if get_path(folder) = "/" then 
       put_line("get_path(folder) = ""/""");
    else
       put_line("get_path(folder) is incoherent");
+   end if;
+   if get_pwd(folder) = "/project" then
+      put_line("get_pwd(folder) = ""/project""");
+   else
+      put_line("get_pwd(folder) is incoherent");
    end if;
    new_line;
    
@@ -193,11 +202,19 @@ begin
    
    -- get path
    put_line("Get path:");
-   put_line(get_path(folder_sibling));
-   if get_path(folder_sibling) = FILE_SEPARATOR & get_name(folder) then
-      put_line("get_path(folder_sibling) = FILE_SEPARATOR & get_name(folder)");
+   if get_path(folder_sibling) = "/project_old" then
+      put_line("get_path(folder_sibling) = ""/project_old""");
    else
       put_line("get_path(folder_sibling) is incoherent");
+   end if;
+   new_line;
+   
+   -- get pwd
+   put_line("Get pwd:");
+   if get_pwd(folder_sibling) = "/project_old/drafts" then
+      put_line("get_pwd(folder_sibling) = ""/project_old/drafts""");
+   else
+      put_line("get_pwd(folder_sibling) is incoherent");
    end if;
    new_line;
    
@@ -213,10 +230,15 @@ begin
 
    -- add file & get file
    put_line("Add file & get file:");
-   file := create("file_old.bak", (RW, R, R), get_path(folder), "thisissomedata");
+   file := create("file_old.bak", (RW, R, R), get_pwd(folder), "thisissomedata");
    add_file(folder, file);
-   if get_file(folder, 1) = file then
-      put_line("get_file(folder, 1) = file");
+   if get_name(get_file(folder, 1)) = get_name(file) then
+      put_line("get_name(get_file(folder, 1)) = get_name(file)");
+   else
+      put_line("get_file(folder, 1) is incoherent");
+   end if;
+   if get_path(get_file(folder, 1)) = get_path(file) then
+      put_line("get_path(get_file(folder, 1)) = get_path(file)");
    else
       put_line("get_file(folder, 1) is incoherent");
    end if;
@@ -244,8 +266,13 @@ begin
    
    -- find file
    put_line("Find file:");
-   if find_file(folder, "file_old.bak") = file then
-      put_line("find_file(folder, ""file_old.bak"") = file");
+   if get_name(find_file(folder, "file_old.bak")) = get_name(file) then
+      put_line("get_name(find_file(folder, ""file_old.bak"")) = get_name(file)");
+   else
+      put_line("find_file(folder, ""file_old.bak"") is incoherent");
+   end if;
+   if get_path(find_file(folder, "file_old.bak")) = get_path(file) then
+      put_line("get_path(find_file(folder, ""file_old.bak"")) = get_path(file)");
    else
       put_line("find_file(folder, ""file_old.bak"") is incoherent");
    end if;
@@ -319,27 +346,5 @@ begin
          put_line("Same_Name_Error raised, you can't have two files with the same name in the same folder");
    end;
    new_line;
-   
-   -- raising File_Not_Found_Error when finding file
---     put_line("Raising File_Not_Found_Error when finding file:");
---     begin
---        file := find_file(folder, "idonotexist");
---        put_line("Nothing raised, find_file should have raised File_Not_Found_Error");
---     exception
---        when File_Not_Found_Error =>
---           put_line("File_Not_Found_Error raised, folder doesn't contain ""idonotexist"" file");
---     end;
---     new_line;
-   
-   -- raising Folder_Not_Found_Error when finding folder
---     put_line("Raising Folder_Not_Found_Error when finding folder:");
---     begin
---        folder_sibling := find_folder(folder, "idonotexist");
---        put_line("Nothing raised, find_folder should have raised Folder_Not_Found_Error");
---     exception
---        when Folder_Not_Found_Error =>
---           put_line("Folder_Not_Found_Error raised, folder doesn't contain ""idonotexist"" folder");
---     end;
---     new_line;
     
 end test_folder;

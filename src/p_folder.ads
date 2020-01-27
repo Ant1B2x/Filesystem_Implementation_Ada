@@ -119,6 +119,15 @@ package P_Folder is
    -- Postconditions : /
    function get_path (folder : in T_Folder) return String;
    
+   -- Role : Returns the path + name of a folder as a string
+   -- Parameters :
+   --    current_directory (in T_Folder) : Folder to get pwd from
+   -- Return :
+   --    return (String) : The path + name of the folder
+   -- Preconditions : /
+   -- Postconditions : /
+   function get_pwd (current_directory : in T_Folder) return String;
+   
    -- Role : Return the parent of the given folder
    -- Parameters :
    --    folder (T_Folder) : Folder to get the parent from
@@ -245,15 +254,15 @@ package P_Folder is
    function find_file (folder : in T_Folder; file_name : in String) return T_File
      with Pre => file_name'length <= LMAX_STRING;
    
-   -- Role : Add a new file to the folder. At it at the end of the other files list
+   -- Role : Add a file to the folder. At it at the end of the other files list
    -- Parameters :
    --    folder (T_Folder) : Folder to add the file in
-   --    new_file (T_File) : File to add in folder
+   --    file (T_File) : File to add in folder
    -- Return :
    --    /
    -- Preconditions : /
    -- Postconditions : /
-   procedure add_file (folder : in out T_Folder; new_file : in T_File);
+   procedure add_file (folder : in out T_Folder; file : in T_File);
    
    -- Role : Delete the file with file_name as name from the direct files of folder.
    -- Parameters :

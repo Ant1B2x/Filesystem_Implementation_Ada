@@ -7,23 +7,6 @@ package body P_Commands is
       return E_Encoded_Commands'Image(encoded_command);
    end command_to_string;
    
-   function get_pwd (current_directory : in T_Folder) return String is
-   begin
-      -- if we're in the root directory
-      if is_root(current_directory) then 
-         -- return "" & "/"
-         return get_path(current_directory) & FILE_SEPARATOR; 
-      -- if we're in a root subdirectory
-      elsif is_root(get_parent(current_directory)) then 
-         -- return "/" & name
-         return get_path(current_directory) & get_name(current_directory);
-      -- in every other directory
-      else
-         -- return path & "/" & name
-         return get_path(current_directory) & FILE_SEPARATOR & get_name(current_directory);
-      end if;
-   end get_pwd;
-   
    procedure run_command(current_directory : in out T_Folder; command_line : in String) is
       splitted_line : T_Substrings; -- splitted command line
       nb_arguments : Integer; -- number of arguments in the command line (counting the called command)
@@ -56,22 +39,24 @@ package body P_Commands is
          when clear => clear_command;
       end case;
    exception
-      when Invalid_Folder_Error =>
-         put_line("a specified path is incorrect, no such directory");
-      when Copy_Into_Itself_Error =>
-         put_line("cannot copy a directory into itself");
       when Invalid_Character_Error =>
-         put_line("a path you entered contain an invalid character");
+         put_line("A path you entered contain an invalid character.");
+      when Invalid_Folder_Error =>
+         put_line("A specified path is incorrect, no such directory.");
+      when Invalid_File_Error =>
+         put_line("A specified path is incorrect, no such file.");
+      when Copy_Into_Itself_Error =>
+         put_line("Cannot copy a directory into itself.");
       When Same_Name_Error =>
-         put_line("cannot create file or directory: A file or directory with same name already exists");
+         put_line("Cannot create file or directory: A file or directory with same name already exists.");
       when Empty_Option_Error =>
-         put_line("empty option");
+         put_line("Empty option.");
          put_line("Try help '" & get_substring_to_string(splitted_line, 1) & "' for more information.");
       when Not_Handled_Option_Error =>
-         put_line("not handled option");
+         put_line("Not handled option.");
          put_line("Try help '" & get_substring_to_string(splitted_line, 1) & "' for more information.");
       when Wrong_Parameters_Number_Error =>
-         put_line("wrong number of parameters");
+         put_line("Wrong number of parameters.");
          put_line("Try help '" & get_substring_to_string(splitted_line, 1) & "' for more information.");
       --when Constraint_Error =>
       --   put_line("command not found");
@@ -174,7 +159,7 @@ package body P_Commands is
       -- follow the path from the defined start
       path_tree := split_string(path, FILE_SEPARATOR);
       for i in 1..get_nb_substrings(path_tree) - penultimate loop
-         -- if the following directory doesn't exist, raise an exception
+         -- if the following directory doesn't exist, the path is invalid, raise an exception
          if is_null(find_folder(current, get_substring_to_string(path_tree, i))) then
             raise Invalid_Folder_Error;
          end if;
@@ -538,6 +523,10 @@ package body P_Commands is
          -- get the original file
          original_file_name := get_name_from_path(get_substring(parameters, 1));
          original_file := find_file(source_folder, To_String(original_file_name));
+         -- if the original file is null, it means it is not valid, raise an exception
+         if original_file = null then
+            raise Invalid_File_Error;
+         end if;
          -- create the new file as a copy of original file
          new_file := clone(original_file, To_String(new_name), get_pwd(destination_folder_parent));
          -- add this new file to the destination folder, parent of the new file
@@ -546,35 +535,44 @@ package body P_Commands is
    end cp_command;
    
    procedure mv_command(current_directory : in out T_Folder; options : in T_Substrings; parameters : in T_Substrings) is
-      source_folder: T_Folder;
-      original_name: Unbounded_String;
-      destination_folder: T_Folder;
-      new_name: Unbounded_String;
-      file: T_File;
+      source_folder : T_Folder; -- the source folder containing the file
+      destination_folder : T_Folder; -- the parent of the new file
+      original_file_name : Unbounded_String; -- the original file name
+      new_file_name : Unbounded_String; -- the new name of the file
+      original_file : T_File; -- the original file
+      new_file : T_File; -- the new file
    begin
-      if(not only_handled_options(options, "-r"))then
+      if not only_handled_options(options, "-r") then
          raise Not_Handled_Option_Error;
       end if;
-      if(get_nb_substrings(parameters) /= 2)then
+      if get_nb_substrings(parameters) /= 2 then
          raise Wrong_Parameters_Number_Error;
       end if;
-      
-      original_name := get_name_from_path(get_substring(parameters, 1));
-      new_name := get_name_from_path(get_substring(parameters, 2));
-      
-      source_folder := go_to_folder(current_directory, get_substring_to_string(parameters, 1), True);
-      destination_folder := go_to_folder(current_directory, get_substring_to_string(parameters, 2), True);
-      
+      -- if this is a recursive move
       if contains_option(options, 'r') then
+         -- execute a copy
          cp_command(current_directory, options, parameters);
+         -- remove the old directory
          rm_command (current_directory, options, get_substrings(parameters, 1, 1));
       else
-         file := find_file(source_folder, To_String(original_name));
-         
-         del_file(source_folder, To_String(original_name));
-         -- A remplacer par clone
-         set_name(file, To_String(new_name));
-         add_file(destination_folder, file);
+         -- go to source and destination folders from parameters
+         source_folder := go_to_folder(current_directory, get_substring_to_string(parameters, 1), True);
+         destination_folder := go_to_folder(current_directory, get_substring_to_string(parameters, 2), True);
+         -- get original and new file names from parameters
+         original_file_name := get_name_from_path(get_substring(parameters, 1));
+         new_file_name := get_name_from_path(get_substring(parameters, 2));
+         -- get the original file
+         original_file := find_file(source_folder, To_String(original_file_name));
+         -- if the original file is null, it means it is not valid, raise an exception
+         if original_file = null then
+            raise Invalid_File_Error;
+         end if;
+         -- clone the original file as a new file
+         new_file := clone(original_file, To_String(new_file_name), get_pwd(destination_folder));
+         -- add the new file to the destination folder
+         add_file(destination_folder, new_file);
+         -- delete the original file from the source folder
+         del_file(source_folder, To_String(original_file_name));
       end if;
    end mv_command;
    

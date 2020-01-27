@@ -13,6 +13,8 @@ package P_Commands is
    
    -- Raised when a specified folder is invalid
    Invalid_Folder_Error : Exception;
+   -- Raised when a specified file is invalid
+   Invalid_File_Error : Exception;
    -- Raised when trying to copy a folder into itself
    Copy_Into_Itself_Error : Exception;
    -- Raised when an option only contains '-' character
@@ -35,15 +37,6 @@ package P_Commands is
    -- Preconditions : /
    -- Postconditions : /
    function command_to_string (encoded_command : in E_Encoded_Commands) return String;
-   
-   -- Role : Returns the path + name of a folder as a string
-   -- Parameters :
-   --    current_directory (in T_Folder) : Folder to get pwd from
-   -- Return :
-   --    return (String) : The path + name of the folder
-   -- Preconditions : /
-   -- Postconditions : /
-   function get_pwd (current_directory : in T_Folder) return String;
    
    -- Role : Decode a command line and execute a command with the correct options and parameters
    -- Parameters :

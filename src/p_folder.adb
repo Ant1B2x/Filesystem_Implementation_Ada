@@ -109,6 +109,23 @@ package body P_Folder is
       return P_Metadata.get_path (P_Folder_Tree.get_data(folder).metadata );
    end get_path;
    
+   function get_pwd (current_directory : in T_Folder) return String is
+   begin
+      -- if we're in the root directory
+      if is_root(current_directory) then 
+         -- return "" & "/"
+         return get_path(current_directory) & FILE_SEPARATOR; 
+      -- if we're in a root subdirectory
+      elsif is_root(get_parent(current_directory)) then 
+         -- return "/" & name
+         return get_path(current_directory) & get_name(current_directory);
+      -- in every other directory
+      else
+         -- return path & "/" & name
+         return get_path(current_directory) & FILE_SEPARATOR & get_name(current_directory);
+      end if;
+   end get_pwd;
+   
    procedure set_path (folder : in out T_Folder; path : in String) is
       data : T_Folder_Data;
    begin
@@ -208,12 +225,13 @@ package body P_Folder is
       return null;
    end find_file;
    
-   procedure add_file (folder : in out T_Folder; new_file : in T_File) is
+   procedure add_file (folder : in out T_Folder; file : in T_File) is
       folder_data : T_Folder_Data;
+      new_file : T_File;
    begin
       
-      -- check if an existing directory/file has the same name
-      if has_son_with_this_name(folder, P_File.get_name(new_file)) then
+      -- check if an existing directory / file has the same name
+      if has_son_with_this_name(folder, P_File.get_name(file)) then
          raise Same_Name_Error;
       end if;
       
@@ -223,6 +241,7 @@ package body P_Folder is
       end if;
       
       folder_data := get_data(folder);
+      new_file := clone(file, get_pwd(folder));
       P_Files.add_value(folder_data.files, new_file);
       set_data(folder, folder_data);
       
