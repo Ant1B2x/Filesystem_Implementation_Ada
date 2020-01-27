@@ -101,7 +101,7 @@ private
    --    T_Folder : The wanted folder, if the path is correct
    -- Preconditions : /
    -- Postconditions : /
-   function go_to_folder (original_directory: in T_Folder; path: in String; stop_at_penultimate: in Boolean := False) return T_Folder;
+   function go_to_folder (original_directory : in T_Folder; path : in String; stop_at_penultimate : in Boolean := False) return T_Folder;
    
    -- Role : Take a path, and return the last entity from it.
    -- Parameters :
