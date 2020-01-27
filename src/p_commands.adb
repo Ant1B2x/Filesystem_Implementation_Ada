@@ -577,32 +577,35 @@ package body P_Commands is
    end mv_command;
    
    procedure rm_command (current_directory : in out T_Folder; options : in T_Substrings; parameters : in T_Substrings) is
-      directory_to_del_from: T_Folder;
-      name: Unbounded_String;
+      parent_folder_deleted : T_Folder; -- parent folder of the deleted file / folder
+      deleted_name : Unbounded_String; -- name of the deleted file / folder
    begin       
-      if(not only_handled_options(options, "-r"))then
+      if not only_handled_options(options, "-r") then
          raise Not_Handled_Option_Error;
       end if;
-      if(get_nb_substrings(parameters) /= 1)then
+      if get_nb_substrings(parameters) /= 1 then
          raise Wrong_Parameters_Number_Error;
       end if;
-      name := get_name_from_path(get_substring(parameters, 1));
-      directory_to_del_from := go_to_folder(current_directory, get_substring_to_string(parameters, 1), True);
-      
+      -- get deleted folder name from parameters 
+      deleted_name := get_name_from_path(get_substring(parameters, 1));
+      -- get deleted folder parent from parameters
+      parent_folder_deleted := go_to_folder(current_directory, get_substring_to_string(parameters, 1), True);
+      -- if this is a recursive rm
       if contains_option(options, 'r') then
-         begin
-            del_folder(directory_to_del_from, get_name(find_folder(directory_to_del_from, To_String(name))));
-         exception
-               when Constraint_Error => Put_Line("No folder of that name");
-         end;
+         -- if no folder is found in the parent folder for the specified name, raise an exception
+         if is_null(find_folder(parent_folder_deleted, To_String(deleted_name))) then
+            raise Invalid_Folder_Error;
+         end if;
+         -- delete the folder of the specified name in the parent folder
+         del_folder(parent_folder_deleted, To_String(deleted_name));
       else
-         begin
-            del_file(directory_to_del_from, get_name(find_file(directory_to_del_from, To_String(name))));
-         exception
-            when Constraint_Error => Put_Line("No file of that name");
-         end;
+         -- if no file is found in the parent folder for the specified name, raise an exception
+         if find_file(parent_folder_deleted, To_String(deleted_name)) = null then
+            raise Invalid_File_Error;
+         end if;
+         -- delete the file of the specified name in the parent folder
+         del_file(parent_folder_deleted, To_String(deleted_name));
       end if;
-      
    end rm_command;
    
    procedure tar_command(currentDirectory : in out T_Folder; options : in T_Substrings; parameters : in T_Substrings) is
