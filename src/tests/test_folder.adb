@@ -271,8 +271,8 @@ begin
    else
       put_line("find_file(folder, ""file_old.bak"") is incoherent");
    end if;
-   if get_path(find_file(folder, "file_old.bak")) = get_path(file) then
-      put_line("get_path(find_file(folder, ""file_old.bak"")) = get_path(file)");
+   if get_path(find_file(folder, "file_old.bak")) = get_pwd(folder) then
+      put_line("get_path(find_file(folder, ""file_old.bak"")) = get_pwd(folder)");
    else
       put_line("find_file(folder, ""file_old.bak"") is incoherent");
    end if;

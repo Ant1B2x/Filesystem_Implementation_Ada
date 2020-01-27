@@ -58,11 +58,13 @@ package body P_Tree is
    end get_nb_siblings;
    
    procedure add_sibling (tree : in out T_Tree; sibling : in out T_Tree) is
+      sibling_parent : T_Tree;
    begin
       -- if the parent of the sibling is not null
       if not is_null(get_parent(sibling)) then
          -- delete the sibling from his parent
-         del_sibling(get_parent(sibling), sibling);
+         sibling_parent := get_parent(sibling);
+         del_sibling(sibling_parent, sibling);
       end if;
       -- add the sibling to the list of siblings of tree
       P_Siblings.add_value(tree.all.siblings, sibling);
