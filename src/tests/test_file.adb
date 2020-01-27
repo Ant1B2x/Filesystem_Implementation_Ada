@@ -35,8 +35,8 @@ begin
    
    -- get path
    put_line("Get path:");
-   if get_path(file) = "/usr/bin" then
-      put_line("get_path(file) = ""/usr/bin""");
+   if get_path(file) = "" then
+      put_line("get_path(file) = """"");
    else
       put_line("get_path(file) is incoherent");
    end if;
