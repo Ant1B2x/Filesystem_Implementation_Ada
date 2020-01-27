@@ -67,7 +67,7 @@ package body P_File is
    function clone (file : in T_File; new_name : in String; new_path : in String) return T_File is
       new_file : T_File;
    begin
-      new_file := create(new_name, get_rights(file), new_path, get_data(file));
+      new_file := create(new_name, get_rights(file), get_data(file), new_path);
       return new_file;
    end clone;
    
