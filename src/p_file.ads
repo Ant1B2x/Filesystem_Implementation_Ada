@@ -6,52 +6,7 @@ package P_File is
    type T_R_File is private;
    type T_File is access T_R_File;
    
-   -- Role : Overload of creat with all parameters. Create a folder, and associate his name and path. 
-   -- Give basic rights and empty data.
-   -- Parameters :
-   --    name (String) : The name of the file
-   --    path (String) : The absolute path of the file
-   -- Return :
-   --    T_File : The new created file
-   -- Preconditions : /
-   -- Postconditions : /
-   function create (name : in String; path: in String) return T_File;
-
-   -- Role : Overload of creat with all parameters. Create a folder, and associate his name, rights and path. 
-   -- Give empty data.
-   -- Parameters :
-   --    name (String) : The name of the file
-   --    rights (T_Rights) : The rights of the file
-   --    path (String) : The absolute path of the file
-   -- Return :
-   --    T_File : The new created file
-   -- Preconditions : /
-   -- Postconditions : /
-   function create (name : in String; rights : in T_Rights; path: in String) return T_File;
-   
-   -- Role : Overload of creat with all parameters. Create a folder, and associate his name, path and data. 
-   -- Give basic rights.
-   -- Parameters :
-   --    name (String) : The name of the file
-   --    path (String) : The absolute path of the file
-   --    data (String) : The data of the file
-   -- Return :
-   --    T_File : The new created file
-   -- Preconditions : /
-   -- Postconditions : /
-   function create (name : in String; path : in String; data : in String) return T_File;
-   
-   -- Role : Create a folder, and associate his name, rights, path and data.
-   -- Parameters :
-   --    name (String) : The name of the file
-   --    rights (T_Rights) : The rights of the file
-   --    path (String) : The absolute path of the file
-   --    data (String) : The data of the file
-   -- Return :
-   --    T_File : The new created file
-   -- Preconditions : /
-   -- Postconditions : /
-   function create (name : in String; rights : in T_Rights; path : in String; data : in String) return T_File;
+   function create (name : in String; rights : in T_Rights := (RW, R, R); data : in String := "") return T_File;
    
    -- Role : Return the name of the file
    -- Parameters :
@@ -166,5 +121,17 @@ private
       metadata : T_Metadata;
       data : String(1..SMAX_FILE);
    end record;
+   
+   -- Role : Create a folder, and associate his name, rights, path and data.
+   -- Parameters :
+   --    name (String) : The name of the file
+   --    rights (T_Rights) : The rights of the file
+   --    path (String) : The absolute path of the file
+   --    data (String) : The data of the file
+   -- Return :
+   --    T_File : The new created file
+   -- Preconditions : /
+   -- Postconditions : /
+   function create (name : in String; rights : in T_Rights; data : in String; path : in String) return T_File;
    
 end P_File;

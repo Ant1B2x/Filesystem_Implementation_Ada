@@ -230,15 +230,15 @@ begin
 
    -- add file & get file
    put_line("Add file & get file:");
-   file := create("file_old.bak", (RW, R, R), get_pwd(folder), "thisissomedata");
+   file := create("file_old.bak", (RW, R, R), "thisissomedata");
    add_file(folder, file);
    if get_name(get_file(folder, 1)) = get_name(file) then
       put_line("get_name(get_file(folder, 1)) = get_name(file)");
    else
       put_line("get_file(folder, 1) is incoherent");
    end if;
-   if get_path(get_file(folder, 1)) = get_path(file) then
-      put_line("get_path(get_file(folder, 1)) = get_path(file)");
+   if get_path(get_file(folder, 1)) = get_pwd(folder) then
+      put_line("get_path(get_file(folder, 1)) = get_pwd(folder)");
    else
       put_line("get_file(folder, 1) is incoherent");
    end if;
@@ -246,7 +246,7 @@ begin
    
    -- get nb files
    put_line("Get nb files:");
-   add_file(folder, create("executable_file.bak", (RWX, RX, RX), get_path(folder), "thisissomeexecutabledata"));
+   add_file(folder, create("executable_file.bak", (RWX, RX, RX), "thisissomeexecutabledata"));
    if get_nb_files(folder) = 2 then
       put_line("get_nb_files(folder) = 2");
    else
@@ -337,9 +337,9 @@ begin
    
    -- raising Same_Name_Error when adding a file
    put_line("Raising Same_Name_Error when adding a file:");
-   add_file(folder, create("common_file_name", (RW, R, R), get_path(folder), "data"));
+   add_file(folder, create("common_file_name", (RW, R, R), "data"));
    begin
-      add_file(folder, create("common_file_name", (RWX, RX, RX), get_path(folder), "executabledata"));
+      add_file(folder, create("common_file_name", (RWX, RX, RX), "executabledata"));
       put_line("Nothing raised, add_file should have raised Same_Name_Error");
    exception
       when Same_Name_Error =>

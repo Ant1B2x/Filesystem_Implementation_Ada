@@ -9,8 +9,8 @@ procedure test_file is
 begin
    -- create
    put_line("Create:");
-   put_line("Creating file.exe with rights 755 in /usr/bin, with some executable data");
-   file := create("file.exe", (RWX, RX, RX), "/usr/bin", "thisissomeexecutabledata");
+   put_line("Creating file.exe with rights 755 and some executable data");
+   file := create("file.exe", (RWX, RX, RX), "thisissomeexecutabledata");
    if get_name(file) = "file.exe" then
       put_line("get_name(file) = ""file.exe""");
    else
@@ -21,8 +21,8 @@ begin
    else
       put_line("get_rights(file) is incoherent");
    end if;
-   if get_path(file) = "/usr/bin" then
-      put_line("get_path(file) = ""/usr/bin""");
+   if get_path(file) = "" then
+      put_line("get_path(file) = """"");
    else
       put_line("get_path(file) is incoherent");
    end if;

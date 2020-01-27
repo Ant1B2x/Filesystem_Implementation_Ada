@@ -248,10 +248,6 @@ package body P_Commands is
       original_folder : T_Folder; -- original folder
       new_folder : T_Folder; -- copy of a folder
    begin
-      -- we can't copy a folder from itself to itself
-      if get_pwd(folder1) = get_pwd(folder2) or (not is_root(folder2) and then get_pwd(folder1) = get_pwd(get_parent(folder2))) then
-         raise Copy_Into_Itself_Error;
-      end if;
       -- copy all files from original folder
       for i in 1..get_nb_files(folder1) loop
          original_file := get_file(folder1, i);
@@ -484,7 +480,7 @@ package body P_Commands is
       parent := go_to_folder(current_directory, get_substring_to_string(parameters, 1), True);
       -- create the new file with the given name
       new_file_name := get_name_from_path(get_substring(parameters, 1));
-      new_file := create(To_String(new_file_name), get_pwd(parent));
+      new_file := create(To_String(new_file_name));
       add_file(parent, new_file);
    end touch_command;
    
@@ -515,6 +511,10 @@ package body P_Commands is
          mkdir_command(current_directory, create_substrings, get_substrings(parameters, 2, 2));
          -- get the new folder pointer
          destination_folder := find_folder(destination_folder_parent, To_String(new_name));
+         -- we can't copy a folder from itself to itself
+         if has_as_parent(destination_folder, source_folder) then
+            raise Copy_Into_Itself_Error;
+         end if;
          -- starting to copy the contents from source to new
          folder_deep_copy(source_folder, destination_folder);
       else
@@ -630,7 +630,7 @@ package body P_Commands is
       tar_file_name := (if is_root(folder_to_tar) then To_Unbounded_String("root") else To_Unbounded_String(get_name(folder_to_tar)));
       tar_file_name := tar_file_name & ".tar";
       -- create the tar file
-      tar_file := create(To_String(tar_file_name), get_pwd(current_directory));
+      tar_file := create(To_String(tar_file_name));
       -- set the size of the tar file, corresponding to the size of the folder to tar
       set_size(tar_file, calculate_size(folder_to_tar));
       -- add the tar file to the current directory

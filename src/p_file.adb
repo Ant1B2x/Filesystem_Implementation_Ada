@@ -1,29 +1,7 @@
 package body P_File is
    
-   function create (name : in String; path: in String) return T_File is
-   begin
-      -- file creation
-      return create (name, path, "");
-   end create;
-
-   function create (name : in String; rights : in T_Rights; path: in String) return T_File is
-   begin
-      -- file creation
-      return create (name, rights, path, "");
-   end create;
-
-   function create (name : in String; path : in String; data : in String) return T_File is
-      rights : T_Rights;
-   begin
-      
-      -- rights creation
-      rights := ( RW, R, R ); -- chmod 644 by default
-      -- file creation
-      return create (name, rights, path, data);
-      
-   end create;
-   
-   function create (name : in String; rights : in T_Rights; path : in String; data : in String) return T_File is
+   -- private create function
+   function create (name : in String; rights : in T_Rights; data : in String; path : in String) return T_File is
       file : T_File;
    begin
       -- instantiate T_R_File
@@ -32,6 +10,11 @@ package body P_File is
       file.all.metadata := P_Metadata.create(name, rights, 0, path);
       set_data(file, data);
       return file;
+   end create;
+   
+   function create (name : in String; rights : in T_Rights := (RW, R, R); data : in String := "") return T_File is
+   begin
+      return create(name, rights, data, "");
    end create;
    
    function get_name (file : in T_File) return String is
