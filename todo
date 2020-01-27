@@ -7,12 +7,5 @@ file s+b
 folder s+b
 tree s+b
 menu b
-commandes s+b
+commandes s
 
-cp -r
-cp
-mv -r
-mv
-rm -r
-rm
-tar d'un dossier

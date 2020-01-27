@@ -608,28 +608,33 @@ package body P_Commands is
       end if;
    end rm_command;
    
-   procedure tar_command(currentDirectory : in out T_Folder; options : in T_Substrings; parameters : in T_Substrings) is
-      size: Integer;
-      folder_to_tar: T_Folder;
-      new_file : T_File;
-      name: Unbounded_String;
+   procedure tar_command(current_directory : in out T_Folder; options : in T_Substrings; parameters : in T_Substrings) is
+      folder_to_tar : T_Folder; -- folder that we want to tar
+      tar_file : T_File; -- the tar file, result of the archiving
+      tar_file_name : Unbounded_String; -- the name of the tar file
    begin
-      if(get_nb_substrings(options) > 0)then
+      if get_nb_substrings(options) > 0 then
          raise Not_Handled_Option_Error;
       end if;
-      if(get_nb_substrings(parameters) > 1)then
+      if get_nb_substrings(parameters) > 1 then
          raise Wrong_Parameters_Number_Error;
       end if;
-      if(get_substring_to_string(parameters, 1)'Length > 0)then
-         folder_to_tar := go_to_folder(currentDirectory, get_substring_to_string(parameters, 1));
+      -- if a source directory is provided, go to this directory
+      if get_substring_to_string(parameters, 1)'Length > 0 then
+         folder_to_tar := go_to_folder(current_directory, get_substring_to_string(parameters, 1));
+      -- else, go to the current directory
       else
-         folder_to_tar := currentDirectory;
+         folder_to_tar := current_directory;
       end if;
-      size := calculate_size(folder_to_tar);
-      name := (if is_root(folder_to_tar) then To_Unbounded_String("root") else To_Unbounded_String(get_name(folder_to_tar)));
-      new_file := create(To_String(name) & ".tar", get_path(currentDirectory) & "/" & get_name(currentDirectory));
-      set_size(new_file, size);
-      add_file(currentDirectory, new_file);
+      -- get name of the tar file
+      tar_file_name := (if is_root(folder_to_tar) then To_Unbounded_String("root") else To_Unbounded_String(get_name(folder_to_tar)));
+      tar_file_name := tar_file_name & ".tar";
+      -- create the tar file
+      tar_file := create(To_String(tar_file_name), get_pwd(current_directory));
+      -- set the size of the tar file, corresponding to the size of the folder to tar
+      set_size(tar_file, calculate_size(folder_to_tar));
+      -- add the tar file to the current directory
+      add_file(current_directory, tar_file);
    end tar_command;
    
    procedure clear_command is

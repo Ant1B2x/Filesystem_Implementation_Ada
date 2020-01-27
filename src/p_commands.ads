@@ -287,7 +287,7 @@ private
    -- Return : /
    -- Preconditions : /
    -- Postconditions : /
-   procedure tar_command (currentDirectory: in out T_Folder; options : in T_Substrings; parameters : in T_Substrings);
+   procedure tar_command (current_directory: in out T_Folder; options : in T_Substrings; parameters : in T_Substrings);
    
    -- Role : Clear the terminal.
    -- Parameters :
