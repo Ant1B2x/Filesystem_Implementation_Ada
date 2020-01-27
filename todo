@@ -3,9 +3,9 @@ commentaire description de split option
 programme de test pour les commandes
 
 refactorer + commentaires dans le code:
-file b
 folder s+b
-tree s+b
+tree s
+
 menu b
 commandes s
 

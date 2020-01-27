@@ -14,7 +14,7 @@ package body P_File is
    
    function create (name : in String; rights : in T_Rights := (RW, R, R); data : in String := "") return T_File is
    begin
-      return create(name, rights, data, "");
+      return create(name, rights, data, ""); -- set blank path by default
    end create;
    
    function get_name (file : in T_File) return String is
@@ -60,10 +60,9 @@ package body P_File is
    procedure set_data (file : in out T_File; data : in String) is
    begin
       file.all.data(1..data'length) := data;
-      set_size(file, data'length);
+      set_size(file, data'length); -- set the size to be equal to the length of the data
    end set_data;
    
-   -- we pass a string instead of a folder because we can't have a crossed dependance
    function clone (file : in T_File; new_name : in String; new_path : in String) return T_File is
       new_file : T_File;
    begin
@@ -71,7 +70,7 @@ package body P_File is
       return new_file;
    end clone;
    
-   function clone(file : in T_File; new_path : in String) return T_File is
+   function clone (file : in T_File; new_path : in String) return T_File is
    begin
       return clone(file, get_name(file), new_path);
    end clone;
