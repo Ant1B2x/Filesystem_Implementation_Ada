@@ -4,14 +4,17 @@ with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 with Ada.Containers.Ordered_Sets;
 
 with P_Constants; use P_Constants;
-with P_Folder; use P_Folder;
-with P_File; use P_File;
 with P_Substrings; use P_Substrings;
+with P_Metadata; use P_Metadata;
+with P_File; use P_File;
+with P_Folder; use P_Folder;
 
 package P_Commands is
    
    -- Raised when a specified folder is invalid
    Invalid_Folder_Error : Exception;
+   -- Raised when trying to copy a folder into itself
+   Copy_Into_Itself_Error : Exception;
    -- Raised when an option only contains '-' character
    Empty_Option_Error : Exception;
    -- Raised when a command receives an option that it can't use
@@ -22,16 +25,16 @@ package P_Commands is
    -- #################################################### PUBLIC SUBROUTINES ############################################################
    
    -- Enumeration type of different commands available
-   type encoded_commands is (ls, rm, pwd, cd, mkdir, cp, mv, tar, touch, help, clear);
+   type E_Encoded_Commands is (ls, rm, pwd, cd, mkdir, cp, mv, tar, touch, help, clear);
    
    -- Role: Returns the string representation of an encoded command
    -- Parameters:
-   --    encoded_command (in encoded_commands) : command that the image will be returned
+   --    encoded_command (in E_Encoded_Commands) : command that the image will be returned
    -- Return:
    --    return (String) : Image of the encoded command
    -- Preconditions : /
    -- Postconditions : /
-   function command_to_string (encoded_command : in encoded_commands) return String;
+   function command_to_string (encoded_command : in E_Encoded_Commands) return String;
    
    -- Role : Returns the path + name of a folder as a string
    -- Parameters :
@@ -158,15 +161,15 @@ private
    -- Postconditions : /
    procedure display_folders_and_files (siblings_set : in T_Siblings_Set);
    
-   -- Role : Recursive procedure copying all the content from folder_to_copy to folder_parent_of_clone.
-   -- It's then called recursive for all sub-folders in folder_to_copy.
+   -- Role : Recursive procedure copying all the content from a folder to another.
+   -- It's then called recursive for all sub-folders in folder1.
    -- Parameters :
-   --    folder_to_copy (in T_Folder) : Folder to duplicate content
-   --    folder_parent_of_clone (in out T_Folder) : Folder receiving all the content
+   --    folder1 (in T_Folder) : Folder to duplicate content
+   --    folder2 (in out T_Folder) : Folder receiving all the content
    -- Return : /
    -- Preconditions : /
    -- Postconditions : /
-   procedure folder_deep_copy (folder_to_copy : in T_Folder; folder_parent_of_clone: in out T_Folder);
+   procedure folder_deep_copy (folder1 : in T_Folder; folder2 : in out T_Folder);
    
    -- Role : Display an help list of known commands
    -- Parameters : /

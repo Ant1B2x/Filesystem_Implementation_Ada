@@ -2,9 +2,9 @@ package body P_Commands is
    
    -- #################################################### PUBLIC SUBROUTINES ############################################################
    
-   function command_to_string (encoded_command : in encoded_commands) return String is
+   function command_to_string (encoded_command : in E_Encoded_Commands) return String is
    begin
-      return encoded_commands'Image(encoded_command);
+      return E_Encoded_Commands'Image(encoded_command);
    end command_to_string;
    
    function get_pwd (current_directory : in T_Folder) return String is
@@ -42,7 +42,7 @@ package body P_Commands is
       end if;
 
       -- execute the called command
-      case encoded_commands'Value(get_substring_to_string(splitted_line, 1)) is
+      case E_Encoded_Commands'Value(get_substring_to_string(splitted_line, 1)) is
          when ls => ls_command(current_directory, options, parameters);
          when rm => rm_command(current_directory, options, parameters);
          when pwd => pwd_command(current_directory, options, parameters);
@@ -58,6 +58,10 @@ package body P_Commands is
    exception
       when Invalid_Folder_Error =>
          put_line("a specified path is incorrect, no such directory");
+      when Copy_Into_Itself_Error =>
+         put_line("cannot copy a directory into itself");
+      when Invalid_Character_Error =>
+         put_line("a path you entered contain an invalid character");
       When Same_Name_Error =>
          put_line("cannot create file or directory: A file or directory with same name already exists");
       when Empty_Option_Error =>
@@ -69,9 +73,9 @@ package body P_Commands is
       when Wrong_Parameters_Number_Error =>
          put_line("wrong number of parameters");
          put_line("Try help '" & get_substring_to_string(splitted_line, 1) & "' for more information.");
-      when Constraint_Error =>
-         put_line("command not found");
-         put_line("Try 'help' to see a list of available commands.");
+      --when Constraint_Error =>
+      --   put_line("command not found");
+      --   put_line("Try 'help' to see a list of available commands.");
    end run_command;
    
    -- ############################################ VARIOUS PRIVATE SUBROUTINES ###########################################################
@@ -181,12 +185,18 @@ package body P_Commands is
    end go_to_folder;
    
    -- Here we choose to use Unbounded_String because we don't know the length of the return
-   function get_name_from_path (path: in Unbounded_String) return Unbounded_String is
+   function get_name_from_path (path : in Unbounded_String) return Unbounded_String is
+      nb_substrings : Integer; -- represents how many folders are separated by "/" in the path
    begin
-      return get_substring(split_string(To_String(path), FILE_SEPARATOR), get_nb_substrings(split_string(To_String(path), FILE_SEPARATOR)));
+      nb_substrings := get_nb_substrings(split_string(To_String(path), FILE_SEPARATOR));
+      -- if only "/" is provided in path, return "/"
+      if nb_substrings = 0 then
+         return To_Unbounded_String(""&FILE_SEPARATOR);
+      end if;
+      return get_substring(split_string(To_String(path), FILE_SEPARATOR), nb_substrings);
    end get_name_from_path;
    
-   function calculate_size (current_directory: T_Folder) return Integer is
+   function calculate_size (current_directory : in T_Folder) return Integer is
       current_folder_size: Integer; -- folder size, incremented at each file or directory
    begin
       -- folder size is 10Ko by default
@@ -247,23 +257,27 @@ package body P_Commands is
       new_line;
    end display_folders_and_files;
    
-   procedure folder_deep_copy (folder_to_copy: T_Folder; folder_parent_of_clone: in out T_Folder) is
+   procedure folder_deep_copy (folder1 : in T_Folder; folder2 : in out T_Folder) is
       original_file : T_File; -- original file
       new_file : T_File; -- copy of original file
       original_folder : T_Folder; -- original folder
       new_folder : T_Folder; -- copy of a folder
    begin
+      -- we can't copy a folder from itself to itself
+      if get_pwd(folder1) = get_pwd(folder2) or (not is_root(folder2) and then get_pwd(folder1) = get_pwd(get_parent(folder2))) then
+         raise Copy_Into_Itself_Error;
+      end if;
       -- copy all files from original folder
-      for i in 1..get_nb_files(folder_to_copy) loop
-         original_file := get_file(folder_to_copy, i);
-         new_file := create(get_name(original_file), get_rights(original_file), get_path(folder_parent_of_clone) & FILE_SEPARATOR & get_name(folder_parent_of_clone), get_data(original_file));
-         add_file(folder_parent_of_clone, new_file);
+      for i in 1..get_nb_files(folder1) loop
+         original_file := get_file(folder1, i);
+         new_file := clone(original_file, get_pwd(folder2));
+         add_file(folder2, new_file);
       end loop;
       -- copy all folders from original folder
-      for i in 1..get_nb_folders(folder_to_copy) loop
-         original_folder := get_folder(folder_to_copy, i);
-         new_folder := create(get_name(original_folder), folder_parent_of_clone, get_rights(original_folder));
-         folder_deep_copy(get_folder(folder_to_copy, i), new_folder);
+      for i in 1..get_nb_folders(folder1) loop
+         original_folder := get_folder(folder1, i);
+         new_folder := create(get_name(original_folder), folder2, get_rights(original_folder));
+         folder_deep_copy(get_folder(folder1, i), new_folder);
       end loop;
    end folder_deep_copy;
    
@@ -290,7 +304,7 @@ package body P_Commands is
    procedure print_specific_help (command : in String) is
    begin
       begin
-         case encoded_commands'Value(command) is
+         case E_Encoded_Commands'Value(command) is
             when pwd =>
                put_line("NAME");
                put_line("  pwd - print name of current/working directory");
@@ -380,7 +394,7 @@ package body P_Commands is
    
    -- ################################################ PRIVATE COMMANDS ##################################################################
    
-   procedure pwd_command (current_directory: in T_Folder; options : in T_Substrings; parameters : in T_Substrings) is
+   procedure pwd_command (current_directory : in T_Folder; options : in T_Substrings; parameters : in T_Substrings) is
    begin
       if get_nb_substrings(options) /= 0 then
          raise Not_Handled_Option_Error;
@@ -391,7 +405,7 @@ package body P_Commands is
       put_line(get_pwd(current_directory));
    end pwd_command;
    
-   procedure cd_command(current_directory: in out T_Folder; options : in T_Substrings; parameters : in T_Substrings) is
+   procedure cd_command(current_directory : in out T_Folder; options : in T_Substrings; parameters : in T_Substrings) is
    begin
       if get_nb_substrings(options) /= 0 then
          raise Not_Handled_Option_Error;
@@ -485,23 +499,18 @@ package body P_Commands is
       parent := go_to_folder(current_directory, get_substring_to_string(parameters, 1), True);
       -- create the new file with the given name
       new_file_name := get_name_from_path(get_substring(parameters, 1));
-      new_file := create(To_String(new_file_name), get_path(parent) & get_name(parent));
+      new_file := create(To_String(new_file_name), get_pwd(parent));
       add_file(parent, new_file);
    end touch_command;
    
-   -- continuer ici demain
    procedure cp_command (current_directory : in out T_Folder; options : in T_Substrings; parameters : in T_Substrings) is
-      new_name : Unbounded_String;
-      source_folder : T_Folder;
-      destination_folder : T_Folder;
-      destination_folder_parent : T_Folder;
-      
-      
-      original_file : T_File;
-      original_file_name : Unbounded_String;
-      new_file : T_File;
-      
-      
+      new_name : Unbounded_String; -- the name of the new file / folder
+      destination_folder_parent : T_Folder; -- the parent of the destination file / folder
+      source_folder : T_Folder; -- the source folder from where we are copying / we copy
+      destination_folder : T_Folder; -- the destination folder in which we copy
+      original_file : T_File; -- original file before copy
+      original_file_name : Unbounded_String; -- original file name
+      new_file : T_File; -- new file, copy of original file
    begin
       if not only_handled_options(options, "-r") then
          raise Not_Handled_Option_Error;
@@ -511,10 +520,11 @@ package body P_Commands is
       end if;
       -- folder to put the copy in
       destination_folder_parent := go_to_folder(current_directory, get_substring_to_string(parameters, 2), True);
+      -- name of the new file / folder
       new_name := get_name_from_path(get_substring(parameters, 2));
       -- if this is a recursive cp
       if contains_option(options, 'r') then
-         -- folder to get the copy from
+         -- folder to copy
          source_folder := go_to_folder(current_directory, get_substring_to_string(parameters, 1));
          -- create the new folder
          mkdir_command(current_directory, create_substrings, get_substrings(parameters, 2, 2));
@@ -523,20 +533,19 @@ package body P_Commands is
          -- starting to copy the contents from source to new
          folder_deep_copy(source_folder, destination_folder);
       else
-         
-         -- folder to get the copy from
+         -- folder to get the original file from
          source_folder := go_to_folder(current_directory, get_substring_to_string(parameters, 1), True);
+         -- get the original file
          original_file_name := get_name_from_path(get_substring(parameters, 1));
-         
-         -- ? A remplacer par clone ?
          original_file := find_file(source_folder, To_String(original_file_name));
-         new_file := create(To_String(new_name), get_rights(original_file), get_path(destination_folder_parent) & FILE_SEPARATOR & get_name(destination_folder_parent), get_data(original_file));
-         set_size(new_file, get_size(original_file));
+         -- create the new file as a copy of original file
+         new_file := clone(original_file, To_String(new_name), get_pwd(destination_folder_parent));
+         -- add this new file to the destination folder, parent of the new file
          add_file(destination_folder_parent, new_file);
       end if;
    end cp_command;
    
-   procedure mv_command(current_directory: in out T_Folder; options : in T_Substrings; parameters : in T_Substrings) is
+   procedure mv_command(current_directory : in out T_Folder; options : in T_Substrings; parameters : in T_Substrings) is
       source_folder: T_Folder;
       original_name: Unbounded_String;
       destination_folder: T_Folder;
@@ -598,7 +607,7 @@ package body P_Commands is
       
    end rm_command;
    
-   procedure tar_command(currentDirectory: in out T_Folder; options : in T_Substrings; parameters : in T_Substrings)is
+   procedure tar_command(currentDirectory : in out T_Folder; options : in T_Substrings; parameters : in T_Substrings) is
       size: Integer;
       folder_to_tar: T_Folder;
       new_file : T_File;
@@ -627,7 +636,7 @@ package body P_Commands is
       put(ASCII.ESC & "[2J");
    end clear_command;
    
-   procedure help_command (options: t_Substrings; parameters : in T_Substrings) is
+   procedure help_command (options : in T_Substrings; parameters : in T_Substrings) is
    begin
       if get_nb_substrings(options) /= 0 then
          raise Not_Handled_Option_Error;
