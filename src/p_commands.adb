@@ -409,7 +409,7 @@ package body P_Commands is
    end cd_command;
    
    procedure ls_command (current_directory : in T_Folder; options : in T_Substrings; parameters : in T_Substrings) is
-      current: T_Folder;
+      current : T_Folder; -- represents the folder where we are doing the "ls" in
    begin
       -- ls only supports "-r" option
       if not only_handled_options(options, "-r") then
@@ -439,7 +439,7 @@ package body P_Commands is
    end ls_command;
    
    procedure ls_r_command (current_directory : in T_Folder; preceding_path : in Unbounded_String) is
-      current_path : Unbounded_String;
+      current_path : Unbounded_String; -- represents the current relative path from the folder we are doing the "ls -r" in
    begin
       -- print current path and ":"
       current_path := preceding_path & FILE_SEPARATOR & get_name(current_directory);
@@ -453,9 +453,9 @@ package body P_Commands is
    end ls_r_command;
    
    procedure mkdir_command (current_directory : in out T_Folder; options : in T_Substrings; parameters : in T_Substrings) is
-      new_directory : T_Folder;
-      new_directory_name : Unbounded_String;
-      parent : T_Folder;
+      new_directory : T_Folder; -- the directory we are creating
+      new_directory_name : Unbounded_String; -- the name of the directory we are creating
+      parent : T_Folder; -- the parent of the new directory
    begin
       if get_nb_substrings(options) /= 0 then
          raise Not_Handled_Option_Error;
@@ -471,9 +471,9 @@ package body P_Commands is
    end mkdir_command;
    
    procedure touch_command(current_directory : in out T_Folder; options : in T_Substrings; parameters : in T_Substrings)is
-      new_file : T_File;
-      new_file_name: Unbounded_String;
-      parent: T_Folder;
+      new_file : T_File; -- the file we are creating
+      new_file_name: Unbounded_String; -- the name of the file we are creating
+      parent : T_Folder; -- the parent of the new file
    begin
       if get_nb_substrings(options) /= 0 then
          raise Not_Handled_Option_Error;
@@ -490,52 +490,53 @@ package body P_Commands is
    end touch_command;
    
    -- continuer ici demain
-   procedure cp_command(currentDirectory: in out T_Folder; options : in T_Substrings; parameters : in T_Substrings) is
-      source_folder: T_Folder;
-      destination_folder: T_Folder;
-      new_folder: T_Folder;
+   procedure cp_command (current_directory : in out T_Folder; options : in T_Substrings; parameters : in T_Substrings) is
+      new_name : Unbounded_String;
+      source_folder : T_Folder;
+      destination_folder : T_Folder;
+      destination_folder_parent : T_Folder;
+      
+      
       original_file : T_File;
-      new_file: T_File;
-      original_path: Unbounded_String;
-      original_name: Unbounded_String;
-      new_path: Unbounded_String;
-      new_name: Unbounded_String;
+      original_file_name : Unbounded_String;
+      new_file : T_File;
+      
+      
    begin
-      if(not only_handled_options(options, "-r"))then
+      if not only_handled_options(options, "-r") then
          raise Not_Handled_Option_Error;
       end if;
-      if(get_nb_substrings(parameters) /= 2)then
+      if get_nb_substrings(parameters) /= 2 then
          raise Wrong_Parameters_Number_Error;
       end if;
-      
       -- folder to put the copy in
-      destination_folder := go_to_folder(currentDirectory, get_substring_to_string(parameters, 2), True);
+      destination_folder_parent := go_to_folder(current_directory, get_substring_to_string(parameters, 2), True);
       new_name := get_name_from_path(get_substring(parameters, 2));
-      
+      -- if this is a recursive cp
       if contains_option(options, 'r') then
          -- folder to get the copy from
-         source_folder := go_to_folder(currentDirectory, get_substring_to_string(parameters, 1));
-         
-         mkdir_command(currentDirectory, create_substrings, get_substrings(parameters, 2, 2));
-         
-         new_folder := find_folder(destination_folder, To_String(new_name));
-         -- starting to copy all its contents
-         folder_deep_copy(source_folder, new_folder);
+         source_folder := go_to_folder(current_directory, get_substring_to_string(parameters, 1));
+         -- create the new folder
+         mkdir_command(current_directory, create_substrings, get_substrings(parameters, 2, 2));
+         -- get the new folder pointer
+         destination_folder := find_folder(destination_folder_parent, To_String(new_name));
+         -- starting to copy the contents from source to new
+         folder_deep_copy(source_folder, destination_folder);
       else
          
          -- folder to get the copy from
-         source_folder := go_to_folder(currentDirectory, get_substring_to_string(parameters, 1), True);
-         original_name := get_name_from_path(get_substring(parameters, 1));
+         source_folder := go_to_folder(current_directory, get_substring_to_string(parameters, 1), True);
+         original_file_name := get_name_from_path(get_substring(parameters, 1));
          
          -- ? A remplacer par clone ?
-         original_file := find_file(source_folder, To_String(original_name));
-         new_file := create(To_String(new_name), get_rights(original_file), get_path(destination_folder) & FILE_SEPARATOR & get_name(destination_folder), get_data(original_file));
+         original_file := find_file(source_folder, To_String(original_file_name));
+         new_file := create(To_String(new_name), get_rights(original_file), get_path(destination_folder_parent) & FILE_SEPARATOR & get_name(destination_folder_parent), get_data(original_file));
          set_size(new_file, get_size(original_file));
-         add_file(destination_folder, new_file);
+         add_file(destination_folder_parent, new_file);
       end if;
    end cp_command;
    
-   procedure mv_command(currentDirectory: in out T_Folder; options : in T_Substrings; parameters : in T_Substrings) is
+   procedure mv_command(current_directory: in out T_Folder; options : in T_Substrings; parameters : in T_Substrings) is
       source_folder: T_Folder;
       original_name: Unbounded_String;
       destination_folder: T_Folder;
@@ -552,12 +553,12 @@ package body P_Commands is
       original_name := get_name_from_path(get_substring(parameters, 1));
       new_name := get_name_from_path(get_substring(parameters, 2));
       
-      source_folder := go_to_folder(currentDirectory, get_substring_to_string(parameters, 1), True);
-      destination_folder := go_to_folder(currentDirectory, get_substring_to_string(parameters, 2), True);
+      source_folder := go_to_folder(current_directory, get_substring_to_string(parameters, 1), True);
+      destination_folder := go_to_folder(current_directory, get_substring_to_string(parameters, 2), True);
       
       if contains_option(options, 'r') then
-         cp_command(currentDirectory, options, parameters);
-         rm_command (currentDirectory, options, get_substrings(parameters, 1, 1));
+         cp_command(current_directory, options, parameters);
+         rm_command (current_directory, options, get_substrings(parameters, 1, 1));
       else
          file := find_file(source_folder, To_String(original_name));
          

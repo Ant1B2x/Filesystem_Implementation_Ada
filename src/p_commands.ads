@@ -101,7 +101,7 @@ private
    --    T_Folder : The wanted folder, if the path is correct
    -- Preconditions : /
    -- Postconditions : /
-   function go_to_folder (original_directory: in T_Folder; path: in String; stop_at_penultimate: in Boolean := False) return T_Folder;
+   function go_to_folder (original_directory : in T_Folder; path : in String; stop_at_penultimate : in Boolean := False) return T_Folder;
    
    -- Role : Take a path, and return the last entity from it.
    -- Parameters :
@@ -243,7 +243,7 @@ private
    -- Return /
    -- Preconditions : /
    -- Postconditions : /
-   procedure touch_command (current_directory: in out T_Folder; options : in T_Substrings; parameters : in T_Substrings);
+   procedure touch_command (current_directory : in out T_Folder; options : in T_Substrings; parameters : in T_Substrings);
    
    -- Role : Copy a file , or a directory with "-r" option. 
    -- Use 2 parameters (path from copy and path to copy), and you have to specify the name of the new copy. 
@@ -256,7 +256,7 @@ private
    --    
    -- Preconditions : /
    -- Postconditions : /
-   procedure cp_command (currentDirectory: in out T_Folder; options : in T_Substrings; parameters : in T_Substrings);
+   procedure cp_command (current_directory : in out T_Folder; options : in T_Substrings; parameters : in T_Substrings);
    
    -- Role : Move the a file , or a directory with "-r" option. 
    -- Use 2 parameters (path from copy and path to copy), and you have to specify the name of the new copy. 
@@ -269,7 +269,7 @@ private
    --    /
    -- Preconditions : /
    -- Postconditions : /
-   procedure mv_command (currentDirectory: in out T_Folder; options : in T_Substrings; parameters : in T_Substrings);
+   procedure mv_command (current_directory : in out T_Folder; options : in T_Substrings; parameters : in T_Substrings);
    
    -- Role : Delete a file or a folder, with absolute or relative path, passed as parameter.
    -- Parameters :
