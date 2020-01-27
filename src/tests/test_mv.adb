@@ -6,7 +6,7 @@ with P_File; use P_File;
 with P_Folder; use P_Folder;
 with P_Commands; use P_Commands;
 
-procedure test_cp is
+procedure test_mv is
    current_directory : T_Folder;
 begin
    current_directory := get_root;
@@ -19,113 +19,105 @@ begin
    run_command(current_directory, "mkdir test/ok/okbis");
    new_line;
    
-   -- cp test/ok/fic3 test/fic3" 
-   put_line("cp test/ok/fic3 test/fic3");
-   if not has_son_with_this_name(find_folder(current_directory, "test"), "fic3") then
-      put_line("not fic3 in test");
+   -- mv test/ok/fic3 test2/fic3" 
+   put_line("mv test/ok/fic3 test2/fic3");
+   if not has_son_with_this_name(find_folder(current_directory, "test2"), "fic3") then
+      put_line("not fic3 in test2");
    end if;
-   run_command(current_directory, "cp test/ok/fic3 test/fic3");
-   if has_son_with_this_name(find_folder(current_directory, "test"), "fic3") then
-      put_line("cp test/ok/fic3 test/fic3 ok");
+   run_command(current_directory, "mv test/ok/fic3 test2/fic3");
+   if has_son_with_this_name(find_folder(current_directory, "test2"), "fic3") and not has_son_with_this_name(find_folder(find_folder(current_directory, "test"), "ok"), "fic3") then
+      put_line("mv test/ok/fic3 test2/fic3 ok");
    else
-      put_line("cp test/ok/fic3 test/fic3 is incoherent");
+      put_line("mv test/ok/fic3 test2/fic3 is incoherent");
    end if;
    new_line;
    new_line;
    
    
-   -- cp -r test/ok/okbis test2/okbis" 
-   put_line("cp -r test/ok/okbis test2/okbis");
+   -- mv -r test/ok/okbis test2/okbis" 
+   put_line("mv -r test/ok/okbis test2/okbis");
    if not has_son_with_this_name(find_folder(current_directory, "test2"), "okbis") then
       put_line("not okbis in test2");
    end if;
-   run_command(current_directory, "cp -r test/ok/okbis test2/okbis");
-   if has_son_with_this_name(find_folder(current_directory, "test2"), "okbis") then
-      put_line("cp -r test/ok/okbis test2/okbis ok");
+   run_command(current_directory, "mv -r test/ok/okbis test2/okbis");
+   if has_son_with_this_name(find_folder(current_directory, "test2"), "okbis") and not has_son_with_this_name(find_folder(find_folder(current_directory, "test"), "ok"), "okbis") then
+      put_line("mv -r test/ok/okbis test2/okbis ok");
    else
-      put_line("cp -r test/ok/okbis test2/okbis is incoherent");
+      put_line("mv -r test/ok/okbis test2/okbis is incoherent");
    end if;
    new_line;
    new_line;
    
-   -- cp -r test/ok test2/ok" 
-   put_line("cp -r test/ok test2/ok");
+   -- mv -r test/ok test2/ok" 
+   put_line("mv -r test/ok test2/ok");
    if not has_son_with_this_name(find_folder(current_directory, "test2"), "ok") then
       put_line("not ok in test2");
    end if;
-   run_command(current_directory, "cp -r test/ok test2/ok");
+   run_command(current_directory, "mv -r test/ok test2/ok");
    if has_son_with_this_name(find_folder(current_directory, "test2"), "ok") and  
-     has_son_with_this_name(find_folder(find_folder(current_directory, "test2"), "ok"), "fic3") and 
-     has_son_with_this_name(find_folder(find_folder(current_directory, "test2"), "ok"), "okbis") then
-      put_line("cp -r test/ok test2 ok");
+     has_son_with_this_name(find_folder(current_directory, "test2"), "fic3") and 
+     has_son_with_this_name(find_folder(current_directory, "test2"), "okbis")and
+     not has_son_with_this_name(find_folder(current_directory, "test"), "ok") then
+      put_line("mv -r test/ok test2 ok");
    else
-      put_line("cp -r test/ok test2/ok is incoherent");
+      put_line("mv -r test/ok test2/ok is incoherent");
    end if;
    new_line;
    new_line;
    
-   -- cp unexisting_file
-   put_line("'cp unexisting_file' with unexisting_file not existing");
+   
+   
+   
+   
+   -- mv unexisting_file
+   put_line("'mv unexisting_file' with unexisting_file not existing");
    if not has_son_with_this_name(current_directory, "unexisting_file") then
       put_line("unexisting_file does not exist");
    end if;
    put_line("It should raise Constraint_Error. The couple of lines between two '===...===' should be the same :");
    Put_Line("============================================================");
    Put_Line("A specified path is incorrect, no such file.");
-   run_command(current_directory, "cp unexisting_file test2/unexisting_file");
+   run_command(current_directory, "mv unexisting_file test2/unexisting_file");
    Put_Line("============================================================");
    new_line;
    new_line;
    
    
-   -- cp unexisting_folder
-   put_line("'cp -r unexisting_folder' with unexisting_folder not existing");
+   -- mv unexisting_folder
+   put_line("'mv -r unexisting_folder' with unexisting_folder not existing");
    if not has_son_with_this_name(current_directory, "unexisting_folder") then
       put_line("unexisting_folder does not exist");
    end if;
    put_line("It should raise Constraint_Error. The couple of lines between two '===...===' should be the same :");
    Put_Line("============================================================");
    Put_Line("A specified path is incorrect, no such directory.");
-   run_command(current_directory, "cp -r unexisting_folder test2/unexisting_folder");
+   run_command(current_directory, "mv -r unexisting_folder test2/unexisting_folder");
    Put_Line("============================================================");
    new_line;
    
    
-   
-   -- cp 
-   put_line("'cp '");
+   -- mv 
+   put_line("'mv '");
    put_line("It should raise Constraint_Error. The couple of lines between two '===...===' should be the same :");
    Put_Line("============================================================");
    Put_Line("Wrong number of parameters.");
-   Put_Line("Try help 'cp' for more information.");
-   run_command(current_directory, "cp ");
+   Put_Line("Try help 'mv' for more information.");
+   run_command(current_directory, "mv ");
    Put_Line("============================================================");
    new_line;
    new_line;
    
    
    
-   -- cp -r 
-   put_line("'cp -r '");
+   -- mv -r 
+   put_line("'mv -r '");
    put_line("It should raise Constraint_Error. The couple of lines between two '===...===' should be the same :");
    Put_Line("============================================================");
    Put_Line("Wrong number of parameters.");
-   Put_Line("Try help 'cp' for more information.");
-   run_command(current_directory, "cp -r ");
+   Put_Line("Try help 'mv' for more information.");
+   run_command(current_directory, "mv -r ");
    Put_Line("============================================================");
    new_line;
-   new_line;
-   
-   -- "cp -r test test/ok
-   put_line("cp -r test test/ok");
-   run_command(current_directory, "cp -r test test/ok");
-   put_line("It should raise Constraint_Error. The couple of lines between two '===...===' should be the same :");
-   Put_Line("============================================================");
-   Put_Line("Cannot create file or directory: A file or directory with same name already exists.");
-   run_command(current_directory, "cp -r test test/test ");
-   Put_Line("============================================================");
-   new_line;
-   new_line;
    
    
    
@@ -136,4 +128,13 @@ begin
    
    
    
-end test_cp;
+   
+   
+   
+   
+   
+   
+   
+   
+   
+end test_mv;
