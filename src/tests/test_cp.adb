@@ -51,13 +51,13 @@ begin
    -- cp -r test/ok test2/ok" 
    put_line("cp -r test/ok test2/ok");
    if not has_son_with_this_name(find_folder(current_directory, "test2"), "ok") then
-      put_line("not ok in test2");
+      put_line("no ok folder in test2");
    end if;
    run_command(current_directory, "cp -r test/ok test2/ok");
    if has_son_with_this_name(find_folder(current_directory, "test2"), "ok") and  
      has_son_with_this_name(find_folder(find_folder(current_directory, "test2"), "ok"), "fic3") and 
      has_son_with_this_name(find_folder(find_folder(current_directory, "test2"), "ok"), "okbis") then
-      put_line("cp -r test/ok test2 ok");
+      put_line("cp -r test/ok test2/ok ok");
    else
       put_line("cp -r test/ok test2/ok is incoherent");
    end if;
@@ -119,20 +119,13 @@ begin
    -- "cp -r test test/ok
    put_line("cp -r test test/ok");
    run_command(current_directory, "cp -r test test/ok");
-   put_line("It should raise Constraint_Error. The couple of lines between two '===...===' should be the same :");
+   put_line("It should raise Copy_Into_Itself_Error. The couple of lines between two '===...===' should be the same :");
    Put_Line("============================================================");
-   Put_Line("Cannot create file or directory: A file or directory with same name already exists.");
+   Put_Line("Cannot copy a directory into itself.");
    run_command(current_directory, "cp -r test test/test ");
    Put_Line("============================================================");
    new_line;
    new_line;
-   
-   
-   
-   
-   
-   
-   
    
    
    

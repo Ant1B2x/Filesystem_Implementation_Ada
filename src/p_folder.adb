@@ -266,16 +266,14 @@ package body P_Folder is
    
    function are_the_same(folder1 : T_Folder; folder2 : T_Folder) return Boolean is
    begin
-      Put_Line("okok");
       return get_parent(folder1) = get_parent(folder2) and then get_name(folder1) = get_name(folder2) and then get_pwd(folder1) = get_pwd(folder2);
    end are_the_same;
    
    function has_as_parent(current_directory : T_Folder; supposed_parent : T_Folder) return Boolean is
       current : T_Folder;
    begin
-      current := current;
-      while not is_root(current) or not are_the_same(supposed_parent, current) loop
-         Put_Line("okok2");
+      current := current_directory;
+      while not is_root(current) and not are_the_same(supposed_parent, current) loop
          current := get_parent(current);
       end loop;
       return are_the_same(supposed_parent, current);

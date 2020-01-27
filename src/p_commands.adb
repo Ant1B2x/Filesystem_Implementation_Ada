@@ -507,14 +507,15 @@ package body P_Commands is
       if contains_option(options, 'r') then
          -- folder to copy
          source_folder := go_to_folder(current_directory, get_substring_to_string(parameters, 1));
+         
+         -- we can't copy a folder from itself to itself
+         if has_as_parent(destination_folder_parent, source_folder) then
+            raise Copy_Into_Itself_Error;
+         end if;
          -- create the new folder
          mkdir_command(current_directory, create_substrings, get_substrings(parameters, 2, 2));
          -- get the new folder pointer
          destination_folder := find_folder(destination_folder_parent, To_String(new_name));
-         -- we can't copy a folder from itself to itself
-         if has_as_parent(destination_folder, source_folder) then
-            raise Copy_Into_Itself_Error;
-         end if;
          -- starting to copy the contents from source to new
          folder_deep_copy(source_folder, destination_folder);
       else

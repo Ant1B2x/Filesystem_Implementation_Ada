@@ -58,7 +58,7 @@ begin
      has_son_with_this_name(find_folder(current_directory, "test2"), "fic3") and 
      has_son_with_this_name(find_folder(current_directory, "test2"), "okbis")and
      not has_son_with_this_name(find_folder(current_directory, "test"), "ok") then
-      put_line("mv -r test/ok test2 ok");
+      put_line("mv -r test/ok test2/ok ok");
    else
       put_line("mv -r test/ok test2/ok is incoherent");
    end if;
@@ -106,8 +106,7 @@ begin
    Put_Line("============================================================");
    new_line;
    new_line;
-   
-   
+
    
    -- mv -r 
    put_line("'mv -r '");
@@ -120,20 +119,16 @@ begin
    new_line;
    
    
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
+   -- "mv -r test test/ok
+   put_line("mv -r test test/ok");
+   run_command(current_directory, "mv -r test test/ok");
+   put_line("It should raise Copy_Into_Itself_Error. The couple of lines between two '===...===' should be the same :");
+   Put_Line("============================================================");
+   Put_Line("Cannot copy a directory into itself.");
+   run_command(current_directory, "mv -r test test/test ");
+   Put_Line("============================================================");
+   new_line;
+   new_line;
    
    
    
