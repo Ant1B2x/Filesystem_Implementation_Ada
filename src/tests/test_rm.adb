@@ -54,5 +54,58 @@ begin
       put_line("rm test/fic2 is incoherent");
    end if;
    new_line;
+   new_line;
+   
+   
+   -- rm unexisting_file
+   put_line("'rm unexisting_file' with unexisting_file not existing");
+   if not has_son_with_this_name(current_directory, "unexisting_file") then
+      put_line("unexisting_file does not exist");
+   end if;
+   put_line("It should raise Constraint_Error. The couple of lines between two '===...===' should be the same :");
+   Put_Line("============================================================");
+   Put_Line("No file of that name");
+   run_command(current_directory, "rm unexisting_file");
+   Put_Line("============================================================");
+   new_line;
+   new_line;
+   
+   
+   -- rm unexisting_folder
+   put_line("'rm -r unexisting_folder' with unexisting_folder not existing");
+   if not has_son_with_this_name(current_directory, "unexisting_folder") then
+      put_line("unexisting_folder does not exist");
+   end if;
+   put_line("It should raise Constraint_Error. The couple of lines between two '===...===' should be the same :");
+   Put_Line("============================================================");
+   Put_Line("No folder of that name");
+   run_command(current_directory, "rm -r unexisting_folder");
+   Put_Line("============================================================");
+   new_line;
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
    
 end test_rm;

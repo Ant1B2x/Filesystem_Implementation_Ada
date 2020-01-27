@@ -95,6 +95,21 @@ begin
       put_line("get_name(current_directory) = 'ok' is incoherent");
    end if;
    new_line;
+   new_line;
+   
+   -- touch testFile with testFile already existing
+   put_line("'cd unexisting_folder' with unexisting_folder not existing");
+   current_directory := get_root;
+   if not has_son_with_this_name(current_directory, "unexisting_folder") then
+      put_line("unexisting_folder does not exist");
+   end if;
+   put_line("It should raise Invalid_Folder_Error. The couple of lines between two '===...===' should be the same :");
+   Put_Line("============================================================");
+   Put_Line("a specified path is incorrect, no such directory");
+   run_command(current_directory, "cd unexisting_folder");
+   Put_Line("============================================================");
+   new_line;
+   new_line;
    
    
 end test_cd;

@@ -63,5 +63,17 @@ begin
       put_line("mkdir /test3/ok is incoherent");
    end if;
    new_line;
+   new_line;
    
+   -- mkdir test with test already existing
+   put_line("'mkdir test' with test already existing");
+   current_directory := get_root;
+   run_command(current_directory, "mkdir test");
+   put_line("It should raise Same_Name_Error. The couple of lines between two '===...===' should be the same :");
+   Put_Line("============================================================");
+   Put_Line("cannot create file or directory: A file or directory with same name already exists");
+   run_command(current_directory, "mkdir test");
+   Put_Line("============================================================");
+   new_line;
+   new_line;
 end test_mkdir;

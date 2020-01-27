@@ -18,7 +18,7 @@ begin
    
    
    -- touch testFile in root
-   put_line("'touch test'");
+   put_line("'touch testFile'");
    current_directory := get_root;
    run_command(current_directory, "touch testFile");
    if has_son_with_this_name(current_directory, "testFile") then
@@ -70,5 +70,18 @@ begin
    else
       put_line("touch /test3/okFile is incoherent");
    end if;
+   new_line;
+   new_line;
+   
+   -- touch testFile with testFile already existing
+   put_line("'touch testFile' with testFile already existing");
+   current_directory := get_root;
+   run_command(current_directory, "touch testFile");
+   put_line("It should raise Same_Name_Error. The couple of lines between two '===...===' should be the same :");
+   Put_Line("============================================================");
+   Put_Line("cannot create file or directory: A file or directory with same name already exists");
+   run_command(current_directory, "touch testFile");
+   Put_Line("============================================================");
+   new_line;
    new_line;
 end test_touch;
