@@ -10,11 +10,13 @@ procedure Menu is
    
    procedure print_prompt is
    begin
+      -- print prompt in red
       put(ASCII.ESC & "[31m> " & ASCII.ESC & "[0m");
    end print_prompt;
    
+   -- make sure the user type an integer between choice_min and choice_max, then return it
    function get_choice (choice_min : in Integer; choice_max : in Integer) return Integer is
-      choice : Integer;
+      choice : Integer; -- choice typed by the user
    begin
       loop
          print_prompt;
@@ -31,6 +33,7 @@ procedure Menu is
    
    procedure print_main_menu (current_directory : in T_Folder) is
    begin
+      -- print the menu with the differents commands
       put_line("You are in: " & ASCII.ESC & "[31m" & get_pwd(current_directory) & ASCII.ESC & "[0m");
       put_line("What do you want to do?");
       put_line("1) Print name of current/working directory");
@@ -48,36 +51,37 @@ procedure Menu is
    end print_main_menu;
    
    procedure cd_menu (current_directory : in out T_Folder) is
-      path : String(1..LMAX_STRING);
-      path_length : Integer;
+      path : String(1..LMAX_STRING); -- path entered by the user
+      path_length : Integer; -- length of path entered by the user
    begin
       put_line("Please specifiy a directory where you want to go, it can be a relative or an absolute path.");
       new_line;
-      loop
-         print_prompt;
-         get_line(path, path_length);
-         exit when path_length > 0;
-      end loop;
+      get_line(path, path_length);
+      -- run the command "cd [path]"
       run_command(current_directory, command_to_string(cd) & " " & path(1..path_length));
    end cd_menu;
    
    procedure ls_menu (current_directory : in out T_Folder) is
-      choice : Integer;
-      path : String(1..LMAX_STRING);
-      path_length : Integer;
+      choice : Integer; -- choice entered by the user
+      path : String(1..LMAX_STRING); -- path entered by the user
+      path_length : Integer; -- length of path entered by the user
    begin
       put_line("1) Classic");
       put_line("2) Recursive");
       put_line("0) Back");
       new_line;
       choice := get_choice(0, 2);
+      -- if the user did not go back
       if choice /= 0 then
          put_line("From where? You can type a relative or an absolute path or leave blank for current directory.");
          new_line;
          print_prompt;
+         -- get the path
          get_line(path, path_length);
+         -- if this is a recursive ls, run the command "ls -r [path]"
          if choice = 2 then
             run_command(current_directory, command_to_string(ls) & " -r " & path(1..path_length));
+         -- else, run "ls [path]"
          else
             run_command(current_directory, command_to_string(ls) & " " & path(1..path_length));
          end if;
@@ -85,124 +89,142 @@ procedure Menu is
    end ls_menu;
    
    procedure mkdir_menu (current_directory : in out T_Folder) is
-      path : String(1..LMAX_STRING);
-      path_length : Integer;
+      path : String(1..LMAX_STRING); -- path entered by the user
+      path_length : Integer; -- length of the path entered by the user
    begin
       put_line("Please specifiy a directory that you want to create, it can be a relative or an absolute path.");
       new_line;
+      -- while the path is blank, get the path
       loop
          print_prompt;
          get_line(path, path_length);
          exit when path_length > 0;
       end loop;
+      -- run "mkdir [path]"
       run_command(current_directory, command_to_string(mkdir) & " " & path(1..path_length));
    end mkdir_menu;
    
    procedure touch_menu (current_directory : in out T_Folder) is
-      path : String(1..LMAX_STRING);
-      path_length : Integer;
+      path : String(1..LMAX_STRING); -- path entered by the user
+      path_length : Integer; -- length of the path entered by the user
    begin
       put_line("Which file do you want to create? You can use absolute or relative path.");
       new_line;
+      -- while the path is blank, get the path
       loop
          print_prompt;
          get_line(path, path_length);
          exit when path_length > 0;
       end loop;
+      -- run "touch [path]"
       run_command(current_directory, command_to_string(touch) & " " & path(1..path_length));
    end touch_menu;
    
    procedure cp_menu (current_directory : in out T_Folder) is
-      choice : Integer;
-      path1 : String(1..LMAX_STRING);
-      path1_length : Integer;
-      path2 : String(1..LMAX_STRING);
-      path2_length : Integer;
+      choice : Integer; -- choice entered by the user
+      source_path : String(1..LMAX_STRING); -- source path entered by the user
+      source_path_length : Integer; -- length of the source path entered by the user
+      destination_path : String(1..LMAX_STRING); -- destination path entered by the user
+      destination_path_length : Integer; -- length of the destination path entered by the user
    begin
       put_line("1) File");
       put_line("2) Directory");
       put_line("0) Back");
       new_line;
       choice := get_choice(0, 2);
+      -- if the user did not go back
       if choice /= 0 then
          put_line("From where? You can type a relative or an absolute path.");
          new_line;
+         -- while the source path is blank, get the source path
          loop
             print_prompt;
-            get_line(path1, path1_length);
-            exit when path1_length > 0;
+            get_line(source_path, source_path_length);
+            exit when source_path_length > 0;
          end loop;
          put_line("To where? You can type a relative or an absolute path.");
          new_line;
+         -- while the destination path is blank, get the destination path
          loop
             print_prompt;
-            get_line(path2, path2_length);
-            exit when path2_length > 0;
+            get_line(destination_path, destination_path_length);
+            exit when destination_path_length > 0;
          end loop;
+         -- if this is a recurive cp, run "cp -r [source_path] [destination_path]"
          if choice = 2 then
-            run_command(current_directory, command_to_string(cp) & " -r " & path1(1..path1_length) & " " & path2(1..path2_length));
+            run_command(current_directory, command_to_string(cp) & " -r " & source_path(1..source_path_length) & " " & destination_path(1..destination_path_length));
+         -- else, run "cp [source_path] [destination_path]"
          else
-            run_command(current_directory, command_to_string(cp) & " " & path1(1..path1_length) & " " & path2(1..path2_length));
+            run_command(current_directory, command_to_string(cp) & " " & source_path(1..source_path_length) & " " & destination_path(1..destination_path_length));
          end if;
       end if;
    end cp_menu;
    
    procedure mv_menu (current_directory : in out T_Folder) is
-      choice : Integer;
-      path1 : String(1..LMAX_STRING);
-      path1_length : Integer;
-      path2 : String(1..LMAX_STRING);
-      path2_length : Integer;
+      choice : Integer; -- choice entered by the user
+      source_path : String(1..LMAX_STRING); -- source path entered by the user
+      source_path_length : Integer; -- length of the source path entered by the user
+      destination_path : String(1..LMAX_STRING); -- destination path entered by the user
+      destination_path_length : Integer; -- length of the destination path entered by the user
    begin
       put_line("1) File");
       put_line("2) Directory");
       put_line("0) Back");
       new_line;
       choice := get_choice(0, 2);
+      -- if the user did not go back
       if choice /= 0 then
          put_line("From where? You can type a relative or an absolute path.");
          new_line;
+         -- while the source path is blank, get the source path
          loop
             print_prompt;
-            get_line(path1, path1_length);
-            exit when path1_length > 0;
+            get_line(source_path, source_path_length);
+            exit when source_path_length > 0;
          end loop;
          put_line("To where? You can type a relative or an absolute path.");
          new_line;
+         -- while the destination path is blank, get the destination path
          loop
             print_prompt;
-            get_line(path2, path2_length);
-            exit when path2_length > 0;
+            get_line(destination_path, destination_path_length);
+            exit when destination_path_length > 0;
          end loop;
+         -- if this is a recursive move, run "mv -r [source_path] [destination_path]"
          if choice = 2 then
-            run_command(current_directory, command_to_string(mv) & " -r " & path1(1..path1_length) & " " & path2(1..path2_length));
+            run_command(current_directory, command_to_string(mv) & " -r " & source_path(1..source_path_length) & " " & destination_path(1..destination_path_length));
+         -- else, run "mv [source_path] [destination_path]"
          else
-            run_command(current_directory, command_to_string(mv) & " " & path1(1..path1_length) & " " & path2(1..path2_length));
+            run_command(current_directory, command_to_string(mv) & " " & source_path(1..source_path_length) & " " & destination_path(1..destination_path_length));
          end if;
       end if;
       
    end mv_menu;
    
    procedure rm_menu (current_directory : in out T_Folder) is
-      choice : Integer;
-      path : String(1..LMAX_STRING);
-      path_length : Integer;
+      choice : Integer; -- choice entered by the user
+      path : String(1..LMAX_STRING); -- path entered by the user
+      path_length : Integer; -- length of the path entered by the user
    begin
       put_line("1) File");
       put_line("2) Directory");
       put_line("0) Back");
       new_line;
       choice := get_choice(0, 2);
+      -- if the user did not go back
       if choice /= 0 then
          put_line("What do you want to delete? You can type a relative or an absolute path.");
          new_line;
+         -- while the path is blank, get the path
          loop
             print_prompt;
             get_line(path, path_length);
             exit when path_length > 0;
          end loop;
+         -- if this is a recursive rm, run "rm -r [path]"
          if choice = 2 then
             run_command(current_directory, command_to_string(rm) & " -r " & path(1..path_length));
+         -- else, run "rm [path]"
          else
             run_command(current_directory, command_to_string(rm) & " " & path(1..path_length));
          end if;
@@ -210,20 +232,24 @@ procedure Menu is
    end rm_menu;
    
    procedure tar_menu (current_directory : in out T_Folder) is
-      path : String(1..LMAX_STRING);
-      path_length : Integer;
+      path : String(1..LMAX_STRING); -- path entered by the user
+      path_length : Integer; -- length of the path entered by the user
    begin
       put_line("Please specifiy a directory that you want to archive, it can be a relative or an absolute path or blank for current directory.");
       new_line;
       print_prompt;
+      -- get the path
       get_line(path, path_length);
+      -- run "tar [path]"
       run_command(current_directory, command_to_string(tar) & " " & path(1..path_length));
    end tar_menu;
    
-   choice : Integer;
-   current_directory : T_Folder;
+   choice : Integer; -- choice entered by the user
+   current_directory : T_Folder; -- directory we are currently in
 begin
+   -- current_directory is equal to root by default
    current_directory := get_root;
+   -- while the user do not type "0", get his choices and execute the corresponding routines
    loop
       print_main_menu(current_directory);
       choice := get_choice(0, 10);

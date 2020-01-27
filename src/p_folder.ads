@@ -284,15 +284,15 @@ package P_Folder is
    -- Postconditions : /
    function has_son_with_this_name(folder: T_Folder; name: String) return Boolean;
    
-   -- Role : Check if current_directory has as parent supposed_parent
+   -- Role : Check if current_directory has supposed_parent as parent
    -- Parameters :
-   --    current_directory (T_Folder) : Folder to check the supposed parent from
-   --    supposed_parent (T_Folder) : The supposed parent
+   --    current_directory (in T_Folder) : Folder to check the supposed parent from
+   --    supposed_parent (in T_Folder) : The supposed parent
    -- Return :
-   --    Boolean : True if current_directory has supposed_parent as parent, False if not
+   --    Boolean : True if current_directory has supposed_parent as parent, False otherwise
    -- Preconditions : /
    -- Postconditions : /
-   function has_as_parent(current_directory : T_Folder; supposed_parent : T_Folder) return Boolean;
+   function has_parent(current_directory : in T_Folder; supposed_parent : in T_Folder) return Boolean;
    
 private
    ROOT : T_Folder;
@@ -305,7 +305,7 @@ private
    -- Postconditions : /
    function create_root return T_Folder;
    
-   -- Role : Calculate the actual absolute path of a folder.
+   -- Role : Calculate the actual absolute path of a folder
    -- Parameters :
    --    folder (T_Folder) : Folder to calculate the path
    -- Return :

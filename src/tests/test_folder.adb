@@ -281,9 +281,19 @@ begin
    -- has son with same name
    put_line("Has son with same name:");
    if has_son_with_this_name(folder, "file_old.bak") then
-      put_line("has_son_with_this_name(folder, ""file_old.bak"")");
+      put_line("has_son_with_this_name(folder, ""file_old.bak"") = True");
    else
       put_line("has_son_with_this_name(folder, ""file_old.bak"") is incoherent");
+   end if;
+   new_line;
+   
+   -- has parent
+   folder_sibling := create("sibling", folder);
+   put_line("Has parent:");
+   if has_parent(folder_sibling, folder) then
+      put_line("has_parent(folder_sibling, folder) = True");
+   else
+      put_line("has_parent(folder_sibling, folder) is incoherent");
    end if;
    new_line;
    

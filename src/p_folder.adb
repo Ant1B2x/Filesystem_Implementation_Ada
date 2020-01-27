@@ -269,7 +269,7 @@ package body P_Folder is
       return get_parent(folder1) = get_parent(folder2) and then get_name(folder1) = get_name(folder2) and then get_pwd(folder1) = get_pwd(folder2);
    end are_the_same;
    
-   function has_as_parent(current_directory : T_Folder; supposed_parent : T_Folder) return Boolean is
+   function has_parent(current_directory : in T_Folder; supposed_parent : in T_Folder) return Boolean is
       current : T_Folder;
    begin
       current := current_directory;
@@ -277,7 +277,6 @@ package body P_Folder is
          current := get_parent(current);
       end loop;
       return are_the_same(supposed_parent, current);
-   end has_as_parent;
-   
+   end has_parent;
    
 end P_Folder;

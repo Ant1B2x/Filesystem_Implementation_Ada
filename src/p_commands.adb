@@ -135,7 +135,7 @@ package body P_Commands is
       return True;
    end only_handled_options;
    
-   function go_to_folder (original_directory : in T_Folder; path: in String; stop_at_penultimate: in Boolean := False) return T_Folder is
+   function go_to_folder (original_directory : in T_Folder; path : in String; stop_at_penultimate : in Boolean := False) return T_Folder is
       current: T_Folder; -- current directory
       path_tree: T_Substrings; -- directory tree
       penultimate: Integer; -- 1 if stop_at_penultimate, 0 else
@@ -208,19 +208,19 @@ package body P_Commands is
       end if;
    end compare_T_R_Siblings;
    
-   function create_siblings_set (directory : in T_Folder) return T_Siblings_Set is
+   function create_siblings_set (current_directory : in T_Folder) return T_Siblings_Set is
       siblings_set : T_Siblings_Set; -- returned sibling set
       new_element : T_R_Sibling; -- new element of the set
    begin
       -- add each folder
-      for i in 1.. get_nb_folders(directory) loop
-         new_element.name := To_Unbounded_String(get_name(get_folder(directory, i)));
+      for i in 1.. get_nb_folders(current_directory) loop
+         new_element.name := To_Unbounded_String(get_name(get_folder(current_directory, i)));
          new_element.is_folder := True;
          siblings_set.insert(new_element);
       end loop;
       -- add each file
-      for i in 1.. get_nb_files(directory) loop
-         new_element.name := To_Unbounded_String(get_name(get_file(directory, i)));
+      for i in 1.. get_nb_files(current_directory) loop
+         new_element.name := To_Unbounded_String(get_name(get_file(current_directory, i)));
          new_element.is_folder := False;
          siblings_set.insert(new_element);
       end loop;
@@ -242,23 +242,23 @@ package body P_Commands is
       new_line;
    end display_folders_and_files;
    
-   procedure folder_deep_copy (folder1 : in T_Folder; folder2 : in out T_Folder) is
+   procedure folder_deep_copy (source_folder : in T_Folder; destination_folder : in out T_Folder) is
       original_file : T_File; -- original file
       new_file : T_File; -- copy of original file
       original_folder : T_Folder; -- original folder
       new_folder : T_Folder; -- copy of a folder
    begin
       -- copy all files from original folder
-      for i in 1..get_nb_files(folder1) loop
-         original_file := get_file(folder1, i);
-         new_file := clone(original_file, get_pwd(folder2));
-         add_file(folder2, new_file);
+      for i in 1..get_nb_files(source_folder) loop
+         original_file := get_file(source_folder, i);
+         new_file := clone(original_file, get_pwd(destination_folder));
+         add_file(destination_folder, new_file);
       end loop;
       -- copy all folders from original folder
-      for i in 1..get_nb_folders(folder1) loop
-         original_folder := get_folder(folder1, i);
-         new_folder := create(get_name(original_folder), folder2, get_rights(original_folder));
-         folder_deep_copy(get_folder(folder1, i), new_folder);
+      for i in 1..get_nb_folders(source_folder) loop
+         original_folder := get_folder(source_folder, i);
+         new_folder := create(get_name(original_folder), destination_folder, get_rights(original_folder));
+         folder_deep_copy(get_folder(source_folder, i), new_folder);
       end loop;
    end folder_deep_copy;
    
@@ -507,9 +507,8 @@ package body P_Commands is
       if contains_option(options, 'r') then
          -- folder to copy
          source_folder := go_to_folder(current_directory, get_substring_to_string(parameters, 1));
-         
          -- we can't copy a folder from itself to itself
-         if has_as_parent(destination_folder_parent, source_folder) then
+         if has_parent(destination_folder_parent, source_folder) then
             raise Copy_Into_Itself_Error;
          end if;
          -- create the new folder
