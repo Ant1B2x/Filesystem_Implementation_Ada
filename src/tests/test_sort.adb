@@ -19,32 +19,32 @@ begin
    
    parameters := create_substrings;
    options := create_substrings;
-   add_substring(parameters,"test1");
+   --add_substring(parameters,"test1");
    --mkdir_command(folder, parameters, options);
    
    parameters := create_substrings;
    options := create_substrings;
-   add_substring(parameters,"test2");
+   --add_substring(parameters,"test2");
    --mkdir_command(folder, parameters, options);
    
    parameters := create_substrings;
    options := create_substrings;
-   add_substring(parameters,"test2/test4");
+   --add_substring(parameters,"test2/test4");
    --mkdir_command(folder, parameters, options);
    
    parameters := create_substrings;
    options := create_substrings;
-   add_substring(parameters,"test2/test3");
+   --add_substring(parameters,"test2/test3");
    --mkdir_command(folder, parameters, options);
    
    parameters := create_substrings;
    options := create_substrings;
-   add_substring(parameters,"test2");
+   --add_substring(parameters,"test2");
    --mkdir_command(folder, parameters, options);
    
    parameters := create_substrings;
    options := create_substrings;
-   add_substring(parameters,"test2");
+   --add_substring(parameters,"test2");
    --mkdir_command(folder, parameters, options);
    
    parameters := create_substrings;
@@ -53,32 +53,32 @@ begin
       
    parameters := create_substrings;
    options := create_substrings;
-   add_substring(parameters,"test2/karibou");
+   --add_substring(parameters,"test2/karibou");
    --touch_command(folder, parameters, options);
    
    parameters := create_substrings;
    options := create_substrings;
-   add_substring(parameters,"test2/bliblabloblu");
+   --add_substring(parameters,"test2/bliblabloblu");
    --touch_command(folder, parameters, options);
      
    parameters := create_substrings;
    options := create_substrings;
-   add_substring(parameters,"test2/ahehohu");
+   --add_substring(parameters,"test2/ahehohu");
    --touch_command(folder, parameters, options);
    
    parameters := create_substrings;
    options := create_substrings;
-   add_substring(parameters,"test2/test3/aaaatest2");
+   --add_substring(parameters,"test2/test3/aaaatest2");
    --touch_command(folder, parameters, options);
    
    parameters := create_substrings;
    options := create_substrings;
-   add_substring(parameters,"test2/test3/bbbaaa");
+   --add_substring(parameters,"test2/test3/bbbaaa");
    --touch_command(folder, parameters, options);
    
    parameters := create_substrings;
    options := create_substrings;
-   add_substring(parameters,"test2/test3/bababa");
+   --add_substring(parameters,"test2/test3/bababa");
    --touch_command(folder, parameters, options);
    
    
@@ -96,14 +96,14 @@ begin
    
    parameters := create_substrings;
    options := create_substrings;
-   add_substring(parameters,"test2");
+   --add_substring(parameters,"test2");
    --cd_command(folder, parameters, options);
    
    Put_Line("**** Test de tri ***");
    Put_Line("./test2:");
    parameters := create_substrings;
    options := create_substrings;
-   add_substring(options,"-r");
+   --add_substring(options,"-r");
    --ls_command(folder, parameters, options);
 
 end test_sort;

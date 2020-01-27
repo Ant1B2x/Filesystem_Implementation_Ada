@@ -22,7 +22,7 @@ package body p_array is
    begin
       -- Set nb_values to the right number
       new_array.nb_values := (index_last - index_first + 1);
-      -- Add the specified values to the new array
+      -- Add the specified values to the new array and return it
       new_array.values(1..get_nb_values(new_array)) := f_array.values(index_first..index_last);
       return new_array;
    end get_values;
@@ -36,15 +36,14 @@ package body p_array is
    procedure del_value (f_array : in out T_Array; value : in T) is
       index : Integer;
    begin
-      -- look for the value
+      -- find the value
       index := 1;
-      while index <= get_nb_values(f_array)
-        and then f_array.values(index) /= value loop
+      while index <= get_nb_values(f_array) and then f_array.values(index) /= value loop
          index := index + 1;
       end loop;
-      -- if the sibling is found
+      -- if the value is found
       if index <= get_nb_values(f_array) then
-         -- compact
+         -- compact the array
          while index < get_nb_values(f_array) loop
             f_array.values(index) := f_array.values(index + 1);
             index := index + 1;

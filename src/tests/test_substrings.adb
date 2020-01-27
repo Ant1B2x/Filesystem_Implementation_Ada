@@ -54,4 +54,14 @@ begin
    end if;
    new_line;
    
+   -- add substring
+   put_line("Add substring:");
+   add_substring(substrings, "ij");
+   if get_substring_to_string(substrings, 5) = "ij" then
+      put_line("get_substring_to_string(substrings, 5) = ""ij""");
+   else
+      put_line("get_substring_to_string(substrings, 5) is incoherent");
+   end if;
+   new_line;
+   
 end test_substrings;

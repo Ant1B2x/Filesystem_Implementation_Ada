@@ -6,34 +6,39 @@ package body P_Substrings is
    end create_substrings;
 
    function split_string (original : in String; separator : in Character) return T_Substrings is
-      substrings : T_Substrings;
-      i: Integer; -- index
-      substring_first : Integer;
+      substrings : T_Substrings; -- returned T_Substrings
+      index : Integer; -- index of the different substrings
+      index_substring_first : Integer; -- index of the beggining of a substring
    begin
       substrings := P_Substrings_Array.create;
-
       -- if the original string is blank, return an empty array of substrings
       if original = "" then
          return substrings;
       end if;
 
-      i := 1;
-      substring_first := 1;
-      while i <= original'Length loop
-         if original(i) = separator then
-            -- check if we really need to add string, because original(1..0) will be add, and we don't want this. Only separator should not be add.
-            if(substring_first <= (i - 1))then
-               add_substring(substrings, original(substring_first..(i - 1)));
+      index := 1;
+      index_substring_first := 1;
+      -- for all the original string
+      while index <= original'Length loop
+         -- if the current character is the separator
+         if original(index) = separator then
+            -- check if we really need to add string, because original(1..0) will be add, and we don't want this
+            if index_substring_first <= (index - 1) then
+               -- add the substring
+               add_substring(substrings, original(index_substring_first..(index - 1)));
             end if;
-            while i < original'Length and then original(i + 1) = separator loop
-               i := i + 1;
+            -- while the separator is encountered, skip it
+            while index < original'Length and then original(index + 1) = separator loop
+               index := index + 1;
             end loop;
-            substring_first := i + 1;
+            index_substring_first := index + 1;
          end if;
-         i := i + 1;
+         index := index + 1;
       end loop;
+      -- if the last character is not a separator
       if original(original'Last) /= separator then
-         add_substring(substrings, original(substring_first..original'Last));
+         -- add the last substring
+         add_substring(substrings, original(index_substring_first..original'Last));
       end if;
       return substrings;
    end split_string;
@@ -54,8 +59,9 @@ package body P_Substrings is
    end get_substring_to_string;
 
    function get_substrings(substrings: in T_Substrings; index_first: Integer; index_last: Integer) return T_Substrings is
-      new_substrings: T_Substrings;
+      new_substrings: T_Substrings; -- T_Substrings to return
    begin
+      -- get the substrings between index_first and index_last
       new_substrings := P_Substrings_Array.get_values(substrings, index_first, index_last);
       return new_substrings;
    end get_substrings;
