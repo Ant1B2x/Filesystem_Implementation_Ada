@@ -60,17 +60,6 @@ begin
    end;
    new_line;
    
-   -- set empty name
-   put_line("Set empty name:");
-   begin
-      set_name(metadata, "");
-      put_line("nothing raised, set_name should have raised Empty_Name_Error");
-   exception
-      when Empty_Name_Error =>
-         put_line("Empty_Name_Error raised, the name can't be blank");
-   end;
-   new_line;
-   
    -- set rights & get rights
    put_line("Set rights & get rights:");
    set_rights(metadata, (RW, R, R));

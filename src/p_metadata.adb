@@ -1,18 +1,19 @@
 package body P_Metadata is
    
    function create_root return T_Metadata is
-      metadata : T_Metadata;
+      metadata : T_Metadata; -- the returned metadata
    begin
-      metadata.name := To_Unbounded_String(""&FILE_SEPARATOR);
-      set_rights(metadata, (RWX, RX, RX));
-      set_size(metadata, FOLDER_SIZE);
-      set_path(metadata, "");
+      metadata.name := To_Unbounded_String(""&FILE_SEPARATOR); -- the name is just "/"
+      set_rights(metadata, (RWX, RX, RX)); -- only root can write into it, but everyone has access
+      set_size(metadata, FOLDER_SIZE); -- standard folder size
+      set_path(metadata, ""); -- the path of root is blank
       return metadata;
    end create_root;
    
    function create (name : in String; rights : in T_Rights; size : in Integer; path : in String) return T_Metadata is
-      metadata : T_Metadata;
+      metadata : T_Metadata; -- the returned metadata
    begin
+      -- use the already developped setters
       set_name(metadata, name);
       set_rights(metadata, rights);
       set_size(metadata, size);
@@ -27,18 +28,13 @@ package body P_Metadata is
    
    procedure set_name (metadata : in out T_Metadata; name : in String) is
    begin
-      
-      if name'length = 0 then
-         raise Empty_Name_Error;
-      end if;
-      
-      -- a name can't contain a file separator or ' '
+      -- a name can't contain a "/" or " "
       for i in 1..name'length loop
          if name(i) = FILE_SEPARATOR or name(i) = ' ' then
             raise Invalid_Character_Error;
          end if;
       end loop;
-      
+      -- set the name to the metadata
       metadata.name := To_Unbounded_String(name);
    end set_name;
    

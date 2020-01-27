@@ -10,7 +10,7 @@ package P_Constants is
    SMAX_FILE : constant Integer := 1000*1000*1000;
    -- folder size = 10Ko
    FOLDER_SIZE : constant Integer := 10*1000;
-   -- file separator
+   -- file separator, name of the root folder
    FILE_SEPARATOR : constant Character := '/';
 
 end P_Constants;
