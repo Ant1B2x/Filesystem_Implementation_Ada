@@ -100,6 +100,31 @@ package body P_Folder is
       absolute_path : Unbounded_String; -- absolute path from root to folder
       current : T_Folder; -- current folder
    begin
+      -- R0 : Définir le chemin menant à un dossier, depuis celui-ci
+      -- R1 : Si je suis le dossier originel, je retourne '/'(R1.1)
+      --      Récupérer le dossier courrant(R1.2)
+      --      Remonter jusqu'au dossier originel en sauvegardant dans le chemin les différents dossier traversés(R1.3)
+      
+      -- R2.1 : Comment R1.1
+      --     Si is_root(folder) Alors
+      --         Retour '/'
+      --     Fin si
+      -- R2.2 : Comment R1.2
+      --     current <- folder
+      -- R2.2 : Comment R1.3
+      --     Tant que je ne suis pas dans le dossier originel Faire(R2.2.1)
+      --         Remonter au dossier précédent(R2.2.2)
+      --         Sauvegarder le nom du dossier courrant dans le chemin(R2.2.3)
+      --     Fin tant que
+      
+      -- R3.1 : Comment (R2.2.1)
+      --     non non_null(parent(current)) et ensuite non est_originel(parent(current)
+      -- R3.2 : Comment (R2.2.2)
+      --     current <- parent(current)
+      -- R3.3 : Comment (R2.2.3)
+      --     chemin <- '/' + nom(current) + chemin
+      
+      
       -- if the parent is root, it's a specific case, return "/"
       if is_root(get_parent(folder)) then
          return ""&FILE_SEPARATOR;
@@ -125,6 +150,25 @@ package body P_Folder is
    
    function get_pwd (folder : in T_Folder) return String is
    begin
+      -- R0 : Obtenir pwd
+      -- R1 : Si je suis le dossier originel(R1.1)
+      --      Si mon parent est le dossier originel(R1.2)
+      --      Sinon(R1.3)
+      
+      -- R2.1 : Comment R1.1
+      --     Si is_root(folder) Alors
+      --         Retour '/'
+      --     Fin si
+      -- R2.2 : Comment R1.2
+      --     Si is_root(parent(folder)) Alors
+      --         Retour chemin(folder) + nom(folder)
+      --     Fin si
+      -- R2.2 : Comment R1.3
+      --     Tant que je ne suis pas dans le dossier originel Faire(R2.2.1)
+      --         Retour chemin(folder) + '/' + nom(folder)
+      --     Fin tant que
+      
+      
       -- if the current directory is root
       if is_root(folder) then 
          -- return "" & "/"
@@ -190,6 +234,34 @@ package body P_Folder is
    
    function find_folder (current_folder : in T_Folder; folder_name : in String) return T_Folder is
    begin
+      -- R0 : Trouver un sous-dossier direct depuis un nom
+      -- R1 : Si le nom est '.'(R1.1)
+      --      Si le nom est '..'(R1.2)
+      --      Sinon(R1.3)
+      
+      -- R2.1 : Comment R1.1
+      --     Si folder_name = '.' Alors
+      --         Retour current_folder
+      --     Fin si
+      -- R2.2 : Comment R1.2
+      --     Si folder_name = '..' Alors
+      --         Retour parent(current_folder)
+      --     Fin si
+      -- R2.2 : Comment R1.3
+      --     Pour tout les fils du dossier courant Faire(R2.2.1)
+      --         Vérifier si c'est le dossier que je recherche(R2.2.2)
+      --     Fin tant que
+      --     Non trouvé(R2.2.3)
+      
+      -- R3.1 : Comment (R2.2.1)
+      --     index allant de 1 à nombre_fils(current_folder)
+      -- R3.2 : Comment (R2.2.2)
+      --     Si nom(dossier_fils(current_folder, index)) = folder_name
+      --         Retour dossier_fils(current_folder, index)
+      --     Fin si
+      -- R3.3 : Comment (R2.2.3)
+      --     Retour null
+      
       -- if the folder name is ".", return the current folder itself
       if folder_name = "." then
          return current_folder;
@@ -219,6 +291,22 @@ package body P_Folder is
    procedure del_folder (folder : in out T_Folder; folder_name : in String) is
       folder_sibling : T_Folder; -- the potentially deleted sub-folder
    begin
+      -- R0 : Supprimer un sous-dossier direct depuis un nom
+      -- R1 : Pour tout les fils du dossier courant Faire(R1.1)
+      --         Vérifier si c'est le dossier que je recherche(R1.2)
+      --     Fin tant que
+      
+      -- R2.1 : Comment (R1.1)
+      --     index allant de 1 à nombre_fils(current_folder)
+      -- R2.2 : Comment (R1.2)
+      --     Si nom(dossier_fils(current_folder, index)) = folder_name
+      --         Supprimer fils(R2.2.1)
+      --     Fin si
+      
+      -- R3.1 : Comment R2.2.1
+      --    enfant <- dossier_fils(folder, i);
+      --    -----> Voir P_Folder_Tree.del_sibling
+      
       -- for all sub-folders
       for i in 1..get_nb_folders(folder) loop
          -- if the sub-folder name is equal to the given folder_name
@@ -243,6 +331,22 @@ package body P_Folder is
    
    function find_file (current_folder : in T_Folder; file_name : in String) return T_File is
    begin
+      -- R0 : Trouver un fichier direct depuis un nom
+      -- R1 : Pour tout les fichiers du dossier courant Faire(R2.2.1)
+      --         Vérifier si c'est le fichiers que je recherche(R2.2.2)
+      --     Fin tant que
+      --     Non trouvé(R2.2.3)
+      
+      -- R3.1 : Comment (R2.2.1)
+      --     index allant de 1 à nombre_fichiers(current_folder)
+      -- R3.2 : Comment (R2.2.2)
+      --     Si nom(fichier(current_folder, index)) = file_name
+      --         Retour fichier(current_folder, index)
+      --     Fin si
+      -- R3.3 : Comment (R2.2.3)
+      --     Retour null
+      
+      
       -- for all files
       for i in 1..get_nb_files(current_folder) loop
          -- if the file name is equal to the given file_name
@@ -259,6 +363,34 @@ package body P_Folder is
       folder_data : T_Folder_Data; -- the data of the folder
       new_file : T_File; -- new file to add in the folder, clone of file parameter
    begin
+      -- R0 : Ajouter un fichier au dossier
+      -- R1 : Si j'ai un fils avec le même nom(R1.1)
+      --      Si j'ai déjà atteint ma limite de fils(R1.2)
+      --      Sinon(R1.3)
+      
+      -- R2.1 : Comment (R1.1)
+      --     Si fils_avec_meme_nom(folder, nom(file)) Alors
+      --         Erreur Fils_Avec_Meme_Nom_Erreur
+      --     Fin si
+      -- R2.2 : Comment (R1.2)
+      --     Si nombre_fils(folder) = NOMBRE_MAX_FILS Alors
+      --         Erreur Dossier_Plein_Erreur
+      --     Fin si
+      -- R2.3 : Comment (R1.3)
+      --     Recuperer les donnees du fichier(R2.3.1)
+      --     Cloner le fichier(R2.3.2)
+      --     Ajouter le fichier clone au dossier(R2.3.3)
+      --     Ajouter les donnees au fichier clone(R2.3.4)
+      
+      -- R3.1 : Comment R2.3.1
+      --     donnes_fichier <- donnees(fichier)
+      -- R3.1 : Comment R2.3.2
+      --     clone_fichier <- clone(fichier)
+      -- R3.1 : Comment R2.3.3
+      --     -----> Voir P_Files.add_value
+      -- R3.1 : Comment R2.3.4
+      --     definir_donnees(fichier, donnees_fichier)
+      
       -- if the parent contains a folder or a file with the same name than the new file, raise an Exception
       if has_son_with_this_name(folder, P_File.get_name(file)) then
          raise Same_Name_Error;
@@ -280,6 +412,31 @@ package body P_Folder is
    procedure del_file (folder : in out T_Folder; file_name : in String) is
       folder_data : T_Folder_Data; -- the data of the folder
    begin
+      -- R0 : Supprimer un fichier direct depuis un nom
+      -- R1 : On recupere les donnees qui contiennent les fichiers(R1.1)
+      --      On supprime le fichier des donnees(R1.2)
+      --      On redonne les donnees au fichier(R1.3)
+      
+      -- R2.1 : Comment R1.1
+      --      donnees_dossier <- donnees(folder)
+      -- R2.2 : Comment R1.2
+      --      Pour tout les fichiers de donnees_dossier Faire(R1.1)
+      --         Vérifier si c'est le fichier que je recherche(R1.2)
+      --     Fin tant que
+      -- R2.3 : Comment R1.3
+      --     definir_donnees(folder, donnees_dossier);
+      
+      -- R3.1 : Comment (R1.1)
+      --     index allant de 1 à nombre_fichiers(donnees_dossier.fichiers)
+      -- R3.2 : Comment (R1.2)
+      --     Si nom(fichier(donnees_dossier.fichiers, index)) = file_name
+      --         Supprimer fils(R2.2.1)
+      --     Fin si
+      
+      -- R3.1 : Comment R2.2.1
+      --    -----> Voir P_Files.del_value
+      
+      
       -- get the data of the folder
       folder_data := get_data(folder);
       -- for all files
@@ -296,6 +453,21 @@ package body P_Folder is
    
    function has_son_with_this_name(folder: T_Folder; name: String) return Boolean is
    begin
+      -- R0 : Trouve si le dossier a deja un fils du meme nom
+      -- R1 : Retourne vrai Si il a un dossier du meme nom(R1.1)
+      --      Retourne vrai si il a un fichier du meme nom(R1.2)
+      --      Retourne faux sinon(R1.2)
+      -- R2.1 : Comment R1.1
+      --      Si dossier(folder, name) Alors
+      --          Retourne vrai
+      --      Fin si
+      -- R2.2 : Comment R1.2
+      --      Si fichier(folder, name) Alors
+      --          Retourne vrai
+      --      Fin si
+      -- R2.2 : Comment R1.2
+      --      Retourne vrai
+      
       -- return true if a folder or a file is found for the given name
       return find_folder(folder, name) /= null or find_file(folder, name) /= null;
    end has_son_with_this_name;
@@ -303,6 +475,24 @@ package body P_Folder is
    function has_parent(folder : in T_Folder; supposed_parent : in T_Folder) return Boolean is
       current : T_Folder; -- current folder
    begin
+      -- R0 : Trouve si le dossier ce parent comme ancetre
+      -- R1 : Prend folder comme dossier courant(R1.1)
+      --      Parcours tous les parents tant que mon parent n'est pas le dossier originel et que le parent recherche n'est pas rencontre(R1.2)
+      --      Retourne si le courant est le dossier recheche comme parent(R1.3)
+      -- R2.1 : Comment R1.1
+      --      courant <- folder
+      -- R2.2 : Comment R1.2
+      --      Tant que mon parent n'est pas le dossier originel et que courant n'est pas le parent recherche Faire(R2.2.1)
+      --          Je passe au parent suivant(R2.2.2)
+      --      Fin tant que
+      -- R2.3 : Comment R1.3
+      --      Retour (supposed_parent, courant)
+      
+      -- R3.1 : Comment R2.2.1
+      --      non est_dossier_originel(courant) et non egaux(supposed_parent, courant)
+      -- R3.2 : Comment R2.2.2
+      --      courant <- parent(courant)
+      
       -- set the current to folder
       current := folder;
       -- while current is not root and current is different to supposed parent

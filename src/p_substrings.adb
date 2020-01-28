@@ -10,6 +10,54 @@ package body P_Substrings is
       index : Integer; -- index of the different substrings
       index_substring_first : Integer; -- index of the beggining of a substring
    begin
+      -- R0 : Separer la chaine de caracteres en fonction d'un separateur, et retourner les valeurs dans un tableau de chain de caracteres
+      -- R1 : Si la chaine est vide(R1.1)
+      --      Si la chaine n'est pas vide(R1.2)
+      -- R2.1 : Comment R1.1
+      --      Je retourne un tableau de chaine de caracteres vide
+      -- R2.2 : Comment R1.2
+      --      Tant que je parcours tous les charactere de la chaine jusqu'au dernier Faire(R2.2.1)
+      --          Si le caractere courant est un separateur(R2.2.2)
+      --             J'ajoute tous les caractres parcourus depuis le dernier separateur jusqu'au caractere precedent (en tant que chaine de caractere), dans le tableau a retourner(R2.2.3)
+      --             Je compte le nombre de separateur consecutif, et je me déplace jusqu'a ce que ce ne soit plus un separateur (R2.2.4)
+      --             Je mets à jour la position du dernier separateur rencontre (R2.2.5)
+      --          Fin Si
+      --      Fin tant que
+      --      Si le dernier caractere n'est pas un separateur, j'ajoute la derniere chaine au tableau(R2.2.6)
+      --      Retourner le tableau de sous-chaines(R2.2.7)
+
+      -- R3.1 : Comment R2.1.1
+      --      index <- 1
+      --      index_charactere_apres_dernier_separateur <- 1
+      --      Tant que index < longueur(original) Faire
+      --          ...
+      --          ...
+      --          index <- index +1
+      --      Fin tant que
+      -- R3.2 : Comment R2.1.2
+      --      Si original(index) = separator
+      -- R3.3 : Comment R2.1.3
+      --      sous_chaines <- Creer_tableau_chaines
+      --      ajouter_chaine(sous_chaines, original(index_charactere_apres_dernier_separateur.. index - 1))
+      -- R3.4 : Comment R2.1.4
+      --      Tant que je peux parcourir des caracteres et que le caractere suivant est un separateur Faire(R3.4.1)
+      --          Je me deplace au caractere suivant(R3.4.2)
+      --      Fin tant que
+      -- R3.5 : Comment R2.1.5
+      --      index_charactere_apres_dernier_separateur <- index + 1;
+      -- R3.6 : Comment R2.1.6
+      --      Si original(longueur(original)) /= separator Alors
+      --          ajouter_chaine(sous_chaines, original(index_charactere_apres_dernier_separateur.. longueur(original)))
+      --      Fin si
+      -- R3.7 : Comment R2.1.7
+      --      Retourn sous_chaines
+
+      -- R4.1 : Comment R3.4.1
+      --      index < longueur(original) et ensuite original(index +1) = separator
+      -- R4.2 : Comment R3.4.2
+      --      index <- index +1
+
+
       substrings := P_Substrings_Array.create;
       -- if the original string is blank, return an empty array of substrings
       if original = "" then

@@ -74,6 +74,16 @@ package body P_Tree is
    
    procedure del_sibling (tree : in out T_Tree; sibling : in out T_Tree) is
    begin
+      -- R0 : Supprimer un direct direct
+      -- R1 : Supprimer le lien vers le fils dans le père(R1.1)
+      --      Enlever le lien vers le père dans le fils(R1.2)
+      
+      -- R2.1 : Comment (R1.1)
+      --     -----> Voir P_Siblings.del_value
+      -- R2.2 : Comment (R1.2)
+      --     definir_parent(fils, null)
+      
+      
       -- delete the sibling from the list of siblings of tree
       P_Siblings.del_value(tree.all.siblings, sibling);
       -- reset the parent of sibling

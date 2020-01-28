@@ -28,6 +28,25 @@ package body P_Metadata is
    
    procedure set_name (metadata : in out T_Metadata; name : in String) is
    begin
+      -- R0 : Definir le nom dans les donnees
+      -- R1 : Si le nom contient un caractere interdit, je leve un exception(R1.1)
+      --      Sinon, je l'attribut(R1.2)
+      -- R2.1 : Comment R1.1
+      --      Tant que je parcours tous les caractere jusqu'au dernier Faire(R2.1.1)
+      --          Si le caractere courant est interdit(R2.1.2)
+      --              Je leve un exception(R2.1.3)
+      --          Fin si
+      --      Fin tant que
+      -- R2.2 : Comment R1.2
+      --      metadata.nom <- name
+      
+      -- R3.1 : Comment R2.1.1
+      --      Pour index allant de 1 à longueur(nom) Faire
+      -- R3.2 : Comment R2.1.2
+      --      Si nom(index) = '/' ou nom(index) = ' ' Alors
+      -- R3.3 : Comment R2.1.3
+      --      Erreur Caractere_Invalide_Erreur
+      
       -- a name can't contain a "/" or " "
       for i in 1..name'length loop
          if name(i) = FILE_SEPARATOR or name(i) = ' ' then
