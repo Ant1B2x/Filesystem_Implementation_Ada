@@ -60,9 +60,9 @@ package body P_Commands is
       when Wrong_Parameters_Number_Error =>
          put_line("Wrong number of parameters.");
          put_line("Try help '" & get_substring_to_string(splitted_line, 1) & "' for more information.");
-      --when Constraint_Error =>
-      --   put_line("command not found");
-      --   put_line("Try 'help' to see a list of available commands.");
+      when Constraint_Error =>
+         put_line("command not found");
+         put_line("Try 'help' to see a list of available commands.");
    end run_command;
    
    -- ############################################ VARIOUS PRIVATE SUBROUTINES ###########################################################

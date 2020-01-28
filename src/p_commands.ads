@@ -43,9 +43,10 @@ package P_Commands is
    --    current_directory (in out T_Folder) : Folder where we are currently in
    --    command_line (in String) : Command line to execute
    -- Return : /
-   -- Preconditions : /
+   -- Preconditions : the command line length is inferior or equal to the maximum length of a string
    -- Postconditions : /
-   procedure run_command (current_directory : in out T_Folder; command_line : in String);
+   procedure run_command (current_directory : in out T_Folder; command_line : in String)
+     with Pre => command_line'length <= LMAX_STRING;
    
 private
    
