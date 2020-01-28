@@ -16,7 +16,7 @@ package body P_Folder is
       return folder;
    end create_root;
    
-   function create (name : in String; parent : in out T_Folder; rights : in T_Rights) return T_Folder is
+   function create (name : in String; parent : in out T_Folder; rights : in T_Rights := (RWX, RX, RX)) return T_Folder is
       folder : T_Folder; -- the returned new folder
       data : T_Folder_Data; -- the data of the returned new folder
    begin
@@ -38,12 +38,6 @@ package body P_Folder is
       P_Folder_Tree.set_data(folder, data);
       -- return the new folder
       return folder;
-   end create;
-   
-   function create (name : in String; parent : in out T_Folder) return T_Folder is
-   begin
-      -- call the already developped create function, with rights 755
-      return create (name, parent, (RWX, RX, RX));
    end create;
  
    function get_name (folder : in T_Folder) return String is

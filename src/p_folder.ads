@@ -35,23 +35,12 @@ package P_Folder is
    -- Parameters :
    --    name (in String) : Name of the folder
    --    parent (in out T_Folder) : Parent of the folder beeing created, need to be in "in / out" because we're going to modify its parent
-   --    rights (in T_Rigths) : Special rigths given to the folder
+   --    rights (in T_Rigths) : Special rigths given to the folder, 755 by default
    -- Return :
    --    T_Folder : The new folder with metadata set
    -- Preconditions : /
    -- Postconditions : /
-   function create (name : in String; parent : in out T_Folder; rights : in T_Rights) return T_Folder;
-   
-   -- Role : Overload of create, with rigths set at 755
-   -- Create and return a folder, set its metadata to the given parameters
-   -- Parameters :
-   --    name (in String) : Name of the folder
-   --    parent (in out T_Folder) : Parent of the folder beeing created, need to be in "in / out" because we're going to modify its parent
-   -- Return :
-   --    T_Folder : The new folder with metadata set
-   -- Preconditions : /
-   -- Postconditions : /
-   function create (name : in String; parent : in out T_Folder) return T_Folder;
+   function create (name : in String; parent : in out T_Folder; rights : in T_Rights := (RWX, RX, RX)) return T_Folder;
    
    -- Role : Return the name of given folder, as String
    -- Parameters :
@@ -171,7 +160,7 @@ package P_Folder is
    --    Boolean : True if they are the same folder, False otherwise
    -- Preconditions : /
    -- Postconditions : /
-   function are_the_same(folder1 : in T_Folder; folder2 : in T_Folder) return Boolean;
+   function are_the_same (folder1 : in T_Folder; folder2 : in T_Folder) return Boolean;
    
    -- Role : Return the data of a given folder, data contain all the files and metadata
    -- Parameters :
