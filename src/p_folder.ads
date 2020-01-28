@@ -163,15 +163,15 @@ package P_Folder is
    -- Postconditions : /
    function is_root (folder : in T_Folder) return Boolean;
    
-   -- Role : Calculate the actual absolute path of a folder.
+   -- Role : Compare two folders
    -- Parameters :
-   --    folder1 (T_Folder) : First folder to compare
-   --     :  (T_Folder) : Second folder to compare
+   --    folder1 (in T_Folder) : First folder to compare
+   --    folder2 (in T_Folder) : Second folder to compare
    -- Return :
-   --    Boolean : True if they are the same folder, False if not
+   --    Boolean : True if they are the same folder, False otherwise
    -- Preconditions : /
    -- Postconditions : /
-   function are_the_same(folder1 : T_Folder; folder2 : T_Folder) return Boolean;
+   function are_the_same(folder1 : in T_Folder; folder2 : in T_Folder) return Boolean;
    
    -- Role : Return the data of a given folder, data contain all the files and metadata
    -- Parameters :
@@ -231,82 +231,82 @@ package P_Folder is
    -- Postconditions : /
    procedure del_folder (folder : in out T_Folder; folder_name : in String);
    
-   -- Role : Return the direct file n°index of folder. File are sorted by insertion.
+   -- Role : Return the file at a specified index, files are sorted by insertion
+   -- No preconditions because they're already in T_Array
    -- Parameters :
-   --    fodler (T_Folder) : Folder to get the direct dile from
-   --    index (Integer) : The index of the wanted file
+   --    folder (in T_Folder) : Folder to get the direct file from
+   --    index (in Integer) : The index of the wanted file
    -- Return :
-   --    T_File : The wanted file, at index.
-   -- Preconditions : /
+   --    T_File : The wanted file, at index i
+   -- Preconditions : 
    -- Postconditions : /
-   function get_file (folder : in T_Folder; index : in Integer) return T_File
-     with Pre => index <= get_nb_files(folder);
+   function get_file (folder : in T_Folder; index : in Integer) return T_File;
    
-   -- Role : Return the number of direct files in folder
+   -- Role : Return the number of direct files in a folder
    -- Parameters :
-   --    folder (T_Folder) : Folder to get the number of direct files from
+   --    folder (in T_Folder) : Folder to get the number of direct files from
    -- Return :
-   --    Integer : The number of direct files
+   --    Integer : The number of direct files in the folder
    -- Preconditions : /
    -- Postconditions : /
    function get_nb_files (folder : in T_Folder) return Integer;
    
-   -- Role : Look for a direct file with the given file_name. Return it if found, and null if not.
+   -- Role : Find a direct file with a given name, return it if found, or null otherwise
    -- Parameters :
-   --    current_folder (T_Folder) : Folder to get File with the given name.
-   --    folder_name (String) : The name of the wanted File
+   --    current_folder (in T_Folder) : Folder to get file with the given name
+   --    folder_name (in String) : The name of the wanted File
    -- Return :
-   --    T_Folder : The File with file_name as name, or null if not found
-   -- Preconditions : file_name'length <= LMAX_STRING
+   --    T_Folder : The file with the given name, or null otherwise
+   -- Preconditions : the file name length is inferior or equal to the max length of a string
    -- Postconditions : /
    function find_file (current_folder : in T_Folder; file_name : in String) return T_File
      with Pre => file_name'length <= LMAX_STRING;
    
-   -- Role : Add a file to the folder. At it at the end of the other files list
+   -- Role : Add a file to a folder (at the end of the file list)
    -- Parameters :
-   --    folder (T_Folder) : Folder to add the file in
-   --    file (T_File) : File to add in folder
-   -- Return :
-   --    /
+   --    folder (in out T_Folder) : Folder to add the file in
+   --    file (in T_File) : File to add to the folder
+   -- Return : /
    -- Preconditions : /
    -- Postconditions : /
    procedure add_file (folder : in out T_Folder; file : in T_File);
    
-   -- Role : Delete the file with file_name as name from the direct files of folder.
+   -- Role : Delete the file with a given name from the direct files of a folder
    -- Parameters :
-   --    fodler (T_Folder) : Folder to del the file from
-   --    file_name (String) : Name of the file to delete from direct files
-   -- Return :
-   --    /
+   --    fodler (in out T_Folder) : Folder to delete the file from
+   --    file_name (in String) : Name of the file to delete from direct files
+   -- Return : /
    -- Preconditions : /
    -- Postconditions : /
    procedure del_file (folder : in out T_Folder; file_name : in String);
    
-   -- Role : Check if one od the direct sub-folder or a direct file already wear this name.
+   -- Role : Check if one of the direct sub-folder or a direct file already has a given name
    -- Parameters :
-   --    folder (T_Folder) : Folder to check the existance from
-   --    name (String) : Name that has to be checked
+   --    folder (in T_Folder) : Folder to check the sub-folders and files names
+   --    name (in String) : Name that has to be checked
    -- Return :
-   --    Boolean : Return True if a file or sub-folder has the same name that the on given in parameter, or False if not
+   --    Boolean : True if a file or sub-folder already has the given name, False otherwise
    -- Preconditions : /
    -- Postconditions : /
-   function has_son_with_this_name(folder: T_Folder; name: String) return Boolean;
+   function has_son_with_this_name (folder : in T_Folder; name : in String) return Boolean;
    
-   -- Role : Check if current_directory has supposed_parent as parent
+   -- Role : Check if a folder has a supposed parent as parent
    -- Parameters :
    --    folder (in T_Folder) : Folder to check the supposed parent from
    --    supposed_parent (in T_Folder) : The supposed parent
    -- Return :
-   --    Boolean : True if current_directory has supposed_parent as parent, False otherwise
+   --    Boolean : True if the folder has supposed_parent as parent, False otherwise
    -- Preconditions : /
    -- Postconditions : /
-   function has_parent(folder : in T_Folder; supposed_parent : in T_Folder) return Boolean;
+   function has_parent (folder : in T_Folder; supposed_parent : in T_Folder) return Boolean;
    
 private
+   -- singleton unique root folder
    ROOT : T_Folder;
-   -- Role : Create a special folder without parent, and with specific caracteristics, specifics to root
-   -- Parameters :
-   --    /
+   
+   -- Role : Create a special folder without parent, and with the specific caracteristics of root
+   -- Should only be called once, as it is used by get_root
+   -- Parameters : /
    -- Return :
    --    T_Folder : The root folder
    -- Preconditions : /
@@ -315,9 +315,9 @@ private
    
    -- Role : Calculate the actual absolute path of a folder
    -- Parameters :
-   --    folder (T_Folder) : Folder to calculate the path
+   --    folder (in T_Folder) : Folder to calculate the path
    -- Return :
-   --    String : A String representing the path from root
+   --    String : A String representing the absolute path from root to the folder
    -- Preconditions : /
    -- Postconditions : /
    function calculate_path (folder : in T_Folder) return String;

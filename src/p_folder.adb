@@ -162,6 +162,12 @@ package body P_Folder is
       return get_parent(folder) = null;
    end is_root;
    
+   function are_the_same(folder1 : T_Folder; folder2 : T_Folder) return Boolean is
+   begin
+      -- if the pwd of folders is equal, that means they are the same
+      return get_pwd(folder1) = get_pwd(folder2);
+   end are_the_same;
+   
    function get_data (folder : in T_Folder) return T_Folder_Data is
    begin
       return P_Folder_Tree.get_data(folder);
@@ -293,12 +299,6 @@ package body P_Folder is
       -- return true if a folder or a file is found for the given name
       return find_folder(folder, name) /= null or find_file(folder, name) /= null;
    end has_son_with_this_name;
-   
-   function are_the_same(folder1 : T_Folder; folder2 : T_Folder) return Boolean is
-   begin
-      -- if the pwd of folders is equal, that means they are the same
-      return get_pwd(folder1) = get_pwd(folder2);
-   end are_the_same;
    
    function has_parent(folder : in T_Folder; supposed_parent : in T_Folder) return Boolean is
       current : T_Folder; -- current folder
