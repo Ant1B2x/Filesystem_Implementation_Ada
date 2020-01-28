@@ -706,6 +706,33 @@ package body P_Commands is
    
    procedure pwd_command (current_directory : in T_Folder; options : in T_Substrings; parameters : in T_Substrings) is
    begin
+      -- R0 : Ecrie le pwd d'un dossier
+      -- R1 : Si les options transmises ne sont pas gerees, leve une exception(R1.1)
+      --      Si le nombre de parametres est incoherent, leve une exception(R1.2)
+      --      Affiche le pwd(R1.3)
+      
+      -- R2.1 : Comment R1.1
+      --      Si l'option n'est pas prise en compte(R2.1.1)
+      --          Leve une exception(R2.1.2)
+      --      Fin pour
+      -- R2.2 : Comment R1.2
+      --      Si il y a un nombre de parametre inatendu(R2.2.1)
+      --          Leve une exception(R2.2.2)
+      --      Fin pour
+      -- R2.3 : Comment R1.3
+      --      Ecrit(pwd(current_directory))
+      
+      -- R3.1 : Comment R2.1.1
+      --      Si longueur(options) /= 0 Alors
+      -- R3.2 : Comment R2.1.2
+      --       Erreur Option_Non_Supportee_Erreur
+      -- R3.3 : Comment R2.2.1
+      --      Si longueur(parametre) /= 0 Alors
+      -- R3.4 : Comment R2.2.2
+      --      Erreur Mauvais_Nombre_Arguments_Erreur
+      
+      
+      
       if get_nb_substrings(options) /= 0 then
          raise Not_Handled_Option_Error;
       end if;
@@ -717,6 +744,43 @@ package body P_Commands is
    
    procedure cd_command(current_directory : in out T_Folder; options : in T_Substrings; parameters : in T_Substrings) is
    begin
+      -- R0 : Ecrie le pwd d'un dossier
+      -- R1 : Si les options transmises ne sont pas gerees, leve une exception(R1.1)
+      --      Si le nombre de parametres est incoherent, leve une exception(R1.2)
+      --      Fait suivre à current_directory le chemin contenu dans parameters(R1.3)
+      
+      -- R2.1 : Comment R1.1
+      --      Si l'option n'est pas prise en compte(R2.1.1)
+      --          Leve une exception(R2.1.2)
+      --      Fin pour
+      -- R2.2 : Comment R1.2
+      --      Si il y a un nombre de parametre inatendu(R2.2.1)
+      --          Leve une exception(R2.2.2)
+      --      Fin pour
+      -- R2.3 : Comment R1.3
+      --      Si le chemin n'est pas vide Alors(R2.3.1)
+      --          current_directory (R2.3.2)
+      --      Sinon
+      --          current_directory devient le dossier originel(R2.3.3)
+      --      Fin si
+      
+      -- R3.1 : Comment R2.1.1
+      --      Si longueur(options) /= 0 Alors
+      -- R3.2 : Comment R2.1.2
+      --       Erreur Option_Non_Supportee_Erreur
+      -- R3.3 : Comment R2.2.1
+      --      Si longueur(parametre) > 1 Alors
+      -- R3.4 : Comment R2.2.2
+      --      Erreur Mauvais_Nombre_Arguments_Erreur
+      -- R3.5 : Comment R2.3.1
+      --      Si longueur(argument(parameters, 1)) > 0 Alors
+      -- R3.6 : Comment R2.3.2
+      --      current_directory <- aller_au_dossier(current_directory, argument(parameters, 1))
+      -- R3.7 : Comment R2.3.3
+      --      current_directory <- dossier_originel
+      
+      
+      
       if get_nb_substrings(options) /= 0 then
          raise Not_Handled_Option_Error;
       end if;
