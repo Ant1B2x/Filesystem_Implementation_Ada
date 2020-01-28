@@ -600,7 +600,7 @@ package body P_Commands is
          end if;
          -- if the current directory is equal to the deleted directory, go to the directory parent
          if are_the_same(current_directory, find_folder(parent_folder_deleted, To_String(deleted_name))) then
-            current_directory := parent_folder_deleted;
+            current_directory := go_to_folder(current_directory, "../");
          end if;
          -- delete the folder of the specified name in the parent folder
          del_folder(parent_folder_deleted, To_String(deleted_name));

@@ -65,7 +65,37 @@ begin
    new_line;
    new_line;
    
+   -- mv ../fic3 ./fic3 from test2/okbis
+   put_line("mv ../fic3 ./fic3 from test2/okbis");
+   current_directory := get_root;
+   run_command(current_directory, "cd test2/okbis");
+   if not has_son_with_this_name(current_directory, "fic3") then
+      put_line("no fic3 in test2/okbis");
+   end if;
+   run_command(current_directory, "mv ../fic3 ./fic3");
+   if has_son_with_this_name(current_directory, "fic3") and
+     not has_son_with_this_name(find_folder(current_directory, ".."), "fic3") then
+      put_line("mv ../fic3 ./fic3 from test2/okbis ok");
+   else
+      put_line("mv ../fic3 ./fic3 from test2/okbis is incoherent");
+   end if;
+   new_line;
+   new_line;
    
+   -- mv -r ../ok ./ok from test2/okbis
+   put_line("mv -r ../ok ./ok from test2/okbis");
+   if not has_son_with_this_name(current_directory, "ok") then
+      put_line("no ok in test2/okbis");
+   end if;
+   run_command(current_directory, "mv -r ../ok ./ok");
+   if has_son_with_this_name(current_directory, "ok") and
+     not has_son_with_this_name(find_folder(current_directory, ".."), "ok") then
+      put_line("mv -r ../ok ./ok from test2/okbis ok");
+   else
+      put_line("mv -r ../ok ./ok from test2/okbis is incoherent");
+   end if;
+   new_line;
+   new_line;
    
    
    
@@ -129,7 +159,6 @@ begin
    Put_Line("============================================================");
    new_line;
    new_line;
-   
    
    
 end test_mv;
