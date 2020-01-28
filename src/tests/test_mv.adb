@@ -99,6 +99,7 @@ begin
    
    
    
+   current_directory := get_root;
    -- mv unexisting_file
    put_line("'mv unexisting_file' with unexisting_file not existing");
    if not has_son_with_this_name(current_directory, "unexisting_file") then
@@ -156,6 +157,31 @@ begin
    Put_Line("============================================================");
    Put_Line("Cannot copy a directory into itself.");
    run_command(current_directory, "mv -r test test/test ");
+   Put_Line("============================================================");
+   new_line;
+   new_line;
+   
+   
+   -- mv -f testFile
+   put_line("'mv -f testFile'");
+   current_directory := get_root;
+   put_line("It should raise Not_Handled_Option_Error. The couple of lines between two '===...===' should be the same :");
+   Put_Line("============================================================");
+   Put_Line("Not handled option.");
+   Put_line("Try help 'mv' for more information.");
+   run_command(current_directory, "mv -f testFile");
+   Put_Line("============================================================");
+   new_line;
+   new_line;
+   
+   -- mv testFile
+   put_line("'mv testFile'");
+   current_directory := get_root;
+   put_line("It should raise Wrong_Parameters_Number_Error. The couple of lines between two '===...===' should be the same :");
+   Put_Line("============================================================");
+   Put_Line("Wrong number of parameters.");
+   Put_line("Try help 'mv' for more information.");
+   run_command(current_directory, "mv testFile");
    Put_Line("============================================================");
    new_line;
    new_line;

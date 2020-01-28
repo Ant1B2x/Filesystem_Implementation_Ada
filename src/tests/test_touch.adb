@@ -79,9 +79,34 @@ begin
    run_command(current_directory, "touch testFile");
    put_line("It should raise Same_Name_Error. The couple of lines between two '===...===' should be the same :");
    Put_Line("============================================================");
-   Put_Line("cannot create file or directory: A file or directory with same name already exists");
+   Put_Line("Cannot create file or directory: A file or directory with same name already exists");
    run_command(current_directory, "touch testFile");
    Put_Line("============================================================");
    new_line;
    new_line;
+   
+   -- touch -r testFile
+   put_line("'touch -r testFile'");
+   current_directory := get_root;
+   put_line("It should raise Not_Handled_Option_Error. The couple of lines between two '===...===' should be the same :");
+   Put_Line("============================================================");
+   Put_Line("Not handled option.");
+   Put_line("Try help 'touch' for more information.");
+   run_command(current_directory, "touch -r testFile");
+   Put_Line("============================================================");
+   new_line;
+   new_line;
+   
+   -- touch testFile testFileBis
+   put_line("'touch testFile testFileBis'");
+   current_directory := get_root;
+   put_line("It should raise Wrong_Parameters_Number_Error. The couple of lines between two '===...===' should be the same :");
+   Put_Line("============================================================");
+   Put_Line("Wrong number of parameters.");
+   Put_line("Try help 'touch' for more information.");
+   run_command(current_directory, "touch testFile testFileBis");
+   Put_Line("============================================================");
+   new_line;
+   new_line;
+   
 end test_touch;

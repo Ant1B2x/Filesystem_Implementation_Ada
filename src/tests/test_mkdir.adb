@@ -76,4 +76,53 @@ begin
    Put_Line("============================================================");
    new_line;
    new_line;
+   
+   -- mkdir -f testFile
+   put_line("'mkdir -f testFile'");
+   current_directory := get_root;
+   put_line("It should raise Not_Handled_Option_Error. The couple of lines between two '===...===' should be the same :");
+   Put_Line("============================================================");
+   Put_Line("Not handled option.");
+   Put_line("Try help 'mkdir' for more information.");
+   run_command(current_directory, "mkdir -f testFile");
+   Put_Line("============================================================");
+   new_line;
+   new_line;
+   
+   -- mkdir testFile testFileBis
+   put_line("'mkdir testFile testFileBis'");
+   current_directory := get_root;
+   put_line("It should raise Wrong_Parameters_Number_Error. The couple of lines between two '===...===' should be the same :");
+   Put_Line("============================================================");
+   Put_Line("Wrong number of parameters.");
+   Put_line("Try help 'mkdir' for more information.");
+   run_command(current_directory, "mkdir testFile testFileBis");
+   Put_Line("============================================================");
+   new_line;
+   new_line;
+   
+   -- mkdir -f testFile
+   put_line("'mkdir -f testFile'");
+   current_directory := get_root;
+   put_line("It should raise Not_Handled_Option_Error. The couple of lines between two '===...===' should be the same :");
+   Put_Line("============================================================");
+   Put_Line("Not handled option.");
+   Put_line("Try help 'mkdir' for more information.");
+   run_command(current_directory, "mkdir -f testFile");
+   Put_Line("============================================================");
+   new_line;
+   new_line;
+   
+   -- mkdir testFile testFileBis
+   put_line("'mkdir testFile testFileBis'");
+   current_directory := get_root;
+   put_line("It should raise Wrong_Parameters_Number_Error. The couple of lines between two '===...===' should be the same :");
+   Put_Line("============================================================");
+   Put_Line("Wrong number of parameters.");
+   Put_line("Try help 'mkdir' for more information.");
+   run_command(current_directory, "mkdir testFile testFileBis");
+   Put_Line("============================================================");
+   new_line;
+   new_line;
+   
 end test_mkdir;

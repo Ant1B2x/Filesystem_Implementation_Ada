@@ -96,8 +96,9 @@ begin
    new_line;
    new_line;
    
+   current_directory := get_root;
    -- cp unexisting_file
-   put_line("'cp unexisting_file' with unexisting_file not existing");
+   put_line("'cp unexisting_file test/unexisting_file' with unexisting_file not existing");
    if not has_son_with_this_name(current_directory, "unexisting_file") then
       put_line("unexisting_file does not exist");
    end if;
@@ -111,7 +112,7 @@ begin
    
    
    -- cp unexisting_folder
-   put_line("'cp -r unexisting_folder' with unexisting_folder not existing");
+   put_line("'cp -r unexisting_folder test/unexisting_folder' with unexisting_folder not existing");
    if not has_son_with_this_name(current_directory, "unexisting_folder") then
       put_line("unexisting_folder does not exist");
    end if;
@@ -148,13 +149,36 @@ begin
    new_line;
    new_line;
    
-   -- "cp -r test test/ok
+   -- cp -r test test/ok
    put_line("cp -r test test/ok");
-   run_command(current_directory, "cp -r test test/ok");
    put_line("It should raise Copy_Into_Itself_Error. The couple of lines between two '===...===' should be the same :");
    Put_Line("============================================================");
    Put_Line("Cannot copy a directory into itself.");
    run_command(current_directory, "cp -r test test/test ");
+   Put_Line("============================================================");
+   new_line;
+   new_line;
+   
+   -- cp -f testFile
+   put_line("'cp -f testFile'");
+   current_directory := get_root;
+   put_line("It should raise Not_Handled_Option_Error. The couple of lines between two '===...===' should be the same :");
+   Put_Line("============================================================");
+   Put_Line("Not handled option.");
+   Put_line("Try help 'cp' for more information.");
+   run_command(current_directory, "cp -f testFile");
+   Put_Line("============================================================");
+   new_line;
+   new_line;
+   
+   -- cp testFile
+   put_line("'cp testFile'");
+   current_directory := get_root;
+   put_line("It should raise Wrong_Parameters_Number_Error. The couple of lines between two '===...===' should be the same :");
+   Put_Line("============================================================");
+   Put_Line("Wrong number of parameters.");
+   Put_line("Try help 'cp' for more information.");
+   run_command(current_directory, "cp testFile");
    Put_Line("============================================================");
    new_line;
    new_line;

@@ -97,7 +97,7 @@ begin
    new_line;
    new_line;
    
-   -- touch testFile with testFile already existing
+   -- cd unexisting_folder
    put_line("'cd unexisting_folder' with unexisting_folder not existing");
    current_directory := get_root;
    if not has_son_with_this_name(current_directory, "unexisting_folder") then
@@ -105,11 +105,35 @@ begin
    end if;
    put_line("It should raise Invalid_Folder_Error. The couple of lines between two '===...===' should be the same :");
    Put_Line("============================================================");
-   Put_Line("a specified path is incorrect, no such directory");
+   Put_Line("A specified path is incorrect, no such directory");
    run_command(current_directory, "cd unexisting_folder");
    Put_Line("============================================================");
    new_line;
    new_line;
    
+   
+   -- mkdir -f testFile
+   put_line("'mkdir -f testFile'");
+   current_directory := get_root;
+   put_line("It should raise Not_Handled_Option_Error. The couple of lines between two '===...===' should be the same :");
+   Put_Line("============================================================");
+   Put_Line("Not handled option.");
+   Put_line("Try help 'mkdir' for more information.");
+   run_command(current_directory, "mkdir -f testFile");
+   Put_Line("============================================================");
+   new_line;
+   new_line;
+   
+   -- mkdir testFile testFileBis
+   put_line("'mkdir testFile testFileBis'");
+   current_directory := get_root;
+   put_line("It should raise Wrong_Parameters_Number_Error. The couple of lines between two '===...===' should be the same :");
+   Put_Line("============================================================");
+   Put_Line("Wrong number of parameters.");
+   Put_line("Try help 'mkdir' for more information.");
+   run_command(current_directory, "mkdir testFile testFileBis");
+   Put_Line("============================================================");
+   new_line;
+   new_line;
    
 end test_cd;

@@ -163,7 +163,29 @@ begin
    
    
    
+   -- rm -f testFile
+   put_line("'rm -f testFile'");
+   current_directory := get_root;
+   put_line("It should raise Not_Handled_Option_Error. The couple of lines between two '===...===' should be the same :");
+   Put_Line("============================================================");
+   Put_Line("Not handled option.");
+   Put_line("Try help 'rm' for more information.");
+   run_command(current_directory, "rm -f testFile");
+   Put_Line("============================================================");
+   new_line;
+   new_line;
    
+   -- rm testFile testFileBis
+   put_line("'rm testFile testFileBis'");
+   current_directory := get_root;
+   put_line("It should raise Wrong_Parameters_Number_Error. The couple of lines between two '===...===' should be the same :");
+   Put_Line("============================================================");
+   Put_Line("Wrong number of parameters.");
+   Put_line("Try help 'rm' for more information.");
+   run_command(current_directory, "rm testFile testFileBis");
+   Put_Line("============================================================");
+   new_line;
+   new_line;
    
    
    
