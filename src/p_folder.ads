@@ -1,5 +1,5 @@
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
-with ada.Text_IO; use ada.Text_IO;
+
 with P_Tree;
 with P_Array;
 with P_Constants; use P_Constants;
@@ -8,10 +8,12 @@ with P_File; use P_File;
 
 package P_Folder is
    
+   -- raised when trying to create new file or folder and a file or folder with the same name already exists in the directory
    Same_Name_Error : Exception;
+   -- raised when trying to add new file or folder and the directory is already full
    Full_Folder_Error : Exception;
 
-   -- files of the folder   
+   -- files of the folder, array of files
    package P_Files is new P_Array (T => T_File);
    subtype T_Files is P_Files.T_Array;
    
@@ -19,8 +21,8 @@ package P_Folder is
    -- folder siblings are already present
    -- indeed, they're the siblings in the tree
    type T_Folder_Data is record
-      metadata : T_Metadata;
-      files : T_Files;
+      metadata : T_Metadata; -- metadata of the folder
+      files : T_Files; -- file array of the folder
    end record;
    
    -- instanciation of Tree Package
@@ -29,196 +31,202 @@ package P_Folder is
    subtype T_Folder is P_Folder_Tree.T_Tree;
    use type T_Folder;
    
-   -- Role : Overload of create, with rigth set at basic (RWX, RX, RX).
-   -- Create and return a folder. Set metadata with in parameters.
+   -- Role : Create and return a folder, set its metadata to the given parameters
    -- Parameters :
-   --    name (String) : Name of the folder
-   --    parent (T_Folder) : Parent of the folder beeing created
-   -- Return :
-   --    T_Folder : The new folder with metadata set
-   -- Preconditions : /
-   -- Postconditions : /
-   function create (name : in String; parent : in out T_Folder) return T_Folder;
-   
-   -- Role : Create and return a folder. Set metadata with in parameters.
-   -- Parameters :
-   --    name (String) : Name of the folder
-   --    parent (T_Folder) : Parent of the folder beeing created
-   --    rights (T_Rigths) : Special rigths given to the folder
+   --    name (in String) : Name of the folder
+   --    parent (in out T_Folder) : Parent of the folder beeing created, need to be in "in / out" because we're going to modify its parent
+   --    rights (in T_Rigths) : Special rigths given to the folder
    -- Return :
    --    T_Folder : The new folder with metadata set
    -- Preconditions : /
    -- Postconditions : /
    function create (name : in String; parent : in out T_Folder; rights : in T_Rights) return T_Folder;
    
-   -- Role : Return the name of given folder, as String.
+   -- Role : Overload of create, with rigths set at 755
+   -- Create and return a folder, set its metadata to the given parameters
    -- Parameters :
-   --    folder (T_Folder) : The folder to get the name from
+   --    name (in String) : Name of the folder
+   --    parent (in out T_Folder) : Parent of the folder beeing created, need to be in "in / out" because we're going to modify its parent
+   -- Return :
+   --    T_Folder : The new folder with metadata set
+   -- Preconditions : /
+   -- Postconditions : /
+   function create (name : in String; parent : in out T_Folder) return T_Folder;
+   
+   -- Role : Return the name of given folder, as String
+   -- Parameters :
+   --    folder (in T_Folder) : The folder to get the name from
    -- Return :
    --    String : The name of the folder
    -- Preconditions : /
    -- Postconditions : /
    function get_name (folder : in T_Folder) return String;
    
-   -- Role : Set given folder's name
+   -- Role : Set given name to a folder
    -- Parameters :
-   --    folder (T_Folder) : Folder to set the new name
-   --    name (String) : The new name
-   -- Return :
-   --    /
+   --    folder (in out T_Folder) : Folder to set the new name
+   --    name (in String) : The new name
+   -- Return : /
    -- Preconditions : /
    -- Postconditions : /
    procedure set_name (folder : in out T_Folder; name : in String);
    
-   -- Role : Return the rights assicoated to the folder
+   -- Role : Return the rights associated to a folder
    -- Parameters :
-   --    folder (T_Folder) : Folder to get the rights from
+   --    folder (in T_Folder) : Folder to get the rights from
    -- Return :
-   --    T_Rights : The rigths of the folder
+   --    T_Rights : The rights of the folder
    -- Preconditions : /
    -- Postconditions : /
    function get_rights (folder : in T_Folder) return T_Rights;
    
-   -- Role : Set the rights to the given folder
+   -- Role : Set given rights to a folder
    -- Parameters :
-   --    folder : (T_Folder) : Folder to set the new rights
-   --    rights (T_Rights) : The new rights.
-   -- Return :
-   --    /
+   --    folder : (in out T_Folder) : Folder to set the new rights
+   --    rights (in T_Rights) : The new rights
+   -- Return : /
    -- Preconditions : /
    -- Postconditions : /
    procedure set_rights (folder : in out T_Folder; rights : in T_Rights);
    
    -- Role : Get the size of the folder, and only the folder
    -- Parameters :
-   --    folder (T_Folder) : The folder to get the size from
+   --    folder (in T_Folder) : The folder to get the size from
    -- Return :
    --    Integer : The size as bytes
    -- Preconditions : /
    -- Postconditions : the result is equal to the generic size of a folder
    function get_size (folder : in T_Folder) return Integer
-   with Post => get_size'Result = FOLDER_SIZE;
+     with Post => get_size'Result = FOLDER_SIZE;
    
-   -- Role : Method to get the Singloton "root".
-   -- Root can only be created once, and get_root will always return the same instance of root, or create it if it does not exist.
-   -- As root is unic, we chosed to implement the Singloton patern.
-   -- Parameters :
-   --    /
+   -- Role : Method to get the singleton "root"
+   -- Root can only be created once, and get_root will always return the same instance of root, or create it if it does not exist
+   -- As root is unique, we chose to implement the singleton pattern
+   -- Parameters : /
    -- Return :
    --    T_Folder : The instance of root
    -- Preconditions : /
    -- Postconditions : /
    function get_root return T_Folder;
    
-   -- Role : Get the path from a folder.
+   -- Role : Get the path from a folder
    -- Parameters :
-   --    folder (T_Folder) : Folder to get the path from
+   --    folder (in T_Folder) : Folder to get the path from
    -- Return :
-   --    String : The path of the folder.
+   --    String : The path of the folder
    -- Preconditions : /
    -- Postconditions : /
    function get_path (folder : in T_Folder) return String;
    
-   -- Role : Returns the path + name of a folder as a string
+   -- Role : Return the pwd (path + name) of a folder as a string
    -- Parameters :
-   --    current_directory (in T_Folder) : Folder to get pwd from
+   --    folder (in T_Folder) : Folder to get the pwd from
    -- Return :
-   --    return (String) : The path + name of the folder
+   --    return (String) : The pwd of the folder
    -- Preconditions : /
    -- Postconditions : /
-   function get_pwd (current_directory : in T_Folder) return String;
+   function get_pwd (folder : in T_Folder) return String;
    
    -- Role : Return the parent of the given folder
    -- Parameters :
-   --    folder (T_Folder) : Folder to get the parent from
+   --    folder (in T_Folder) : Folder to get the parent from
    -- Return :
    --    T_Folder : The parent of the folder
    -- Preconditions : /
    -- Postconditions : /
    function get_parent (folder : in T_Folder) return T_Folder;
    
-   -- Role : Return if the given folder has not sub-folders or files.
+   -- Role : Check if a folder is empty or not
    -- Parameters :
-   --    folder (T_Folder) : The folder to check if empty
+   --    folder (in T_Folder) : The folder to check if empty
    -- Return :
-   --    Boolean : True if the number of files and the number of folders = 0
+   --    Boolean : True if the number of files and the number of folders = 0, False otherwise
    -- Preconditions : /
    -- Postconditions : /
    function is_empty (folder : in T_Folder) return Boolean;
    
-   -- Role : Return if the given folder is null. For exemple, the parent of root.
+   -- Role : Check if a folder is null or not
    -- Parameters :
-   --    folder (T_Folder) : The folder to check if null
+   --    folder (in T_Folder) : The folder to check if null
    -- Return :
-   --    Boolean : True if null, False if not
+   --    Boolean : True if the folder is null, False otherwise
    -- Preconditions : /
    -- Postconditions : /
    function is_null (folder : in T_Folder) return Boolean;
    
-   -- Role : Return if the giver folder is root
+   -- Role : Check if a folder is root or not
    -- Parameters :
-   --    folder (T_Folder) : Folder to check if root
+   --    folder (in T_Folder) : Folder to check if root
    -- Return :
-   --    Boolean : Return True if folder is root, or False if not
+   --    Boolean : True if the folder is root, False otherwise
    -- Preconditions : /
    -- Postconditions : /
    function is_root (folder : in T_Folder) return Boolean;
    
-   -- Role : Return the data of the givern folder. Data countain all the files and metadata
+   -- Role : Calculate the actual absolute path of a folder.
    -- Parameters :
-   --    folder (T_Folder) : Folder to get the data from
+   --    folder1 (T_Folder) : First folder to compare
+   --     :  (T_Folder) : Second folder to compare
    -- Return :
-   --    T_Folder_Data : Record of files and metadata
+   --    Boolean : True if they are the same folder, False if not
+   -- Preconditions : /
+   -- Postconditions : /
+   function are_the_same(folder1 : T_Folder; folder2 : T_Folder) return Boolean;
+   
+   -- Role : Return the data of a given folder, data contain all the files and metadata
+   -- Parameters :
+   --    folder (in T_Folder) : Folder to get the data from
+   -- Return :
+   --    T_Folder_Data : Record of files and metadata associated to the folder
    -- Preconditions : /
    -- Postconditions : /
    function get_data (folder : in T_Folder) return T_Folder_Data;
    
-   -- Role : Set the datas to the folder
+   -- Role : Set data to a folder
    -- Parameters :
-   --    folder (T_Folder) : Folder to set datas
-   --    folder_data (T_Folder_Data) : Data to be set to the folder
-   -- Return :
-   --    /
+   --    folder (in out T_Folder) : Folder to set data
+   --    folder_data (in T_Folder_Data) : Data to set to the folder
+   -- Return : /
    -- Preconditions : /
    -- Postconditions : /
    procedure set_data (folder : in out T_Folder; folder_data : in T_Folder_Data);
    
-   -- Role : Return the direct sub-folder n°index of folder. Sub-foders are sorted by insertion.
+   -- Role : Return the sub-folder at a specified index, sub-foders are sorted by insertion
+   -- No preconditions because they're already in T_Array
    -- Parameters :
-   --    folder (T_Folder) : Folder to get the sub-folder from
-   --    index (Integer) : Index of the wanted sub-folder
+   --    folder (in T_Folder) : Folder to get the sub-folder from
+   --    index (in Integer) : Index of the wanted sub-folder
    -- Return :
    --    T_Folder : The sub-folder at index i
    -- Preconditions : /
    -- Postconditions : /
    function get_folder (folder : in T_Folder; index : in Integer) return T_Folder;
    
-   -- Role : Return the number of direct sub-folders in folder
+   -- Role : Return the number of direct sub-folders in a folder
    -- Parameters :
-   --    folder (T_Folder) : Folder to get the number of direct sub-folders from
+   --    folder (in T_Folder) : Folder to get the number of direct sub-folders from
    -- Return :
-   --    Integer : The number of direct sub-folders
+   --    Integer : The number of direct sub-folders of the folder
    -- Preconditions : /
    -- Postconditions : /
    function get_nb_folders (folder : in T_Folder) return Integer;
    
-   -- Role : Look for a direct sub-folder with the given folder_name. Return it if found, and null if not.
+   -- Role : Find a direct sub-folder with a given name, return it if found, or null otherwise
    -- Parameters :
-   --    folder (T_Folder) : Folder to get sub-folder with the given name.
-   --    folder_name (String) : The name of the wanted folder
+   --    current_folder (in T_Folder) : Folder to get the sub-folder from
+   --    folder_name (in String) : The name of the wanted sub-folder
    -- Return :
-   --    T_Folder : The folder with folder_name as name, or null if not found
-   -- Preconditions : folder_name'length <= LMAX_STRING
+   --    T_Folder : The sub-folder with the given name, or null otherwise
+   -- Preconditions : the folder name length is inferior or equal to the max length of a string
    -- Postconditions : /
-   function find_folder (folder : in T_Folder; folder_name : in String) return T_Folder
+   function find_folder (current_folder : in T_Folder; folder_name : in String) return T_Folder
      with Pre => folder_name'length <= LMAX_STRING;
    
-   -- Role : Delete the folder with folder_name as name from the direct sub-folders of folder.
+   -- Role : Delete a sub-folder with a given name inside a given folder
    -- Parameters :
-   --    fodler (T_Folder) : Folder to del the sub-folder from
-   --    folder_name (String) : Name of the folder to delete from direct sub-folders.
-   -- Return :
-   --    /
+   --    folder (in out T_Folder) : Folder to del the sub-folder from
+   --    folder_name (in String) : Name of the folder to delete from direct sub-folders
+   -- Return : /
    -- Preconditions : /
    -- Postconditions : /
    procedure del_folder (folder : in out T_Folder; folder_name : in String);
@@ -245,13 +253,13 @@ package P_Folder is
    
    -- Role : Look for a direct file with the given file_name. Return it if found, and null if not.
    -- Parameters :
-   --    folder (T_Folder) : Folder to get File with the given name.
+   --    current_folder (T_Folder) : Folder to get File with the given name.
    --    folder_name (String) : The name of the wanted File
    -- Return :
    --    T_Folder : The File with file_name as name, or null if not found
    -- Preconditions : file_name'length <= LMAX_STRING
    -- Postconditions : /
-   function find_file (folder : in T_Folder; file_name : in String) return T_File
+   function find_file (current_folder : in T_Folder; file_name : in String) return T_File
      with Pre => file_name'length <= LMAX_STRING;
    
    -- Role : Add a file to the folder. At it at the end of the other files list
@@ -286,13 +294,13 @@ package P_Folder is
    
    -- Role : Check if current_directory has supposed_parent as parent
    -- Parameters :
-   --    current_directory (in T_Folder) : Folder to check the supposed parent from
+   --    folder (in T_Folder) : Folder to check the supposed parent from
    --    supposed_parent (in T_Folder) : The supposed parent
    -- Return :
    --    Boolean : True if current_directory has supposed_parent as parent, False otherwise
    -- Preconditions : /
    -- Postconditions : /
-   function has_parent(current_directory : in T_Folder; supposed_parent : in T_Folder) return Boolean;
+   function has_parent(folder : in T_Folder; supposed_parent : in T_Folder) return Boolean;
    
 private
    ROOT : T_Folder;
@@ -313,15 +321,5 @@ private
    -- Preconditions : /
    -- Postconditions : /
    function calculate_path (folder : in T_Folder) return String;
-   
-   -- Role : Calculate the actual absolute path of a folder.
-   -- Parameters :
-   --    folder1 (T_Folder) : First folder to compare
-   --     :  (T_Folder) : Second folder to compare
-   -- Return :
-   --    Boolean : True if they are the same folder, False if not
-   -- Preconditions : /
-   -- Postconditions : /
-   function are_the_same(folder1 : T_Folder; folder2 : T_Folder) return Boolean;
    
 end P_Folder;

@@ -49,6 +49,8 @@ package body P_Commands is
          put_line("Cannot copy a directory into itself.");
       When Same_Name_Error =>
          put_line("Cannot create file or directory: A file or directory with same name already exists.");
+      when Full_Folder_Error =>
+         put_line("Cannot add file or directory: The directory is already full.");
       when Empty_Option_Error =>
          put_line("Empty option.");
          put_line("Try help '" & get_substring_to_string(splitted_line, 1) & "' for more information.");
@@ -595,6 +597,10 @@ package body P_Commands is
          -- if no folder is found in the parent folder for the specified name, raise an exception
          if is_null(find_folder(parent_folder_deleted, To_String(deleted_name))) then
             raise Invalid_Folder_Error;
+         end if;
+         -- if the current directory is equal to the deleted directory, go to the directory parent
+         if are_the_same(current_directory, find_folder(parent_folder_deleted, To_String(deleted_name))) then
+            current_directory := parent_folder_deleted;
          end if;
          -- delete the folder of the specified name in the parent folder
          del_folder(parent_folder_deleted, To_String(deleted_name));
