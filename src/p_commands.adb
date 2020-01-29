@@ -69,6 +69,47 @@ package body P_Commands is
    
    procedure get_options_and_parameters (arguments : in T_Substrings; options : in out T_Substrings; parameters : in out T_Substrings) is
    begin
+      -- R0 : Separer les options des parametres, dans les arguments donnes en entree
+      -- R1 : Parcourir les arguments(R1.1)
+      --      Separer les options(R1.2)
+      --      Separer les parametres(R1.3)
+      --
+      -- R2.1 : Pour tous les arguments Faire(R2.1.1)
+      --          ...
+      --          ...
+      --          ...
+      --      Fin pour
+      -- R2.2 : Comment R1.2
+      --      Si c'est à mettre dans options Alors(R2.1.2)
+      --          Si il n'y a pas d'option Alors(R2.1.3)
+      --              Erreur Option_Vide_Erreur
+      --          Fin si
+      --          Ajouter aux options(R2.1.4)
+      --      Fin si
+      -- R2.3 : Comment R1.3
+      --      Sinon
+      --          Ajouter aux parametres(R2.1.5)
+      --      Fin si
+      
+      -- R3.1 : Comment R2.1.1
+      --      Pour index allant de 1 à nombre(arguments)
+      -- R3.2 : Comment R2.1.2
+      --      Si argument(arguments, index)(1) = '-' Alors
+      -- R3.3 : Comment R2.1.3
+      --      Si longueur(argument(arguments, index)) < 2
+      -- R3.4 : Comment R2.1.4
+      --      Pour tous les caracteres dans l'options en cours Faire(R3.4.2)
+      --          Ajouter option dans options(R3.4.2)
+      --      Fin pour
+      -- R3.5 : Comment R2.1.5
+      --      ajouter(parameters, argument(arguments, index))
+      
+      -- R4.1 : Comment R3.4.1
+      --      Pour tous les caracteres allant de 1 a longueur(argument(arguments, index)) Faire  
+      -- R4.2 : Comment R3.4.2
+      --      ajouter(options, argument(arguments, index))
+      
+      
       -- For every argument
       for i in 1..get_nb_substrings(arguments) loop
          -- If it starts with a "-", then it's an option
@@ -93,6 +134,41 @@ package body P_Commands is
       splitted_option : T_Substrings; -- splitted options following "-" separator (like ["-ab"], ["-cd"])
       options : T_Substrings; -- all options (like ["a","b","c","d"])
    begin
+      -- R0 : Recuprer les differentes options depuis une chaine de caractere
+      -- R1 : Recuperer les options par paquets(R1.1)
+      --      Parcourir les paquets d'options(R1.2)
+      --      Separer les options(R1.3)
+      --
+      -- R2.1 : Comment R1.1
+      --      paquets_options <- separer_avec_separateur(options, '-')
+      -- R2.2 : Comment R1.2
+      --      Pour toutes les paquets_options Faire(R2.2.1)
+      --          ...
+      --          ...
+      --          ...
+      --      Fin pour
+      -- R2.3 : Comment R1.3
+      --      Si le paquet contient plusieurs options(R2.3.1)
+      --          Pour toutes les options du paquet Faire(R2.3.2)
+      --              Ajouter aux options(R2.3.3)
+      --          Fin pour
+      --      Sinon
+      --          Ajouter le paquet aux option(R2.3.4)
+      --      Fin si
+
+      
+      -- R3.1 : Comment R2.2.1
+      --      Pour index_paquet allant de 1 à nombre(paquets_options)
+      -- R3.2 : Comment R2.3.1
+      --      Si longueur(argument(paquets_options, index_paquet)) > 1' Alors
+      -- R3.3 : Comment R2.3.2
+      --      Pour index_option allant de 1 à longueur(argument(paquets_options, index_paquet)) Faire
+      -- R3.4 : Comment R2.3.3
+      --          ajouter(options, arugument(paquets_options, index_paquet)(index_option))
+      -- R3.5 : Comment R2.3.4
+      --      ajouter(options, arugument(paquets_options, index_paquet)(1))
+      
+      
       options := create_substrings;
       splitted_option := split_string(options_as_string, '-');
       for i in 1.. get_nb_substrings(splitted_option) loop
@@ -113,6 +189,32 @@ package body P_Commands is
    
    function contains_option (options : in T_Substrings; option : in Character) return Boolean is
    begin
+      -- R0 : Verifiers si le tableau contenant les options contient celle passee en parametre
+      -- R1 : Parcourir toutes les options(R1.1)
+      --      Verifier si l'option recherchee y est(R1.2)
+      --      Sinon retourne faux(R1.3)
+      
+      -- R2.1 : Comment R1.1
+      --      Pour toutes les options Faire(R2.1.1)
+      --          ...
+      --          ...
+      --          ...
+      --      Fin pour
+      
+      -- R2.2 : Comment R1.2
+      --      Si c'est l'option recherchee Alors(R2.2.1)
+      --          Retourne Vrai
+      --      Fin si
+      -- R2.3 : Comment R1.3
+      --      Retourne Faux
+      
+      -- R3.1 : Comment R2.1.2
+      --      Pour index allant de 1 à nombre(options)
+      -- R3.2 : Comment R2.2.1
+      --      Si argument(options, index)(1) = option Alors
+      
+      
+      
       for i in 1..get_nb_substrings(options) loop
          -- return True when the desired option is found
          if get_substring_to_string(options, i)(1) = option then
@@ -126,6 +228,39 @@ package body P_Commands is
    function only_handled_options (options : in T_Substrings; handled_options : in String) return Boolean is
       splitted_handled_options : T_Substrings;
    begin
+      -- R0 : Verifiers si  les valeurs dans options sont comprises dans handled_options
+      -- R1 : Reruperer les differentes options comprises dans handled_options(R1.1)
+      --      Parcourir toutes les options(R1.2)
+      --      Verifier si l'option n'appartient pas a handled_options(R1.3)
+      --      Retourne faux si elle n'appartient pas a handled_options(R1.4)
+      --      Retourner vrai a la fin, si toutes les options sont comprises dans handled_options(R1.5)
+      
+      -- R2.1 : Comment R1.1
+      --      handled_options_separes <- handled_options(options)
+      -- R2.2 : Comment R1.2
+      --      Pour toutes les options Faire(R2.1.1)
+      --          ...
+      --          ...
+      --          ...
+      --      Fin pour
+      
+      -- R2.3 : Comment R1.3
+      --      Si l'option n'appartient pas à handled_options_separes Alors(R2.2.1)
+      --          ....
+      --      Fin si
+      -- R2.4 : Comment R1.4
+      --      Retourne Faux
+      -- R2.5 : Comment R1.5
+      --      Retourne Vrai
+      -- R2.6 : Comment R1.6
+      --      
+      
+      -- R3.1 : Comment R2.1.2
+      --      Pour index allant de 1 a nombre(options)
+      -- R3.2 : Comment R2.2.1
+      --      Si non countient_option(handled_options_separes, argument(options, index)(1)) Alors
+      
+      
       splitted_handled_options := split_options(handled_options);
       for i in 1..get_nb_substrings(options) loop
          -- return False if a provided option is not supported
@@ -142,6 +277,63 @@ package body P_Commands is
       path_tree: T_Substrings; -- directory tree
       penultimate: Integer; -- 1 if stop_at_penultimate, 0 else
    begin
+      -- R0 : Aller jusqu'au dossier voulu, à partir du dossier courrant et du chemin
+      -- R1 : Si le chemin donné n'est pas vide(R1.1)
+      --      Si le chemin commence par '/', on part dossier originel(R1.2)
+      --      Sinon, on par du dossier courant(R1.3)
+      --      On verifir si on doit s'arreter a l'avant derniere entite du chemin(R1.4)
+      --      On separe le chemin en les differents noms de dossier qu'il represente(R1.5)
+      --      On parcours tous les noms de dossiers contenus dans le chemin(R1.6)
+      --      Si le nom ne correspond a aucun enfant du dossier courant, on leve une exception(R1.7)
+      --      Sinon, on passe au descendant suivant(R1.8)
+      --      On retourne le dossier de fin de parcours(R1.9)
+      
+      -- R2.1 : Comment R1.1
+      --      Si longueur(path) <= 0 Alors
+      --          Erreur Dossier_Invalide_Erreur
+      --      Fin si
+      -- R2.2 : Comment R1.2
+      --      Si path(1) = '/' Alors
+      --          On part du dossier originel(R2.2.1)
+      --      Fin si
+      -- R2.3 : Comment R1.3
+      --      Si path(1) /= '/' Alors
+      --          On part du dossier courant(R2.3.1)
+      --      Fin si
+      -- R2.4 : Comment R1.4
+      --      Si stop_at_penultimate Alors
+      --          avant_dernier <- 1
+      --      Sinon
+      --          avant_dernier <- 0
+      --      Fin si
+      -- R2.5 : Comment R1.5
+      --      arbre_descendants <- separer_avec_separateur(path, '/')
+      -- R2.6 : Comment R1.6
+      --      Pour index allant de longueur(arbre_descendants) - avant_dernier Faire
+      --          ...
+      --          ...
+      --          ...
+      --      Fin pour
+      -- R2.7 : Comment R1.7
+      --      Si est_null(dossier enfant recherche) Alors(R2.7.1)
+      --          Erreur Dossier_Invalide_Erreur
+      --      Fin si
+      -- R2.8 : Comment R1.8
+      --      courant <- dossier_fils(dossier enfant recherche)(R2.8.1)
+      -- R2.9 : Comment R1.9
+      --      Retourne courant
+      --      
+      
+      -- R3.1 : Comment R2.2.2
+      --      courant = dossier_originel()(R2.2.1)
+      -- R3.2 : Comment R2.3.1
+      --      courant = folderR(2.3.1)
+      -- R3.3 : Comment R2.7.2
+      --      Si est_null(dossier_fils(courant, argument(arbre_descendants, index))) Alors
+      -- R3.4 : Comment R2.8.1
+      --      courant <- dossier_fils(courant, argument(arbre_descendants, index))
+      
+      
       -- we can't go to a blank path
       if path'Length <= 0 then
          raise Invalid_Folder_Error;
@@ -175,6 +367,24 @@ package body P_Commands is
    function get_name_from_path (path : in Unbounded_String) return Unbounded_String is
       nb_substrings : Integer; -- represents how many folders are separated by "/" in the path
    begin
+      -- R0 : Recupere le nom de la derniere entite depuis un chemin
+      -- R1 : Separe les differentes entites(R1.1)
+      --      Recupere le nombre d'entites(R1.2)
+      --      Si le nombre d'entite est nule, retourne une valeur speciale(R1.3)
+      --      Retourne la derniere entite des entites separees(R1.4)
+      
+      -- R2.1 : Comment R1.1
+      --      entites <- separer_avec_separateur(path, '/')
+      
+      -- R2.2 : Comment R1.2
+      --      nombre_entites <- longueur(entites)
+      -- R2.3 : Comment R1.3
+      --      Si nombre_entites = 0 Alors
+      --          Retourne '/'
+      --      Fin si
+      -- R2.3 : Comment R1.3
+      --      Retourne argument(entites, nombre_entites)
+      
       nb_substrings := get_nb_substrings(split_string(To_String(path), FILE_SEPARATOR));
       -- if only "/" is provided in path, return "/"
       if nb_substrings = 0 then
@@ -186,6 +396,37 @@ package body P_Commands is
    function calculate_size (current_directory : in T_Folder) return Integer is
       current_folder_size: Integer; -- folder size, incremented at each file or directory
    begin
+      -- R0 : Fonction recursive retournant la somme des tailles de tous les fichiers et sous-dossier non directs et directs d'un dossier, plus la taille de ce même dossier
+      -- R1 : Ajoute la taille du dossier actuel(R1.1)
+      --      Ajoute la taille de tous les fichiers(R1.2)
+      --      Ajoute la taille de calculate_size de chaque sous-dossier(R1.3)
+      --      Retourner la taille complete(R1.4)
+      
+      -- R2.1 : Comment R1.1
+      --      taille_actuelle <- FOLDER_SIZE;
+      -- R2.2 : Comment R1.2
+      --      Pour toutes les fichiers du dossier actuel Faire(R2.2.1)
+      --          Ajouter la taille du fichier(R2.2.2)
+      --      Fin pour
+      
+      -- R2.3 : Comment R1.3
+      --      Pour toutes les dossiers du dossier actuel Faire(R2.3.1)
+      --          Ajouter la taille de calculate_size du dossier(R2.3.2)
+      --      Fin pour
+      --      
+      -- R2.4 : Comment R1.4
+      --      Retourne taille_actuelle
+      
+      -- R3.1 : Comment R2.2.1
+      --      Pour index_fichier allant de 1 à nombre_fichiers(current_directory) Faire
+      -- R3.2 : Comment R2.2.2
+      --       taille_actuelle <- taille_actuelle + taille(fichier(current_directory, index_fichier))
+      -- R3.3 : Comment R2.3.1
+      --      Pour index_dossier allant de 1 à nombre_dossiers(current_directory) Faire
+      -- R3.4 : Comment R2.3.2
+      --      taille_actuelle <- taille_actuelle + calculate_size(dossier(current_directory, index_dossier))
+      
+      
       -- folder size is 10Ko by default
       current_folder_size := FOLDER_SIZE;
       -- + files size
@@ -214,6 +455,35 @@ package body P_Commands is
       siblings_set : T_Siblings_Set; -- returned sibling set
       new_element : T_R_Sibling; -- new element of the set
    begin
+      -- R0 : Prend un dossier, et renvoie un ensemble tries contenant tous les noms de ses fichiers et dossiers, en gardant en mémoire si le nom appartient à un dossier ou à un fichier
+      -- R1 : Enregistre tous les noms de fichiers de current_directory dans l'ensemble(R1.1)
+      --      Enregistre tous les noms de sous-dossier directs de current_directory dans l'ensemble(R1.2)
+      --      Retourne l'ensemble(R1.3)
+      
+      -- R2.1 : Comment R1.1
+      --      Pour tous les fichiers de current_directory Faire(R2.1.1)
+      --          Enregistrer son nom en tant que fichier(R2.1.2)
+      --      Fin pour
+      -- R2.2 : Comment R1.2
+      --      Pour tous les sous-dossiers directs de current_directory Faire(R2.2.1)
+      --          Enregistrer son nom en tant que fichier(R2.2.2)
+      --      Fin pour
+      -- R2.3 : Comment R1.3
+      --      Retourne ensemble_noms_descendants_tries
+      
+      -- R3.1 : Comment R2.1.1
+      --      Pour index_fichier allant de 1 à nombre_fichiers(current_directory) Faire
+      -- R3.2 : Comment R2.1.2
+      --       nouveau_nom.nom <- nom(fichier(current_directory, index_fichier))
+      --       nouveau_nom.est_nom_dossier <- Faux
+      --       ensemble_noms_descendants_tries.inserer(nouveau_nom)
+      -- R3.3 : Comment R2.2.1
+      --       Pour index_dossier allant de 1 à nombre_dossiers(current_directory) Faire
+      -- R3.4 : Comment R2.2.2
+      --       nouveau_nom.nom <- nom(dossier(current_directory, index_dossier))
+      --       nouveau_nom.est_nom_dossier <- Vrai
+      --       ensemble_noms_descendants_tries.inserer(nouveau_nom)
+      
       -- add each folder
       for i in 1.. get_nb_folders(current_directory) loop
          new_element.name := To_Unbounded_String(get_name(get_folder(current_directory, i)));
@@ -231,6 +501,33 @@ package body P_Commands is
    
    procedure display_folders_and_files (siblings_set : in T_Siblings_Set) is
    begin
+      -- R0 : Affiche tous les noms contenus dans un ensemble de noms, en affichant les noms des dossiers en couleur
+      -- R1 : Pour tous les noms contenus dans l'ensemble(R1.1)
+      --      Si le nom appartient à un dossier, l'affiche en couleur(R1.2)
+      --      Sinon, l'affiche normalement(R1.3)
+      
+      -- R2.1 : Comment R1.1
+      --      Pour nom_descendant dans ensemble_noms_descendant_tries Faire(R2.1.1)
+      --          ...
+      --          ...
+      --          ...
+      --      Fin pour
+      -- R2.2 : Comment R1.2
+      --      Si nom_descendant.est_nom_dossier Alors
+      --          Afficher nom en couleur(R2.2.1)
+      --      Fin pour
+      -- R2.3 : Comment R1.3
+      --      Si non nom_descendant.est_nom_dossier Alors
+      --          Afficher nom normalement(R2.3.1)
+      --      Fin pour
+      
+      -- R3.1 : Comment R2.2.1
+      --      Ecrire(Caractere_ASCII_Echapement + "[95m")
+      --      Ecrire(nom(nom_descendant) + "    ")
+      --      Ecrire(Caractere_ASCII_Echapement + "[0m")
+      -- R3.1 : Comment R2.3.1
+      --      Ecrire(nom(nom_descendant) + "    ")
+      
       for sibling of siblings_set loop
          -- if this is a folder, color it
          if sibling.is_folder then
@@ -250,6 +547,36 @@ package body P_Commands is
       original_folder : T_Folder; -- original folder
       new_folder : T_Folder; -- copy of a folder
    begin
+      -- R0 : Fonction recursive copiant le contenu d'un dossier dans l'autre, et faisant de même pour tous les sous-dossier directs
+      -- R1 : Copie tous les fichiers de source_folder dans destination_folder(R1.1)
+      --      Copie tous les dossiers source_folder dans destination_folder et se rappelle pour chaque sous-dossiers de source_folder(R1.2)
+      
+      -- R2.1 : Comment R1.1
+      --      Pour toutes les fichiers de source_folder actuel Faire(R2.1.1)
+      --          Copier le fichier dans destination_folder(R2.1.2)
+      --      Fin pour
+      -- R2.2 : Comment R1.2
+      --      Pour toutes les sous-dossiers directs de source_folder actuel Faire(R2.2.1)
+      --          Copier le sous-dossier direct dans destination_folder(R2.2.2)
+      --          rappeler folder_deep_copy du sous-dossier actuel de source_folder et du sous-dossier venant d'etre cree dans destination_folder(R2.2.3)
+      --      Fin pour
+      
+      -- R3.1 : Comment R2.1.1
+      --      Pour index_fichier allant de 1 à nombre_fichiers(current_directory) Faire
+      -- R3.2 : Comment R2.1.2
+      --       fichier_original <- fichier(source_folder, index_fichier)
+      --       nouveau_fichier <- clone_fichier(fichier_original, pwd(destination_folder))
+      --       ajouter_fichier(destination_folder, nouveau_fichier)
+      -- R3.3 : Comment R2.2.1
+      --      Pour index_dossier allant de 1 à nombre_dossiers(current_directory) Faire
+      -- R3.4 : Comment R2.2.2
+      --      dossier_original <- dossier(source_folder, index_dossier)
+      --      nouveau_fichier <- creer_dossier(nom(dossier_original), destination_folder, droits(dossier_original))
+      -- R3.5 : Comment R2.2.3
+      --      folder_deep_copy(dossier(source_folder, index_dossier), nouveau_fichier);
+      
+      
+      
       -- copy all files from original folder
       for i in 1..get_nb_files(source_folder) loop
          original_file := get_file(source_folder, i);
@@ -379,6 +706,33 @@ package body P_Commands is
    
    procedure pwd_command (current_directory : in T_Folder; options : in T_Substrings; parameters : in T_Substrings) is
    begin
+      -- R0 : Ecrie le pwd d'un dossier
+      -- R1 : Si les options transmises ne sont pas gerees, leve une exception(R1.1)
+      --      Si le nombre de parametres est incoherent, leve une exception(R1.2)
+      --      Affiche le pwd(R1.3)
+      
+      -- R2.1 : Comment R1.1
+      --      Si l'option n'est pas prise en compte(R2.1.1)
+      --          Leve une exception(R2.1.2)
+      --      Fin pour
+      -- R2.2 : Comment R1.2
+      --      Si il y a un nombre de parametre inatendu(R2.2.1)
+      --          Leve une exception(R2.2.2)
+      --      Fin pour
+      -- R2.3 : Comment R1.3
+      --      Ecrit(pwd(current_directory))
+      
+      -- R3.1 : Comment R2.1.1
+      --      Si longueur(options) /= 0 Alors
+      -- R3.2 : Comment R2.1.2
+      --       Erreur Option_Non_Supportee_Erreur
+      -- R3.3 : Comment R2.2.1
+      --      Si longueur(parametre) /= 0 Alors
+      -- R3.4 : Comment R2.2.2
+      --      Erreur Mauvais_Nombre_Arguments_Erreur
+      
+      
+      
       if get_nb_substrings(options) /= 0 then
          raise Not_Handled_Option_Error;
       end if;
@@ -390,6 +744,43 @@ package body P_Commands is
    
    procedure cd_command(current_directory : in out T_Folder; options : in T_Substrings; parameters : in T_Substrings) is
    begin
+      -- R0 : Ecrie le pwd d'un dossier
+      -- R1 : Si les options transmises ne sont pas gerees, leve une exception(R1.1)
+      --      Si le nombre de parametres est incoherent, leve une exception(R1.2)
+      --      Fait suivre à current_directory le chemin contenu dans parameters(R1.3)
+      
+      -- R2.1 : Comment R1.1
+      --      Si l'option n'est pas prise en compte(R2.1.1)
+      --          Leve une exception(R2.1.2)
+      --      Fin pour
+      -- R2.2 : Comment R1.2
+      --      Si il y a un nombre de parametre inatendu(R2.2.1)
+      --          Leve une exception(R2.2.2)
+      --      Fin pour
+      -- R2.3 : Comment R1.3
+      --      Si le chemin n'est pas vide Alors(R2.3.1)
+      --          current_directory (R2.3.2)
+      --      Sinon
+      --          current_directory devient le dossier originel(R2.3.3)
+      --      Fin si
+      
+      -- R3.1 : Comment R2.1.1
+      --      Si longueur(options) /= 0 Alors
+      -- R3.2 : Comment R2.1.2
+      --       Erreur Option_Non_Supportee_Erreur
+      -- R3.3 : Comment R2.2.1
+      --      Si longueur(parametre) > 1 Alors
+      -- R3.4 : Comment R2.2.2
+      --      Erreur Mauvais_Nombre_Arguments_Erreur
+      -- R3.5 : Comment R2.3.1
+      --      Si longueur(argument(parameters, 1)) > 0 Alors
+      -- R3.6 : Comment R2.3.2
+      --      current_directory <- aller_au_dossier(current_directory, argument(parameters, 1))
+      -- R3.7 : Comment R2.3.3
+      --      current_directory <- dossier_originel
+      
+      
+      
       if get_nb_substrings(options) /= 0 then
          raise Not_Handled_Option_Error;
       end if;
@@ -438,6 +829,33 @@ package body P_Commands is
    procedure ls_r_command (current_directory : in T_Folder; preceding_path : in Unbounded_String) is
       current_path : Unbounded_String; -- represents the current relative path from the folder we are doing the "ls -r" in
    begin
+      -- R0 : Fonction recursive qui affiche le nom de tous les fichiers et sous-dossier directs, et se propage dans les sous-dossiers directs.
+      --      Se propage depuis un dossier, en affichant le chemin relatif depuis de dossier à chaque propagation
+      -- R1 : Determine le chemin relatif courant et l'affiche(R1.1)
+      --      Affiche les fichiers et sous-dossiers direct de current_directory (R1.2)
+      --      Se propage dans tous les sous-dossiers directs de current_directory(R1.3)
+      
+      -- R2.1 : Comment R1.1
+      --      Recupere le chemin relatif courrant fournit par preceding_path et ajoute le nom du dossier courant(R2.1.1)
+      --      Affiche ce chemin relatif(R2.1.2)
+      -- R2.2 : Comment R1.2
+      --      ensemble_descendants <- creer_ensemble_descendants(current_directory)
+      --      afficher_dossier_directs_et_fichiers(ensemble_descendants)
+      -- R2.3 : Comment R1.3
+      --      Pour tous les sous-dossier directs Faire(R2.3.1)
+      --          ls_r_command(sous-dossier, chemin relatif)(R2.3.1)
+      --      Fin pour
+      
+      -- R3.1 : Comment R2.1.1
+      --      chemin_relatif <- preceding + '/' + nom(current_directory)
+      -- R3.2 : Comment R2.1.2
+      --      Ecrire(chemin_relatif + ':')
+      -- R3.3 : Comment R2.3.1
+      --      Pour index_dossier allant de 1 à nombre_dossiers(current_directory) Faire
+      -- R3.4 : Comment R2.3.2
+      --      ls_r_command(dossier(dossier_original, index_dossier),chemin_relatif)
+
+      
       -- print current path and ":"
       current_path := preceding_path & FILE_SEPARATOR & get_name(current_directory);
       new_line;
@@ -495,6 +913,87 @@ package body P_Commands is
       original_file_name : Unbounded_String; -- original file name
       new_file : T_File; -- new file, copy of original file
    begin
+      -- R0 : Copie un fichier dans un repertoir, en specifiant le nouveau nom, ou fait de meme avec un dossier et tous ses composants 
+      -- R1 : Si les options transmises ne sont pas gerees, leve une exception(R1.1)
+      --      Si le nombre de parametres est incoherent, leve une exception(R1.2)
+      --      Recupere le dossier parent de l'element a copier(R1.3)
+      --      Recupere le nom de l'element a copier(R1.4)
+      --      Si il faut copier un dossier, le fait(R1.5)
+      --      Si il faut copier un dossier, le fait(R1.6)
+      
+      -- R2.1 : Comment R1.1
+      --      Si l'option n'est pas prise en compte(R2.1.1)
+      --          Leve une exception(R2.1.2)
+      --      Fin pour
+      -- R2.2 : Comment R1.2
+      --      Si il y a un nombre de parametre inatendu(R2.2.1)
+      --          Leve une exception(R2.2.2)
+      --      Fin pour
+      -- R2.3 : Comment R1.3
+      --      parent_dossier_destination := aller_au_dossier(current_directory, argument(parameters, 2), Vrai);
+      -- R2.4 : Comment R1.4
+      --      nouveau_nom := nom_depuis_chemin(argument(parameters, 2));
+      -- R2.5 : Comment R1.5
+      --      Si les options contiennent l'option recursive Alors(R2.5.1)
+      --          Je recupere le dossier à copier(R2.5.2)
+      --          Je verifie que je ne copie pas ce dossier dans un de ses parents, sinon je leve une exception(R2.5.3)
+      --          Je cree le nouveau dossier qui va accueillir la copie(R2.5.4)
+      --          Je place le dossier courrant dans ce nouveau dossier cree(R2.5.5)
+      --          Je copie recursivement le dossier a copier dans ce nouveau repertoire(R2.5.6)
+      --      Fin si
+      -- R2.6 : Comment R1.6
+      --      Si les options ne contiennent pas l'option recursive Alors(R2.6.1)
+      --          Je recupere le dossier contenant le fichier a copier(R2.6.2)
+      --          Je recupere le fichier(R2.6.3)
+      --          Si le fichier n'existe pas, je leve une exception(R2.6.4)
+      --          Je clone le fichier dans un nouveau(R2.6.5)
+      --          J'ajoute le nouveau fichier clone dans le dossier de destination(R2.6.6)
+      --      Fin si
+      
+      -- R3.1 : Comment R2.1.1
+      --      Si contient_seulement_option_supportees(options, "-r") Alors
+      -- R3.2 : Comment R2.1.2
+      --       Erreur Option_Non_Supportee_Erreur
+      -- R3.3 : Comment R2.2.1
+      --      Si longueur(parametre) /= 2 Alors
+      -- R3.4 : Comment R2.2.2
+      --      Erreur Mauvais_Nombre_Arguments_Erreur
+      -- R3.5 : Comment R2.5.1
+      --      Si contient_option(options, "-r") Alors
+      -- R3.6 : Comment R2.5.2
+      --      dossier_source <- aller_a_dossier(current_directory, argument(parameters, 2))
+      -- R3.7 : Comment R2.5.3
+      --      Si a_comme_parent(parent_dossier_destination,dossier_source) Alors
+      --          Erreur Copie_Dans_Un_Descendant_Erreur
+      --      Fin si
+      -- R3.8 : Comment R2.5.4
+      --      creer_dossier(current_directory, tableau_option_vide, arguments(parameters, 2, 2))
+      -- R3.9 : Comment R2.5.5
+      --      dossier_destination <- aller_a_dossier(parent_dossier_destination, nouveau_nom)
+      -- R3.10 : Comment R2.5.6
+      --      copie_profonde_dossier(dossier_source, dossier_destination)
+      -- R3.11 : Comment R2.6.1
+      --      Si non contient_option(options, "-r") Alors
+      -- R3.12 : Comment R2.6.2
+      --      dossier_source <- aller_a_dossier(current_directory, argument(parameters, 2), Vrai)
+      -- R3.13 : Comment R2.6.3
+      --      Je recupere le nom du fichier original(R3.13.1)
+      --      Je recupere le fichier depuis le dossier parent, grace au nom(R3.13.2)
+      -- R3.14 : Comment R2.6.4
+      --      Si fichier_original est null Alors
+      --          Erreur Fichier_Invalide_Erreur
+      --      Fin si
+      -- R3.15 : Comment R2.6.5
+      --      nouveau_fichier <- clone_fichier(fichier_original, nouveau_nom, pwd(parent_dossier_destination))
+      -- R3.16 : Comment R2.6.6
+      --      ajouter_fichier(parent_dossier_destination, nouveau_fichier)
+      
+      -- R4.1 : Comment R3.13.1
+      --      nom_fichier_original <- nom_depuis_chemin(argument(parameters, 1))
+      -- R4.2 : Comment R3.13.2
+      --      fichier_original <- fichier(parent_dossier_destination, nom_fichier_original)
+      
+      
       if not only_handled_options(options, "-r") then
          raise Not_Handled_Option_Error;
       end if;
@@ -544,6 +1043,77 @@ package body P_Commands is
       original_file : T_File; -- the original file
       new_file : T_File; -- the new file
    begin
+      -- R0 : Deplace un fichier dans un repertoir, en specifiant le nouveau nom, ou fait de meme avec un dossier et tous ses composants 
+      -- R1 : Si les options transmises ne sont pas gerees, leve une exception(R1.1)
+      --      Si le nombre de parametres est incoherent, leve une exception(R1.2)
+      --      Si il faut deplacer un dossier, le fait(R1.3)
+      --      Si il faut deplacer un dossier, le fait(R1.4)
+      
+      -- R2.1 : Comment R1.1
+      --      Si l'option n'est pas prise en compte(R2.1.1)
+      --          Leve une exception(R2.1.2)
+      --      Fin pour
+      -- R2.2 : Comment R1.2
+      --      Si il y a un nombre de parametre inatendu(R2.2.1)
+      --          Leve une exception(R2.2.2)
+      --      Fin pour
+      -- R2.3 : Comment R1.3
+      --      Si les options contiennent l'option recursive Alors(R2.3.1)
+      --          Je copie le dossier a deplacer dans la destination(R2.3.2)
+      --          Je supprime le dossier a deplacer(R2.3.3)
+      --      Fin si
+      -- R2.4 : Comment R1.4
+      --      Si les options ne contiennent pas l'option recursive Alors(R2.4.1)
+      --          Je recupere le dossier parent du fichier a deplacer(R2.4.2)
+      --          Je recupere le dossier dans lequel deplacer le fichier(R2.4.3)
+      --          Je recupere le nom du fichier a deplacer(R2.4.4)
+      --          Je recupere le nouveau nom du fichier un fois deplace(R2.4.5)
+      --          Je recupere le fichier original(R2.4.6)
+      --          Si le fichier n'existe pas, je leve une exception(R2.4.7)
+      --          Je clone le fichier dans un nouveau(R2.4.8)
+      --          J'ajoute le nouveau fichier clone dans le dossier de destination(R2.4.9)
+      --          Je supprime le fichier a deplacer, l'original(R2.4.10)
+      --      Fin si
+      
+      -- R3.1 : Comment R2.1.1
+      --      Si contient_seulement_option_supportees(options, "-r") Alors
+      -- R3.2 : Comment R2.1.2
+      --       Erreur Option_Non_Supportee_Erreur
+      -- R3.3 : Comment R2.2.1
+      --      Si longueur(parametre) /= 2 Alors
+      -- R3.4 : Comment R2.2.2
+      --      Erreur Mauvais_Nombre_Arguments_Erreur
+      -- R3.5 : Comment R2.3.1
+      --      Si contient_option(options, "-r") Alors
+      -- R3.6 : Comment R2.3.2
+      --      cp_command(current_directory, options, parameters);
+      -- R3.7 : Comment R2.3.3
+      --      rm_command (current_directory, options, get_substrings(parameters, 1, 1));
+      -- R3.8 : Comment R2.4.1
+      --      Si non contient_option(options, "-r") Alors
+      -- R3.9 : Comment R2.4.2
+      --      dossier_source <- aller_a_dossier(current_directory, argument(parameters, 2), Vrai)
+      -- R3.10 : Comment R2.4.3
+      --      dossier_destination <- aller_a_dossier(parent_dossier_destination, nouveau_nom, Vrai)
+      -- R3.11 : Comment R2.4.4
+      --      nom_fichier_original <- nom_depuis_chemin(argument(parameters, 1))
+      -- R3.12 : Comment R2.4.5
+      --      nouveau_nom_fichier <- nom_depuis_chemin(argument(parameters, 2))
+      -- R3.13 : Comment R2.4.6
+      --      fichier_original <- fichier(parent_dossier_destination, nom_fichier_original)
+      -- R3.14 : Comment R2.4.7
+      --      Si fichier_original est null Alors
+      --          Erreur Fichier_Invalide_Erreur
+      --      Fin si
+      -- R3.15 : Comment R2.4.8
+      --      nouveau_fichier <- clone_fichier(fichier_original, nouveau_nom, pwd(parent_dossier_destination))
+      -- R3.16 : Comment R2.4.9
+      --      ajouter_fichier(parent_dossier_destination, nouveau_fichier)
+      -- R3.17 : Comment R2.4.10
+      --      supprimer_fichier(dossier_source, nom_fichier_original)
+      
+      
+      
       if not only_handled_options(options, "-r") then
          raise Not_Handled_Option_Error;
       end if;
