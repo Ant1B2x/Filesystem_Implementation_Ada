@@ -31,6 +31,7 @@ procedure Menu is
             -- print error message
             when Data_Error =>
                put_line("Not an Integer, try again.");
+               skip_line; -- clear the buffer
          end;
          exit when choice in choice_min..choice_max;
       end loop;
