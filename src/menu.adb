@@ -26,14 +26,14 @@ procedure Menu is
          begin
             get(choice);
             skip_line; -- clear the buffer
-         -- when data error, like, for example, entering Character
          exception
-            -- print error message
+            -- when data error, like, for example, entering Character
             when Data_Error =>
-               put_line("Not an Integer, try again.");
                skip_line; -- clear the buffer
          end;
          exit when choice in choice_min..choice_max;
+         -- print error message if the choice is not between choice_min and choice_max
+         put_line("Incorrect choice, try again.");
       end loop;
       return choice;
    end get_choice;
