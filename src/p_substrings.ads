@@ -71,7 +71,7 @@ package P_Substrings is
    --    T_Substrings : The new T_Substrings countaining the wanted bunch of substrings
    -- Preconditions : /
    -- Postconditions : /
-   function get_substrings(substrings: in T_Substrings; index_first: Integer; index_last: Integer) return T_Substrings;
+   function get_substrings (substrings: in T_Substrings; index_first: Integer; index_last: Integer) return T_Substrings;
 
    -- Role : Add a new substring to an existing array of substrings
    -- No preconditions because they're already in T_Array
