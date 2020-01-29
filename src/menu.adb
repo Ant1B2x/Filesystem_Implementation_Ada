@@ -18,17 +18,23 @@ procedure Menu is
    function get_choice (choice_min : in Integer; choice_max : in Integer) return Integer is
       choice : Integer; -- choice typed by the user
    begin
+      -- while choice is not between choice_min and choice_max
       loop
+         -- show de prompt
          print_prompt;
-         get(choice);
-         skip_line; -- clear the buffer
+         -- get the choice
+         begin
+            get(choice);
+            skip_line; -- clear the buffer
+         -- when data error, like, for example, entering Character
+         exception
+            -- print error message
+            when Data_Error =>
+               put_line("Not an Integer, try again.");
+         end;
          exit when choice in choice_min..choice_max;
       end loop;
-      return choice;   
-   exception
-      when Data_Error =>
-         put_line("Incorrect choice, try again.");
-         return get_choice(choice_min, choice_max);
+      return choice;
    end get_choice;
    
    procedure print_main_menu (current_directory : in T_Folder) is
