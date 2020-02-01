@@ -466,10 +466,10 @@ package body P_Folder is
       return find_folder(folder, name) /= null or find_file(folder, name) /= null;
    end has_son_with_this_name;
    
-   function has_parent(folder : in T_Folder; supposed_parent : in T_Folder) return Boolean is
+   function has_as_parent(folder : in T_Folder; supposed_parent : in T_Folder) return Boolean is
       current : T_Folder; -- current folder
    begin
-      -- R0 : Trouve si le dossier ce parent comme ancetre
+      -- R0 : Trouve si le dossier a ce parent comme ancetre
       -- R1 : Prend folder comme dossier courant(R1.1)
       --      Parcours tous les parents tant que mon parent n'est pas le dossier originel et que le parent recherche n'est pas rencontre(R1.2)
       --      Retourne si le courant est le dossier recheche comme parent(R1.3)
@@ -496,6 +496,6 @@ package body P_Folder is
       end loop;
       -- finally, return True if supposed parent is equal to current, False otherwise
       return are_the_same(supposed_parent, current);
-   end has_parent;
+   end has_as_parent;
    
 end P_Folder;

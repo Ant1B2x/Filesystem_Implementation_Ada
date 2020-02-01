@@ -1,4 +1,5 @@
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
+With ada.Text_IO; use ada.Text_IO;
 
 with P_Tree;
 with P_Array;
@@ -287,7 +288,7 @@ package P_Folder is
    --    Boolean : True if the folder has supposed_parent as parent, False otherwise
    -- Preconditions : /
    -- Postconditions : /
-   function has_parent (folder : in T_Folder; supposed_parent : in T_Folder) return Boolean;
+   function has_as_parent (folder : in T_Folder; supposed_parent : in T_Folder) return Boolean;
    
 private
    -- singleton unique root folder

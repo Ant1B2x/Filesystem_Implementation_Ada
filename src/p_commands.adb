@@ -60,9 +60,9 @@ package body P_Commands is
       when Wrong_Parameters_Number_Error =>
          put_line("Wrong number of parameters.");
          put_line("Try help '" & get_substring_to_string(splitted_line, 1) & "' for more information.");
-      when Constraint_Error =>
-         put_line("command not found");
-         put_line("Try 'help' to see a list of available commands.");
+      --when Constraint_Error =>
+         --put_line("command not found");
+         --put_line("Try 'help' to see a list of available commands.");
    end run_command;
    
    -- ############################################ VARIOUS PRIVATE SUBROUTINES ###########################################################
@@ -798,7 +798,73 @@ package body P_Commands is
    
    procedure ls_command (current_directory : in T_Folder; options : in T_Substrings; parameters : in T_Substrings) is
       current : T_Folder; -- represents the folder where we are doing the "ls" in
+      name: Unbounded_String;
    begin
+      -- R0 : Affiche tous les fichiers et dossiers directs d'un dossier, ou parcours le fait en parcourrant tous ses sous-dossiers 
+      -- R1 : Si les options transmises ne sont pas gerees, leve une exception(R1.1)
+      --      Si le nombre de parametres est incoherent, leve une exception(R1.2)
+      --      Si j'ai un chemin comme parametre, alors je me deplace le long de ce chemin(R1.3)
+      --      Si il faut afficher tous le sous arbre, alors j'affiche le dossier courrant et je propage aux sous-dossier directs(R1.4)
+      --      Sinon, j'affiche le dossier courrant(R1.5)
+      
+      -- R2.1 : Comment R1.1
+      --      Si l'option n'est pas prise en compte(R2.1.1)
+      --          Leve une exception(R2.1.2)
+      --      Fin pour
+      -- R2.2 : Comment R1.2
+      --      Si il y a un nombre de parametre inatendu(R2.2.1)
+      --          Leve une exception(R2.2.2)
+      --      Fin pour
+      -- R2.3 : Comment R1.3
+      --      Si le chemin precise n'est pas vide Alors(R2.3.1)
+      --          Je me deplace le long du chemin(R2.3.2)
+      --      Fin si
+      -- R2.4 : Comment R1.4
+      --      Si l'option recursive est demandee Alors(R2.4.1)
+      --          Je recupere le nom du dossier courant(R2.4.2)
+      --          J'affiche le nom(R2.4.3)
+      --          J'affiche le contenu de courant(R2.4.4)
+      --          Je propage à tous ses sous-dossiers(R2.4.5)
+      --      Fin si
+      -- R2.5 : Comment R1.5
+      --      Sinon
+      --          J'affiche le contenu de courant(R2.5.1)
+      --      Fin si
+      
+      -- R3.1 : Comment R2.1.1
+      --      Si contient_seulement_option_supportees(options, "-r") Alors
+      -- R3.2 : Comment R2.1.2
+      --       Erreur Option_Non_Supportee_Erreur
+      -- R3.3 : Comment R2.2.1
+      --      Si longueur(parametre) > 1 Alors
+      -- R3.4 : Comment R2.2.2
+      --      Erreur Mauvais_Nombre_Arguments_Erreur
+      -- R3.5 : Comment R2.3.1
+      --      Si longueur(argument(parametres, 1)) > 0
+      -- R3.6 : Comment R2.3.2
+      --      courant <- aller_au_dossier(current_directory, argument(parameters, 1));
+      -- R3.7 : Comment R2.4.1
+      --      Si contient_option(options, "-r") Alors
+      -- R3.8 : Comment R2.4.2
+      --      nom <- Si est_dossier_originel(courant) Alors "." Sinon nom(courant) Fin si
+      -- R3.9 : Comment R2.4.3
+      --      Ecrire(nom + ":")
+      -- R3.10 : Comment R2.4.4
+      --      afficher_contenu(courant)
+      -- R3.11 : Comment R2.4.5
+      --      Pour tous les sous-dossiers directs de courant Faire(R3.11.1)
+      --          Afficher recursivement le contenu(R3.11.2)
+      --      Fin pour
+      -- R3.12 : Comment R2.5.1
+      --      afficher_contenu(courant)
+      
+      -- R4.1 : Comment R3.11.1
+      --      Pour index allant de 1 a nombre_dossier(courant) Faire
+      -- R4.2 : Comment R3.11.2
+      --      afficher_contenu_recursivement(courant, nom)
+      
+      
+      
       -- ls only supports "-r" option
       if not only_handled_options(options, "-r") then
          raise Not_Handled_Option_Error;
@@ -815,10 +881,11 @@ package body P_Commands is
       end if;
       -- if options contain r, do a recursive ls on each subfolder
       if contains_option(options, 'r') then
-         put_line(".:");
+         name := (if is_root(current) then To_Unbounded_String(".") else To_Unbounded_String(get_name(current)));
+         put_line(To_String(name) & ":");
          display_folders_and_files(create_siblings_set(current));
          for i in 1.. get_nb_folders(current) loop
-            ls_r_command(get_folder(current, i), To_Unbounded_String("."));
+            ls_r_command(get_folder(current, i), name);
          end loop;
       -- else, do a standard ls
       else
@@ -872,6 +939,38 @@ package body P_Commands is
       new_directory_name : Unbounded_String; -- the name of the directory we are creating
       parent : T_Folder; -- the parent of the new directory
    begin
+      -- R0 : Cree un dossier avec le nom donne, depuis le chemin donne
+      -- R1 : Si les options transmises ne sont pas gerees, leve une exception(R1.1)
+      --      Si le nombre de parametres est incoherent, leve une exception(R1.2)
+      --      Je me deplace le long du chemin(R1.3)
+      --      Je recupere le nom du dossier a creer(R1.4)
+      --      Je cree le dossier(R1.5)
+      
+      -- R2.1 : Comment R1.1
+      --      Si l'option n'est pas prise en compte(R2.1.1)
+      --          Leve une exception(R2.1.2)
+      --      Fin pour
+      -- R2.2 : Comment R1.2
+      --      Si il y a un nombre de parametre inatendu(R2.2.1)
+      --          Leve une exception(R2.2.2)
+      --      Fin pour
+      -- R2.3 : Comment R1.3
+      --      parent <- aller_au_dossier(current_directory, argument(parameters, 1), True)
+      -- R2.4 : Comment R1.4
+      --      nom <- nom_depuis_chemin(argument(parameters, 1))
+      -- R2.5 : Comment R1.5
+      --      creer_dossier(nom, parent)
+      
+      -- R3.1 : Comment R2.1.1
+      --      Si longueur(options) /= 0 Alors
+      -- R3.2 : Comment R2.1.2
+      --       Erreur Option_Non_Supportee_Erreur
+      -- R3.3 : Comment R2.2.1
+      --      Si longueur(parametre) /= 1 Alors
+      -- R3.4 : Comment R2.2.2
+      --      Erreur Mauvais_Nombre_Arguments_Erreur
+      
+      
       if get_nb_substrings(options) /= 0 then
          raise Not_Handled_Option_Error;
       end if;
@@ -890,6 +989,42 @@ package body P_Commands is
       new_file_name: Unbounded_String; -- the name of the file we are creating
       parent : T_Folder; -- the parent of the new file
    begin
+      -- R0 : Cree un fichier avec le nom donne, depuis le chemin donne
+      -- R1 : Si les options transmises ne sont pas gerees, leve une exception(R1.1)
+      --      Si le nombre de parametres est incoherent, leve une exception(R1.2)
+      --      Je me deplace le long du chemin et recupere le parent du fichier a creer(R1.3)
+      --      Je recupere le nom du fichier a creer(R1.4)
+      --      Je cree le fichier(R1.5)
+      --      J'indique au parent qu'il a un nouveau fichier(R1.6)
+      
+      -- R2.1 : Comment R1.1
+      --      Si l'option n'est pas prise en compte(R2.1.1)
+      --          Leve une exception(R2.1.2)
+      --      Fin pour
+      -- R2.2 : Comment R1.2
+      --      Si il y a un nombre de parametre inatendu(R2.2.1)
+      --          Leve une exception(R2.2.2)
+      --      Fin pour
+      -- R2.3 : Comment R1.3
+      --      parent <- aller_au_dossier(current_directory, argument(parameters, 1), True)
+      -- R2.4 : Comment R1.4
+      --      nom <- nom_depuis_chemin(argument(parameters, 1))
+      -- R2.5 : Comment R1.5
+      --      nouveau_fichier <- creer_fichier(nom)
+      -- R2.6 : Comment R1.6
+      --      ajouter_fichier(parent, nouveau_fichier)
+      
+      -- R3.1 : Comment R2.1.1
+      --      Si longueur(options) /= 0 Alors
+      -- R3.2 : Comment R2.1.2
+      --       Erreur Option_Non_Supportee_Erreur
+      -- R3.3 : Comment R2.2.1
+      --      Si longueur(parametre) /= 1 Alors
+      -- R3.4 : Comment R2.2.2
+      --      Erreur Mauvais_Nombre_Arguments_Erreur
+      
+      
+      
       if get_nb_substrings(options) /= 0 then
          raise Not_Handled_Option_Error;
       end if;
@@ -919,7 +1054,7 @@ package body P_Commands is
       --      Recupere le dossier parent de l'element a copier(R1.3)
       --      Recupere le nom de l'element a copier(R1.4)
       --      Si il faut copier un dossier, le fait(R1.5)
-      --      Si il faut copier un dossier, le fait(R1.6)
+      --      Si il faut copier un fichier, le fait(R1.6)
       
       -- R2.1 : Comment R1.1
       --      Si l'option n'est pas prise en compte(R2.1.1)
@@ -1009,7 +1144,7 @@ package body P_Commands is
          -- folder to copy
          source_folder := go_to_folder(current_directory, get_substring_to_string(parameters, 1));
          -- we can't copy a folder from itself to itself
-         if has_parent(destination_folder_parent, source_folder) then
+         if has_as_parent(destination_folder_parent, source_folder) then
             raise Copy_Into_Itself_Error;
          end if;
          -- create the new folder
@@ -1047,7 +1182,7 @@ package body P_Commands is
       -- R1 : Si les options transmises ne sont pas gerees, leve une exception(R1.1)
       --      Si le nombre de parametres est incoherent, leve une exception(R1.2)
       --      Si il faut deplacer un dossier, le fait(R1.3)
-      --      Si il faut deplacer un dossier, le fait(R1.4)
+      --      Si il faut deplacer un fichier, le fait(R1.4)
       
       -- R2.1 : Comment R1.1
       --      Si l'option n'est pas prise en compte(R2.1.1)
@@ -1151,30 +1286,99 @@ package body P_Commands is
    procedure rm_command (current_directory : in out T_Folder; options : in T_Substrings; parameters : in T_Substrings) is
       parent_folder_deleted : T_Folder; -- parent folder of the deleted file / folder
       deleted_name : Unbounded_String; -- name of the deleted file / folder
-   begin       
+   begin
+      -- R0 : Supprime un fichier ou un dossier
+      -- R1 : Si les options transmises ne sont pas gerees, leve une exception(R1.1)
+      --      Si le nombre de parametres est incoherent, leve une exception(R1.2)
+      --      Si il faut supprimer un dossier, le fait(R1.3)
+      --      Si il faut supprimer un fichier, le fait(R1.4)
+      
+      -- R2.1 : Comment R1.1
+      --      Si l'option n'est pas prise en compte(R2.1.1)
+      --          Leve une exception(R2.1.2)
+      --      Fin pour
+      -- R2.2 : Comment R1.2
+      --      Si il y a un nombre de parametre inatendu(R2.2.1)
+      --          Leve une exception(R2.2.2)
+      --      Fin pour
+      -- R2.3 : Comment R1.3
+      --      nom <- nom_depuis_chemin(argument(parameters, 1))
+      -- R2.4 : Comment R1.4
+      --      parent <- aller_au_dossier(current_directory, argument(parameters, 1), True)
+      -- R2.3 : Comment R1.3
+      --      Si les options contiennent l'option recursive Alors(R2.3.1)
+      --          Je recupere le parent de l'element a supprimer(R2.3.2)
+      --          Je recupere le nom de l'element a supprimer(R1.3.3)
+      --          Si le dossier a supprimer est un parent du dossier courant, je me deplace au parent du dossier a supprimer(R2.3.4)
+      --          Je supprime le dossier a supprimer(R2.3.5)
+      --      Fin si
+      -- R2.4 : Comment R1.4
+      --      Si les options ne contiennent pas l'option recursive Alors(R2.4.1)
+      --          Je recupere le parent de l'element a supprimer(R1.4.2)
+      --          Je recupere le nom de l'element a supprimer(R1.4.3)
+      --          Si le fichier n'est pas un fichier du parent, leve une exception(R2.4.4)
+      --          Supprime le fichier(R2.4.5)
+      --      Fin si
+      
+      -- R3.1 : Comment R2.1.1
+      --      Si contient_seulement_option_supportees(options, "-r") Alors
+      -- R3.2 : Comment R2.1.2
+      --       Erreur Option_Non_Supportee_Erreur
+      -- R3.3 : Comment R2.2.1
+      --      Si longueur(parametre) /= 1 Alors
+      -- R3.4 : Comment R2.2.2
+      --      Erreur Mauvais_Nombre_Arguments_Erreur
+      -- R3.5 : Comment R2.3.1
+      --      Si contient_option(options, "-r") Alors
+      -- R3.6 : Comment R2.3.2
+      --      parent_element_a_supprimer <- aller_a_dossier(aller_a_dossier(current_directory, argument(parameters, 1)), "../")
+      -- R3.7 : Comment R2.3.3
+      --      nom_element_a_supprimer <- nom(aller_a_dossier(current_directory, argument(parameters, 1)))
+      -- R3.8 : Comment R2.3.4
+      --      Si a_comme_parent(current_directory, aller_a_dossier(current_directory, argument(parameters, 1))) Alors
+      --            current_directory <- parent_element_a_supprimer
+      --      Fin si
+      -- R3.9 : Comment R2.3.5
+      --      supprimer_dossier(parent_element_a_supprimer, nom_element_a_supprimer)
+      -- R3.10 : Comment R2.4.1
+      --      Si non contient_option(options, "-r") Alors
+      -- R3.11 : Comment R2.4.2
+      --      parent_element_a_supprimer <- aller_a_dossier(current_directory, argument(parameters, 1), Vrai)
+      -- R3.12 : Comment R2.4.3
+      --      nom_element_a_supprimer <- nom_depuis_chemin(argument(parameters, 1))
+      -- R3.13 : Comment R2.4.4
+      --      Si trouver_fichier(parent, nom) = null Alors
+      --            Erreur Fichier_Invalide_Erreur
+      --      Fin si
+      -- R3.14 : Comment R2.4.5
+      --      suprimer_fichier(parent_element_a_supprimer, nom_element_a_supprimer)
+
+      
+      
+      
       if not only_handled_options(options, "-r") then
          raise Not_Handled_Option_Error;
       end if;
       if get_nb_substrings(parameters) /= 1 then
          raise Wrong_Parameters_Number_Error;
       end if;
-      -- get deleted folder name from parameters 
-      deleted_name := get_name_from_path(get_substring(parameters, 1));
-      -- get deleted folder parent from parameters
-      parent_folder_deleted := go_to_folder(current_directory, get_substring_to_string(parameters, 1), True);
       -- if this is a recursive rm
       if contains_option(options, 'r') then
-         -- if no folder is found in the parent folder for the specified name, raise an exception
-         if is_null(find_folder(parent_folder_deleted, To_String(deleted_name))) then
-            raise Invalid_Folder_Error;
-         end if;
+         -- get deleted folder parent from parameters
+         parent_folder_deleted := go_to_folder(go_to_folder(current_directory, get_substring_to_string(parameters, 1)), "../");
+         -- get deleted folder name from parameters 
+         deleted_name := To_Unbounded_String(get_name(go_to_folder(current_directory, get_substring_to_string(parameters, 1))));
          -- if the current directory is equal to the deleted directory, go to the directory parent
-         if are_the_same(current_directory, find_folder(parent_folder_deleted, To_String(deleted_name))) then
-            current_directory := go_to_folder(current_directory, "../");
+         if has_as_parent(current_directory, go_to_folder(current_directory, get_substring_to_string(parameters, 1))) then
+            current_directory := parent_folder_deleted;
          end if;
          -- delete the folder of the specified name in the parent folder
          del_folder(parent_folder_deleted, To_String(deleted_name));
       else
+         -- get deleted folder parent from parameters
+         parent_folder_deleted := go_to_folder(current_directory, get_substring_to_string(parameters, 1), True);
+         -- get deleted folder name from parameters 
+         deleted_name := get_name_from_path(get_substring(parameters, 1));
          -- if no file is found in the parent folder for the specified name, raise an exception
          if find_file(parent_folder_deleted, To_String(deleted_name)) = null then
             raise Invalid_File_Error;
@@ -1189,6 +1393,51 @@ package body P_Commands is
       tar_file : T_File; -- the tar file, result of the archiving
       tar_file_name : Unbounded_String; -- the name of the tar file
    begin
+      -- R0 : Cree une archive du dossier passe en parametre, ou du dossier courant, ayant la taille de tous les sous-dossiers et de tous les fichiers, sommees, dans le dossier a archiver.
+      -- R1 : Si les options transmises ne sont pas gerees, leve une exception(R1.1)
+      --      Si le nombre de parametres est incoherent, leve une exception(R1.2)
+      --      Si il y a un chemin en parametre, se deplace jusqu'au dossier demande, sinon prend le dossier courant(R1.3)
+      --      Cree le nom du fichier a partir du nom du dossier courant(R1.4)
+      --      Cree le fichier arechive(R1.5)
+      --      Defini la taille du fichier d'archive(R1.6)
+      --      Ajoute le fichier au dossier courant(R1.7)
+      
+      -- R2.1 : Comment R1.1
+      --      Si l'option n'est pas prise en compte(R2.1.1)
+      --          Leve une exception(R2.1.2)
+      --      Fin pour
+      -- R2.2 : Comment R1.2
+      --      Si il y a un nombre de parametre inatendu(R2.2.1)
+      --          Leve une exception(R2.2.2)
+      --      Fin pour
+      -- R2.3 : Comment R1.3
+      --      Si longueur(argument(parameters, 1)) > 0 Alors
+      --          Suit le chemin passe en parametre(R2.3.1)
+      --      Sinon
+      --          dossier_a_archiver <- current_directory
+      --      Fin si
+      -- R2.4 : Comment R1.4
+      --      nom_dossier_a_archiver := (Si est_root(dossier_a_archiver) Alors "root.tar" Sinon nom(dossier_a_archiver) + ".tar")
+      -- R2.3 : Comment R1.5
+      --      fichier_archive <- creer_fichier(nom_dossier_a_archiver)
+      -- R2.4 : Comment R1.6
+      --      definir_taille(fichier_archive, calculer_taille_recursivement)
+      -- R2.5 : Comment R1.7
+      --      ajouter_fichier(current_directory, fichier_archive)
+      
+      -- R3.1 : Comment R2.1.1
+      --      Si contient_seulement_option_supportees(options, "-r") Alors
+      -- R3.2 : Comment R2.1.2
+      --       Erreur Option_Non_Supportee_Erreur
+      -- R3.3 : Comment R2.2.1
+      --      Si longueur(parametre) /= 1 Alors
+      -- R3.4 : Comment R2.2.2
+      --      Erreur Mauvais_Nombre_Arguments_Erreur
+      -- R3.5 : Comment R2.3.1
+      --      dossier_a_archiver <- aller_au_dossier(current_directory, argument(parameters, 1))
+      
+      
+      
       if get_nb_substrings(options) > 0 then
          raise Not_Handled_Option_Error;
       end if;

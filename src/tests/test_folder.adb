@@ -290,7 +290,7 @@ begin
    -- has parent
    folder_sibling := create("sibling", folder);
    put_line("Has parent:");
-   if has_parent(folder_sibling, folder) then
+   if has_as_parent(folder_sibling, folder) then
       put_line("has_parent(folder_sibling, folder) = True");
    else
       put_line("has_parent(folder_sibling, folder) is incoherent");
