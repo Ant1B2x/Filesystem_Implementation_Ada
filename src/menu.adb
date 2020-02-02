@@ -8,13 +8,25 @@ with P_Commands; use P_Commands;
 
 procedure Menu is
    
+   -- Role : Print a prompt (">")
+   -- Parameters : /
+   -- Return : /
+   -- Preconditions : /
+   -- Postconditions : /
    procedure print_prompt is
    begin
       -- print prompt in red
       put(ASCII.ESC & "[31m> " & ASCII.ESC & "[0m");
    end print_prompt;
    
-   -- make sure the user type an integer between choice_min and choice_max, then return it
+   -- Role : Get an user choice as Integer between a given range and return it
+   -- Parameters :
+   --    choice_min (in Integer) : Minimum of the range
+   --    choice_max (in Integer) : Maximum of the range
+   -- Return :
+   --    Integer : The choice of the user
+   -- Preconditions : /
+   -- Postconditions : /
    function get_choice (choice_min : in Integer; choice_max : in Integer) return Integer is
       choice : Integer; -- choice typed by the user
    begin
@@ -38,6 +50,12 @@ procedure Menu is
       return choice;
    end get_choice;
    
+   -- Role : Print the main menu
+   -- Parameters :
+   --    current_directory (in T_Folder) : Directory where the user is currently located in
+   -- Return : /
+   -- Preconditions : /
+   -- Postconditions : /
    procedure print_main_menu (current_directory : in T_Folder) is
    begin
       -- print the menu with the differents commands
@@ -57,6 +75,12 @@ procedure Menu is
       new_line;
    end print_main_menu;
    
+   -- Role : Print the menu of the "cd" command, get the parameters from the user, and run the command
+   -- Parameters :
+   --    current_directory (in out T_Folder) : Directory where the user is currently located in
+   -- Return : /
+   -- Preconditions : /
+   -- Postconditions : /
    procedure cd_menu (current_directory : in out T_Folder) is
       path : String(1..LMAX_STRING); -- path entered by the user
       path_length : Integer; -- length of path entered by the user
@@ -68,6 +92,12 @@ procedure Menu is
       run_command(current_directory, command_to_string(cd) & " " & path(1..path_length));
    end cd_menu;
    
+   -- Role : Print the menu of the "ls" command, get the options and parameters from the user, and run the command
+   -- Parameters :
+   --    current_directory (in out T_Folder) : Directory where the user is currently located in
+   -- Return : /
+   -- Preconditions : /
+   -- Postconditions : /
    procedure ls_menu (current_directory : in out T_Folder) is
       choice : Integer; -- choice entered by the user
       path : String(1..LMAX_STRING); -- path entered by the user
@@ -95,6 +125,12 @@ procedure Menu is
       end if;
    end ls_menu;
    
+   -- Role : Print the menu of the "mkdir" command, get the parameters from the user, and run the command
+   -- Parameters :
+   --    current_directory (in out T_Folder) : Directory where the user is currently located in
+   -- Return : /
+   -- Preconditions : /
+   -- Postconditions : /
    procedure mkdir_menu (current_directory : in out T_Folder) is
       path : String(1..LMAX_STRING); -- path entered by the user
       path_length : Integer; -- length of the path entered by the user
@@ -111,6 +147,12 @@ procedure Menu is
       run_command(current_directory, command_to_string(mkdir) & " " & path(1..path_length));
    end mkdir_menu;
    
+   -- Role : Print the menu of the "touch" command, get the parameters from the user, and run the command
+   -- Parameters :
+   --    current_directory (in out T_Folder) : Directory where the user is currently located in
+   -- Return : /
+   -- Preconditions : /
+   -- Postconditions : /
    procedure touch_menu (current_directory : in out T_Folder) is
       path : String(1..LMAX_STRING); -- path entered by the user
       path_length : Integer; -- length of the path entered by the user
@@ -127,6 +169,12 @@ procedure Menu is
       run_command(current_directory, command_to_string(touch) & " " & path(1..path_length));
    end touch_menu;
    
+   -- Role : Print the menu of the "cp" command, get the options and parameters from the user, and run the command
+   -- Parameters :
+   --    current_directory (in out T_Folder) : Directory where the user is currently located in
+   -- Return : /
+   -- Preconditions : /
+   -- Postconditions : /
    procedure cp_menu (current_directory : in out T_Folder) is
       choice : Integer; -- choice entered by the user
       source_path : String(1..LMAX_STRING); -- source path entered by the user
@@ -167,6 +215,12 @@ procedure Menu is
       end if;
    end cp_menu;
    
+   -- Role : Print the menu of the "mv" command, get the options and parameters from the user, and run the command
+   -- Parameters :
+   --    current_directory (in out T_Folder) : Directory where the user is currently located in
+   -- Return : /
+   -- Preconditions : /
+   -- Postconditions : /
    procedure mv_menu (current_directory : in out T_Folder) is
       choice : Integer; -- choice entered by the user
       source_path : String(1..LMAX_STRING); -- source path entered by the user
@@ -205,9 +259,14 @@ procedure Menu is
             run_command(current_directory, command_to_string(mv) & " " & source_path(1..source_path_length) & " " & destination_path(1..destination_path_length));
          end if;
       end if;
-      
    end mv_menu;
    
+   -- Role : Print the menu of the "rm" command, get the options and parameters from the user, and run the command
+   -- Parameters :
+   --    current_directory (in out T_Folder) : Directory where the user is currently located in
+   -- Return : /
+   -- Preconditions : /
+   -- Postconditions : /
    procedure rm_menu (current_directory : in out T_Folder) is
       choice : Integer; -- choice entered by the user
       path : String(1..LMAX_STRING); -- path entered by the user
@@ -238,6 +297,12 @@ procedure Menu is
       end if;
    end rm_menu;
    
+   -- Role : Print the menu of the "tar" command, get the parameters from the user, and run the command
+   -- Parameters :
+   --    current_directory (in out T_Folder) : Directory where the user is currently located in
+   -- Return : /
+   -- Preconditions : /
+   -- Postconditions : /
    procedure tar_menu (current_directory : in out T_Folder) is
       path : String(1..LMAX_STRING); -- path entered by the user
       path_length : Integer; -- length of the path entered by the user

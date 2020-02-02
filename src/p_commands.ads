@@ -40,7 +40,7 @@ package P_Commands is
    
    -- Role : Decode a command line and execute a command with the correct options and parameters
    -- Parameters :
-   --    current_directory (in out T_Folder) : Folder where we are currently in
+   --    current_directory (in out T_Folder) : Folder where we are currently in, should be in "in / out" for commands such as "touch", "mkdir"
    --    command_line (in String) : Command line to execute
    -- Return : /
    -- Preconditions : the command line length is inferior or equal to the maximum length of a string
