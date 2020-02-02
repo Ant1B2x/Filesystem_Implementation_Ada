@@ -820,10 +820,9 @@ package body P_Commands is
       --      Fin si
       -- R2.4 : Comment R1.4
       --      Si l'option recursive est demandee Alors(R2.4.1)
-      --          Je recupere le nom du dossier courant(R2.4.2)
-      --          J'affiche le nom(R2.4.3)
-      --          J'affiche le contenu de courant(R2.4.4)
-      --          Je propage à tous ses sous-dossiers(R2.4.5)
+      --          J'affiche le nom(R2.4.2)
+      --          J'affiche le contenu de courant(R2.4.3)
+      --          Je propage à tous ses sous-dossiers(R2.4.4)
       --      Fin si
       -- R2.5 : Comment R1.5
       --      Sinon
@@ -845,22 +844,20 @@ package body P_Commands is
       -- R3.7 : Comment R2.4.1
       --      Si contient_option(options, "-r") Alors
       -- R3.8 : Comment R2.4.2
-      --      nom <- Si est_dossier_originel(courant) Alors "." Sinon nom(courant) Fin si
+      --      Ecrire(nom(courant) + ":")
       -- R3.9 : Comment R2.4.3
-      --      Ecrire(nom + ":")
-      -- R3.10 : Comment R2.4.4
       --      afficher_contenu(courant)
-      -- R3.11 : Comment R2.4.5
+      -- R3.10 : Comment R2.4.4
       --      Pour tous les sous-dossiers directs de courant Faire(R3.11.1)
       --          Afficher recursivement le contenu(R3.11.2)
       --      Fin pour
-      -- R3.12 : Comment R2.5.1
+      -- R3.11 : Comment R2.5.1
       --      afficher_contenu(courant)
       
       -- R4.1 : Comment R3.11.1
       --      Pour index allant de 1 a nombre_dossier(courant) Faire
       -- R4.2 : Comment R3.11.2
-      --      afficher_contenu_recursivement(courant, nom)
+      --      afficher_contenu_recursivement(courant, nom(courant))
       
       
       
@@ -912,7 +909,11 @@ package body P_Commands is
       --      Fin pour
       
       -- R3.1 : Comment R2.1.1
-      --      chemin_relatif <- preceding + '/' + nom(current_directory)
+      --      Si non est_null(parent(current_directory)) et ensuite est_dossier_originel(parent(current_directory)) Alors
+      --          chemin_relatif <- preceding + nom(current_directory)
+      --      Sinon
+      --          chemin_relatif <- preceding + '/' + nom(current_directory)
+      --      Fin si
       -- R3.2 : Comment R2.1.2
       --      Ecrire(chemin_relatif + ':')
       -- R3.3 : Comment R2.3.1
