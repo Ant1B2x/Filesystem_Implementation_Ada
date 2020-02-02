@@ -60,9 +60,9 @@ package body P_Commands is
       when Wrong_Parameters_Number_Error =>
          put_line("Wrong number of parameters.");
          put_line("Try help '" & get_substring_to_string(splitted_line, 1) & "' for more information.");
-      --when Constraint_Error =>
-         --put_line("command not found");
-         --put_line("Try 'help' to see a list of available commands.");
+      when Constraint_Error =>
+         put_line("command not found");
+         put_line("Try 'help' to see a list of available commands.");
    end run_command;
    
    -- ############################################ VARIOUS PRIVATE SUBROUTINES ###########################################################
@@ -798,7 +798,6 @@ package body P_Commands is
    
    procedure ls_command (current_directory : in T_Folder; options : in T_Substrings; parameters : in T_Substrings) is
       current : T_Folder; -- represents the folder where we are doing the "ls" in
-      name: Unbounded_String;
    begin
       -- R0 : Affiche tous les fichiers et dossiers directs d'un dossier, ou parcours le fait en parcourrant tous ses sous-dossiers 
       -- R1 : Si les options transmises ne sont pas gerees, leve une exception(R1.1)
@@ -881,11 +880,10 @@ package body P_Commands is
       end if;
       -- if options contain r, do a recursive ls on each subfolder
       if contains_option(options, 'r') then
-         name := (if is_root(current) then To_Unbounded_String(".") else To_Unbounded_String(get_name(current)));
-         put_line(To_String(name) & ":");
+         put_line(get_name(current) & ":");
          display_folders_and_files(create_siblings_set(current));
          for i in 1.. get_nb_folders(current) loop
-            ls_r_command(get_folder(current, i), name);
+            ls_r_command(get_folder(current, i), To_Unbounded_String(get_name(current)));
          end loop;
       -- else, do a standard ls
       else
@@ -923,8 +921,16 @@ package body P_Commands is
       --      ls_r_command(dossier(dossier_original, index_dossier),chemin_relatif)
 
       
+      -- check if the current directory is a root subfolder
+      if not is_null(get_parent(current_directory)) and then is_root(get_parent(current_directory)) then
+         -- if true, only add the subfolder name (avoiding double "/")
+         current_path := preceding_path & get_name(current_directory);
+      -- if this is a standard folder
+      else
+         -- add current path + "/" + current directory name
+         current_path := preceding_path & FILE_SEPARATOR & get_name(current_directory);
+      end if;
       -- print current path and ":"
-      current_path := preceding_path & FILE_SEPARATOR & get_name(current_directory);
       new_line;
       put_line(To_String(current_path) & ":");
       -- print current directory content

@@ -1,5 +1,4 @@
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
-With ada.Text_IO; use ada.Text_IO;
 
 with P_Tree;
 with P_Array;
