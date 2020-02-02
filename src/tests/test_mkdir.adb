@@ -14,9 +14,9 @@ begin
    current_directory := get_root;
    run_command(current_directory, "mkdir test");
    if has_son_with_this_name(current_directory, "test") then
-      put_line("mkdir test ok");
+      put_line(ASCII.ESC & "[92m" & "mkdir test ok" & ASCII.ESC & "[0m");
    else
-      put_line("mkdir test is incoherent");
+      put_line(ASCII.ESC & "[91m" & "mkdir test is incoherent" & ASCII.ESC & "[0m");
    end if;
    new_line;
    
@@ -24,9 +24,9 @@ begin
    put_line("'mkdir test/ok'");
    run_command(current_directory, "mkdir test/ok");
    if has_son_with_this_name(find_folder(current_directory, "test"), "ok") then
-      put_line("mkdir test/ok ok");
+      put_line(ASCII.ESC & "[92m" & "mkdir test/ok ok" & ASCII.ESC & "[0m");
    else
-      put_line("mkdir test/ok is incoherent");
+      put_line(ASCII.ESC & "[91m" & "mkdir test/ok is incoherent" & ASCII.ESC & "[0m");
    end if;
    new_line;
    
@@ -34,9 +34,9 @@ begin
    put_line("'mkdir ./test2'");
    run_command(current_directory, "mkdir ./test2");
    if has_son_with_this_name(current_directory, "test2") then
-      put_line("mkdir ./test2 ok");
+      put_line(ASCII.ESC & "[92m" & "mkdir ./test2 ok" & ASCII.ESC & "[0m");
    else
-      put_line("mkdir ./test2 is incoherent");
+      put_line(ASCII.ESC & "[91m" & "mkdir ./test2 is incoherent" & ASCII.ESC & "[0m");
    end if;
    new_line;
    
@@ -45,9 +45,9 @@ begin
    current_directory := find_folder(current_directory, "test");
    run_command(current_directory, "mkdir ../test3");
    if has_son_with_this_name(get_root, "test3") then
-      put_line("mkdir ../test3 ok");
+      put_line(ASCII.ESC & "[92m" & "mkdir ../test3 ok" & ASCII.ESC & "[0m");
    else
-      put_line("mkdir ../test3 is incoherent");
+      put_line(ASCII.ESC & "[91m" & "mkdir ../test3 is incoherent" & ASCII.ESC & "[0m");
    end if;
    new_line;
    
@@ -58,9 +58,9 @@ begin
    current_directory := find_folder(current_directory, "test");
    run_command(current_directory, "mkdir /test3/ok");
    if has_son_with_this_name(find_folder(get_root, "test3"), "ok") then
-      put_line("mkdir /test3/ok ok");
+      put_line(ASCII.ESC & "[92m" & "mkdir /test3/ok ok" & ASCII.ESC & "[0m");
    else
-      put_line("mkdir /test3/ok is incoherent");
+      put_line(ASCII.ESC & "[91m" & "mkdir /test3/ok is incoherent" & ASCII.ESC & "[0m");
    end if;
    new_line;
    new_line;

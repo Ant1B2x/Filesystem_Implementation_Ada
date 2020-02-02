@@ -11,24 +11,24 @@ begin
    metadata := create("file.exe", (RWX, RX, RX), 2284, "/usr/bin");
    put_line("Creating file.exe in /usr/bin with rights 755, size of 2284");
    if get_name(metadata) = "file.exe" then
-      put_line("get_name(metadata) = ""file.exe""");
+      put_line(ASCII.ESC & "[92m" & "get_name(metadata) = ""file.exe""" & ASCII.ESC & "[0m");
    else
-      put_line("get_name(metadata) is incoherent");
+      put_line(ASCII.ESC & "[91m" & "get_name(metadata) is incoherent" & ASCII.ESC & "[0m");
    end if;
    if get_rights(metadata) = (RWX, RX, RX) then
-      put_line("get_rights(metadata) = (RWX, RX, RX)");
+      put_line(ASCII.ESC & "[92m" & "get_rights(metadata) = (RWX, RX, RX)" & ASCII.ESC & "[0m");
    else
-      put_line("get_rights(metadata) is incoherent");
+      put_line(ASCII.ESC & "[91m" & "get_rights(metadata) is incoherent" & ASCII.ESC & "[0m");
    end if;
    if get_size(metadata) = 2284 then
-      put_line("get_size(metadata) = 2284");
+      put_line(ASCII.ESC & "[92m" & "get_size(metadata) = 2284" & ASCII.ESC & "[0m");
    else
-      put_line("get_size(metadata) is incoherent");
+      put_line(ASCII.ESC & "[91m" & "get_size(metadata) is incoherent" & ASCII.ESC & "[0m");
    end if;
    if get_path(metadata) = "/usr/bin" then
-      put_line("get_path(metadata) = ""/usr/bin""");
+      put_line(ASCII.ESC & "[92m" & "get_path(metadata) = ""/usr/bin""" & ASCII.ESC & "[0m");
    else
-      put_line("get_path(metadata) is incoherent");
+      put_line(ASCII.ESC & "[91m" & "get_path(metadata) is incoherent" & ASCII.ESC & "[0m");
    end if;
    new_line;
    
@@ -36,9 +36,9 @@ begin
    put_line("Set name & get name:");
    set_name(metadata, "file.dat");
    if get_name(metadata) = "file.dat" then
-      put_line("get_name(metadata) = ""file.dat""");
+      put_line(ASCII.ESC & "[92m" & "get_name(metadata) = ""file.dat""" & ASCII.ESC & "[0m");
    else
-      put_line("get_name(metadata is incoherent");
+      put_line(ASCII.ESC & "[91m" & "get_name(metadata is incoherent" & ASCII.ESC & "[0m");
    end if;
    new_line;
    
@@ -46,17 +46,17 @@ begin
    put_line("Set name with invalid character:");
    begin
       set_name(metadata, "tp/file");
-      put_line("nothing raised, set_name should have raised Invalid_Character_Error");
+      put_line(ASCII.ESC & "[91m" & "nothing raised, set_name should have raised Invalid_Character_Error" & ASCII.ESC & "[0m");
    exception
       when Invalid_Character_Error =>
-         put_line("Invalid_Character_Error raised, can't have '/' in name");
+         put_line(ASCII.ESC & "[92m" & "Invalid_Character_Error raised, can't have '/' in name" & ASCII.ESC & "[0m");
    end;
    begin
       set_name(metadata, "tp file");
-      put_line("nothing raised, set_name should have raised Invalid_Character_Error");
+      put_line(ASCII.ESC & "[91m" & "nothing raised, set_name should have raised Invalid_Character_Error" & ASCII.ESC & "[0m");
    exception
       when Invalid_Character_Error =>
-         put_line("Invalid_Character_Error raised, can't have ' ' in name");
+         put_line(ASCII.ESC & "[92m" & "Invalid_Character_Error raised, can't have ' ' in name" & ASCII.ESC & "[0m");
    end;
    new_line;
    
@@ -64,9 +64,9 @@ begin
    put_line("Set rights & get rights:");
    set_rights(metadata, (RW, R, R));
    if get_rights(metadata) = (RW, R, R) then
-      put_line("get_rights(metadata) = (RW, R, R)");
+      put_line(ASCII.ESC & "[92m" & "get_rights(metadata) = (RW, R, R)" & ASCII.ESC & "[0m");
    else
-      put_line("get_rights(metadata) is incoherent");
+      put_line(ASCII.ESC & "[91m" & "get_rights(metadata) is incoherent" & ASCII.ESC & "[0m");
    end if;
    new_line;
    
@@ -74,9 +74,9 @@ begin
    put_line("Set size & get size:");
    set_size(metadata, 23568);
    if get_size(metadata) = 23568 then
-      put_line("get_size(metadata) = 23568");
+      put_line(ASCII.ESC & "[92m" & "get_size(metadata) = 23568" & ASCII.ESC & "[0m");
    else
-      put_line("get_size(metadata) is incoherent");
+      put_line(ASCII.ESC & "[91m" & "get_size(metadata) is incoherent" & ASCII.ESC & "[0m");
    end if;
    new_line;
    
@@ -84,9 +84,9 @@ begin
    put_line("Set path & get path:");
    set_path(metadata, "/home/n7");
    if get_path(metadata) = "/home/n7" then
-      put_line("get_path(metadata = ""/home/n7""");
+      put_line(ASCII.ESC & "[92m" & "get_path(metadata = ""/home/n7""" & ASCII.ESC & "[0m");
    else
-      put_line("get_path(metadata is incoherent");
+      put_line(ASCII.ESC & "[91m" & "get_path(metadata is incoherent" & ASCII.ESC & "[0m");
    end if;
    new_line;
    
@@ -94,24 +94,24 @@ begin
    put_line("Create root:");
    metadata := create_root;
    if get_name(metadata) = ""&FILE_SEPARATOR then
-      put_line("get_name(metadata) = ""/""");
+      put_line(ASCII.ESC & "[92m" & "get_name(metadata) = ""/""" & ASCII.ESC & "[0m");
    else
-      put_line("get_name(metadata) is incoherent, create_root may contain errors");
+      put_line(ASCII.ESC & "[91m" & "get_name(metadata) is incoherent, create_root may contain errors" & ASCII.ESC & "[0m");
    end if;
    if get_rights(metadata) = (RWX, RX, RX) then
-      put_line("get_rights(metadata) = (RWX, RX, RX)");
+      put_line(ASCII.ESC & "[92m" & "get_rights(metadata) = (RWX, RX, RX)" & ASCII.ESC & "[0m");
    else
-      put_line("get_rights(metadata) is incoherent, create_root may contain errors");
+      put_line(ASCII.ESC & "[91m" & "get_rights(metadata) is incoherent, create_root may contain errors" & ASCII.ESC & "[0m");
    end if;
    if get_size(metadata) = FOLDER_SIZE then
-      put_line("get_size(metadata) = FOLDER_SIZE");
+      put_line(ASCII.ESC & "[92m" & "get_size(metadata) = FOLDER_SIZE" & ASCII.ESC & "[0m");
    else
-      put_line("get_size(metadata) is incoherent, create_root may contain errors");
+      put_line(ASCII.ESC & "[91m" & "get_size(metadata) is incoherent, create_root may contain errors" & ASCII.ESC & "[0m");
    end if;
    if get_path(metadata) = "" then
-      put_line("get_path(metadata) = """"");
+      put_line(ASCII.ESC & "[92m" & "get_path(metadata) = """"" & ASCII.ESC & "[0m");
    else
-      put_line("get_path(metadata) = is incoherent, create_root may contain errors");
+      put_line(ASCII.ESC & "[91m" & "get_path(metadata) = is incoherent, create_root may contain errors" & ASCII.ESC & "[0m");
    end if;
    new_line;
    

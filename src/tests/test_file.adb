@@ -12,33 +12,33 @@ begin
    put_line("Creating file.exe with rights 755 and some executable data");
    file := create("file.exe", (RWX, RX, RX), "thisissomeexecutabledata");
    if get_name(file) = "file.exe" then
-      put_line("get_name(file) = ""file.exe""");
+      put_line(ASCII.ESC & "[92m" & "get_name(file) = ""file.exe""" & ASCII.ESC & "[0m");
    else
-      put_line("get_name(file) is incoherent");
+      put_line(ASCII.ESC & "[91m" & "get_name(file) is incoherent" & ASCII.ESC & "[0m");
    end if;
    if get_rights(file) = (RWX, RX, RX) then
-      put_line("get_rights(file) = (RWX, RX, RX)");
+      put_line(ASCII.ESC & "[92m" & "get_rights(file) = (RWX, RX, RX)" & ASCII.ESC & "[0m");
    else
-      put_line("get_rights(file) is incoherent");
+      put_line(ASCII.ESC & "[91m" & "get_rights(file) is incoherent" & ASCII.ESC & "[0m");
    end if;
    if get_path(file) = "" then
-      put_line("get_path(file) = """"");
+      put_line(ASCII.ESC & "[92m" & "get_path(file) = """"" & ASCII.ESC & "[0m");
    else
-      put_line("get_path(file) is incoherent");
+      put_line(ASCII.ESC & "[91m" & "get_path(file) is incoherent" & ASCII.ESC & "[0m");
    end if;
    if get_data(file) = "thisissomeexecutabledata" then
-      put_line("get_data(file) = ""thisissomeexecutabledata""");
+      put_line(ASCII.ESC & "[92m" & "get_data(file) = ""thisissomeexecutabledata""" & ASCII.ESC & "[0m");
    else
-      put_line("get_data(file) is incoherent");
+      put_line(ASCII.ESC & "[91m" & "get_data(file) is incoherent" & ASCII.ESC & "[0m");
    end if;
    new_line;
    
    -- get path
    put_line("Get path:");
    if get_path(file) = "" then
-      put_line("get_path(file) = """"");
+      put_line(ASCII.ESC & "[92m" & "get_path(file) = """"" & ASCII.ESC & "[0m");
    else
-      put_line("get_path(file) is incoherent");
+      put_line(ASCII.ESC & "[91m" & "get_path(file) is incoherent" & ASCII.ESC & "[0m");
    end if;
    new_line;
    
@@ -46,9 +46,9 @@ begin
    put_line("Set name & get name:");
    set_name(file, "file.dat");
    if get_name(file) = "file.dat" then
-      put_line("get_name(file) = ""file.dat""");
+      put_line(ASCII.ESC & "[92m" & "get_name(file) = ""file.dat""" & ASCII.ESC & "[0m");
    else
-      put_line("get_name(file) is incoherent");
+      put_line(ASCII.ESC & "[91m" & "get_name(file) is incoherent" & ASCII.ESC & "[0m");
    end if;
    new_line;
    
@@ -56,9 +56,9 @@ begin
    put_line("Set rights & get rights:");
    set_rights(file, (RW, R, R));
    if get_rights(file) = (RW, R, R) then
-      put_line("get_rights(file) = (RW, R, R)");
+      put_line(ASCII.ESC & "[92m" & "get_rights(file) = (RW, R, R)" & ASCII.ESC & "[0m");
    else
-      put_line("get_rights(file) is incoherent");
+      put_line(ASCII.ESC & "[91m" & "get_rights(file) is incoherent" & ASCII.ESC & "[0m");
    end if;
    new_line;
    
@@ -66,9 +66,9 @@ begin
    put_line("Set size & get size:");
    set_size(file, 23568);
    if get_size(file) = 23568 then
-      put_line("get_size(file) = 23568");
+      put_line(ASCII.ESC & "[92m" & "get_size(file) = 23568" & ASCII.ESC & "[0m");
    else
-      put_line("get_size(file) is incoherent");
+      put_line(ASCII.ESC & "[91m" & "get_size(file) is incoherent" & ASCII.ESC & "[0m");
    end if;
    new_line;
    
@@ -76,14 +76,14 @@ begin
    put_line("Set data & get data:");
    set_data(file, "thisissomeotherdata");
    if get_data(file) = "thisissomeotherdata" then
-      put_line("get_data(file) = ""thisissomeotherdata""");
+      put_line(ASCII.ESC & "[92m" & "get_data(file) = ""thisissomeotherdata""" & ASCII.ESC & "[0m");
    else
-      put_line("get_data(file) is incoherent");
+      put_line(ASCII.ESC & "[91m" & "get_data(file) is incoherent" & ASCII.ESC & "[0m");
    end if;
    if get_size(file) = 19 then
-      put_line("get_size(file) = 19 (size of ""thisissomeotherdata"")");
+      put_line(ASCII.ESC & "[92m" & "get_size(file) = 19 (size of ""thisissomeotherdata"")" & ASCII.ESC & "[0m");
    else
-      put_line("get_size(file) is incoherent");
+      put_line(ASCII.ESC & "[91m" & "get_size(file) is incoherent" & ASCII.ESC & "[0m");
    end if;
    new_line;
    
@@ -91,29 +91,29 @@ begin
    put_line("Clone:");
    file_bis := clone(file, "/home/n7student/bin");
    if get_path(file_bis) = "/home/n7student/bin" then
-      put_line("get_path(file_bis) = ""/home/n7student/bin""");
+      put_line(ASCII.ESC & "[92m" & "get_path(file_bis) = ""/home/n7student/bin""" & ASCII.ESC & "[0m");
    else
-      put_line("get_path(file_bis) is incoherent");
+      put_line(ASCII.ESC & "[91m" & "get_path(file_bis) is incoherent" & ASCII.ESC & "[0m");
    end if;
    if get_name(file_bis) = get_name(file) then
-      put_line("get_name(file_bis) = get_name(file)");
+      put_line(ASCII.ESC & "[92m" & "get_name(file_bis) = get_name(file)" & ASCII.ESC & "[0m");
    else
-      put_line("get_name(file_bis) is incoherent");
+      put_line(ASCII.ESC & "[91m" & "get_name(file_bis) is incoherent" & ASCII.ESC & "[0m");
    end if;
    if get_rights(file_bis) = get_rights(file) then
-      put_line("get_rights(file_bis) = get_rights(file)");
+      put_line(ASCII.ESC & "[92m" & "get_rights(file_bis) = get_rights(file)" & ASCII.ESC & "[0m");
    else
-      put_line("get_rights(file_bis) is incoherent");
+      put_line(ASCII.ESC & "[91m" & "get_rights(file_bis) is incoherent" & ASCII.ESC & "[0m");
    end if;
    if get_size(file_bis) = get_size(file) then
-      put_line("get_size(file_bis) = get_size(file)");
+      put_line(ASCII.ESC & "[92m" & "get_size(file_bis) = get_size(file)" & ASCII.ESC & "[0m");
    else
-      put_line("get_size(file_bis) is incoherent");
+      put_line(ASCII.ESC & "[91m" & "get_size(file_bis) is incoherent" & ASCII.ESC & "[0m");
    end if;
    if get_data(file_bis) = get_data(file) then
-      put_line("get_data(file_bis) = get_data(file)");
+      put_line(ASCII.ESC & "[92m" & "get_data(file_bis) = get_data(file)" & ASCII.ESC & "[0m");
    else
-      put_line("get_data(file_bis) is incoherent");
+      put_line(ASCII.ESC & "[91m" & "get_data(file_bis) is incoherent" & ASCII.ESC & "[0m");
    end if;
    new_line;
    

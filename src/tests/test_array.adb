@@ -28,9 +28,9 @@ begin
    array_integer := create;
    print_array(array_integer);
    if get_nb_values(array_integer) = 0 then
-      put_line("nb_values = 0");
+      put_line(ASCII.ESC & "[92m" & "nb_values = 0" & ASCII.ESC & "[0m");
    else
-      put_line("nb_values is incoherent");
+      put_line(ASCII.ESC & "[91m" & "nb_values is incoherent" & ASCII.ESC & "[0m");
    end if;
    new_line;
    
@@ -51,9 +51,9 @@ begin
    -- get nb values
    put_line("Get nb values:");
    if get_nb_values(array_integer) = 5 then
-      put_line("nb_values = 5");
+      put_line(ASCII.ESC & "[92m" & "nb_values = 5" & ASCII.ESC & "[0m");
    else
-      put_line("nb_values is incoherent");
+      put_line(ASCII.ESC & "[91m" & "nb_values is incoherent" & ASCII.ESC & "[0m");
    end if;
    new_line;
    
@@ -72,9 +72,9 @@ begin
    -- get value
    put_line("Get value:");
    if get_value(array_integer, 2) = 30 then
-      put_line("array_integer[2] = 30");
+      put_line(ASCII.ESC & "[92m" & "array_integer[2] = 30" & ASCII.ESC & "[0m");
    else
-      put_line("array_integer[2] is incoherent");
+      put_line(ASCII.ESC & "[91m" & "array_integer[2] is incoherent" & ASCII.ESC & "[0m");
    end if;
    new_line;
    

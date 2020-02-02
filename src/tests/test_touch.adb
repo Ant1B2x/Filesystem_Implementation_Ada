@@ -22,9 +22,9 @@ begin
    current_directory := get_root;
    run_command(current_directory, "touch testFile");
    if has_son_with_this_name(current_directory, "testFile") then
-      put_line("touch testFile ok");
+      put_line(ASCII.ESC & "[92m" & "touch testFile ok" & ASCII.ESC & "[0m");
    else
-      put_line("touch testFile is incoherent");
+      put_line(ASCII.ESC & "[91m" & "touch testFile is incoherent" & ASCII.ESC & "[0m");
    end if;
    new_line;
    
@@ -32,9 +32,9 @@ begin
    put_line("'touch test/okFile'");
    run_command(current_directory, "touch test/okFile");
    if has_son_with_this_name(find_folder(current_directory, "test"), "okFile") then
-      put_line("touch test/okFile ok");
+      put_line(ASCII.ESC & "[92m" & "touch test/okFile ok" & ASCII.ESC & "[0m");
    else
-      put_line("touch test/okFile is incoherent");
+      put_line(ASCII.ESC & "[91m" & "touch test/okFile is incoherent" & ASCII.ESC & "[0m");
    end if;
    new_line;
    
@@ -42,9 +42,9 @@ begin
    put_line("'touch ./testFile2'");
    run_command(current_directory, "touch ./testFile2");
    if has_son_with_this_name(current_directory, "testFile2") then
-      put_line("touch ./testFile2 ok");
+      put_line(ASCII.ESC & "[92m" & "touch ./testFile2 ok" & ASCII.ESC & "[0m");
    else
-      put_line("touch ./testFile2 is incoherent");
+      put_line(ASCII.ESC & "[91m" & "touch ./testFile2 is incoherent" & ASCII.ESC & "[0m");
    end if;
    new_line;
    
@@ -53,9 +53,9 @@ begin
    current_directory := find_folder(current_directory, "test");
    run_command(current_directory, "touch ../testFile3");
    if has_son_with_this_name(get_root, "testFile3") then
-      put_line("touch ../testFile3 ok");
+      put_line(ASCII.ESC & "[92m" & "touch ../testFile3 ok" & ASCII.ESC & "[0m");
    else
-      put_line("touch ../testFile3 is incoherent");
+      put_line(ASCII.ESC & "[91m" & "touch ../testFile3 is incoherent" & ASCII.ESC & "[0m");
    end if;
    new_line;
    
@@ -66,9 +66,9 @@ begin
    current_directory := find_folder(current_directory, "test");
    run_command(current_directory, "touch /test3/okFile");
    if has_son_with_this_name(find_folder(get_root, "test3"), "okFile") then
-      put_line("touch /test3/okFile ok");
+      put_line(ASCII.ESC & "[92m" & "touch /test3/okFile ok" & ASCII.ESC & "[0m");
    else
-      put_line("touch /test3/okFile is incoherent");
+      put_line(ASCII.ESC & "[91m" & "touch /test3/okFile is incoherent" & ASCII.ESC & "[0m");
    end if;
    new_line;
    new_line;

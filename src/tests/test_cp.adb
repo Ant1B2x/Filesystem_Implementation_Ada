@@ -22,13 +22,13 @@ begin
    -- cp test/ok/fic3 test/fic3" 
    put_line("cp test/ok/fic3 test/fic3");
    if not has_son_with_this_name(find_folder(current_directory, "test"), "fic3") then
-      put_line("not fic3 in test");
+      put_line(ASCII.ESC & "[92m" & "not fic3 in test" & ASCII.ESC & "[0m");
    end if;
    run_command(current_directory, "cp test/ok/fic3 test/fic3");
    if has_son_with_this_name(find_folder(current_directory, "test"), "fic3") then
-      put_line("cp test/ok/fic3 test/fic3 ok");
+      put_line(ASCII.ESC & "[92m" & "cp test/ok/fic3 test/fic3 ok" & ASCII.ESC & "[0m");
    else
-      put_line("cp test/ok/fic3 test/fic3 is incoherent");
+      put_line(ASCII.ESC & "[91m" & "cp test/ok/fic3 test/fic3 is incoherent" & ASCII.ESC & "[0m");
    end if;
    new_line;
    new_line;
@@ -37,13 +37,13 @@ begin
    -- cp -r test/ok/okbis test2/okbis" 
    put_line("cp -r test/ok/okbis test2/okbis");
    if not has_son_with_this_name(find_folder(current_directory, "test2"), "okbis") then
-      put_line("not okbis in test2");
+      put_line(ASCII.ESC & "[92m" & "not okbis in test2" & ASCII.ESC & "[0m");
    end if;
    run_command(current_directory, "cp -r test/ok/okbis test2/okbis");
    if has_son_with_this_name(find_folder(current_directory, "test2"), "okbis") then
-      put_line("cp -r test/ok/okbis test2/okbis ok");
+      put_line(ASCII.ESC & "[92m" & "cp -r test/ok/okbis test2/okbis ok" & ASCII.ESC & "[0m");
    else
-      put_line("cp -r test/ok/okbis test2/okbis is incoherent");
+      put_line(ASCII.ESC & "[91m" & "cp -r test/ok/okbis test2/okbis is incoherent" & ASCII.ESC & "[0m");
    end if;
    new_line;
    new_line;
@@ -51,15 +51,15 @@ begin
    -- cp -r test/ok test2/ok" 
    put_line("cp -r test/ok test2/ok");
    if not has_son_with_this_name(find_folder(current_directory, "test2"), "ok") then
-      put_line("no ok folder in test2");
+      put_line(ASCII.ESC & "[92m" & "no ok folder in test2" & ASCII.ESC & "[0m");
    end if;
    run_command(current_directory, "cp -r test/ok test2/ok");
    if has_son_with_this_name(find_folder(current_directory, "test2"), "ok") and  
      has_son_with_this_name(find_folder(find_folder(current_directory, "test2"), "ok"), "fic3") and 
      has_son_with_this_name(find_folder(find_folder(current_directory, "test2"), "ok"), "okbis") then
-      put_line("cp -r test/ok test2/ok ok");
+      put_line(ASCII.ESC & "[92m" & "cp -r test/ok test2/ok ok" & ASCII.ESC & "[0m");
    else
-      put_line("cp -r test/ok test2/ok is incoherent");
+      put_line(ASCII.ESC & "[91m" & "cp -r test/ok test2/ok is incoherent" & ASCII.ESC & "[0m");
    end if;
    new_line;
    new_line;
@@ -69,13 +69,13 @@ begin
    current_directory := get_root;
    run_command(current_directory, "cd test2/okbis");
    if not has_son_with_this_name(current_directory, "fic3") then
-      put_line("no fic3 in test2/okbis");
+      put_line(ASCII.ESC & "[92m" & "no fic3 in test2/okbis" & ASCII.ESC & "[0m");
    end if;
    run_command(current_directory, "cp ../ok/fic3 ./fic3");
    if has_son_with_this_name(current_directory, "fic3") then
-      put_line("cp ../ok/fic3 ./fic3 from test2/okbis ok");
+      put_line(ASCII.ESC & "[92m" & "cp ../ok/fic3 ./fic3 from test2/okbis ok" & ASCII.ESC & "[0m");
    else
-      put_line("cp ../ok/fic3 ./fic3 from test2/okbis is incoherent");
+      put_line(ASCII.ESC & "[91m" & "cp ../ok/fic3 ./fic3 from test2/okbis is incoherent" & ASCII.ESC & "[0m");
    end if;
    new_line;
    new_line;
@@ -83,15 +83,15 @@ begin
    -- cp -r ../ok ./ok from test2/okbis
    put_line("cp -r ../ok ./ok from test2/okbis");
    if not has_son_with_this_name(current_directory, "ok") then
-      put_line("no ok in test2/okbis");
+      put_line(ASCII.ESC & "[92m" & "no ok in test2/okbis" & ASCII.ESC & "[0m");
    end if;
    run_command(current_directory, "cp -r ../ok ./ok");
    if has_son_with_this_name(current_directory, "ok") and
      has_son_with_this_name(find_folder(current_directory, "ok"), "fic3") and
      has_son_with_this_name(find_folder(current_directory, "ok"), "okbis") then
-      put_line("cp -r ../ok ./ok from test2/okbis ok");
+      put_line(ASCII.ESC & "[92m" & "cp -r ../ok ./ok from test2/okbis ok" & ASCII.ESC & "[0m");
    else
-      put_line("cp -r ../ok ./ok from test2/okbis is incoherent");
+      put_line(ASCII.ESC & "[91m" & "cp -r ../ok ./ok from test2/okbis is incoherent" & ASCII.ESC & "[0m");
    end if;
    new_line;
    new_line;
@@ -100,7 +100,7 @@ begin
    -- cp unexisting_file
    put_line("'cp unexisting_file test/unexisting_file' with unexisting_file not existing");
    if not has_son_with_this_name(current_directory, "unexisting_file") then
-      put_line("unexisting_file does not exist");
+      put_line(ASCII.ESC & "[92m" & "unexisting_file does not exist" & ASCII.ESC & "[0m");
    end if;
    put_line("It should raise Constraint_Error. The couple of lines between two '===...===' should be the same :");
    Put_Line("============================================================");
@@ -114,7 +114,7 @@ begin
    -- cp unexisting_folder
    put_line("'cp -r unexisting_folder test/unexisting_folder' with unexisting_folder not existing");
    if not has_son_with_this_name(current_directory, "unexisting_folder") then
-      put_line("unexisting_folder does not exist");
+      put_line(ASCII.ESC & "[92m" & "unexisting_folder does not exist" & ASCII.ESC & "[0m");
    end if;
    put_line("It should raise Constraint_Error. The couple of lines between two '===...===' should be the same :");
    Put_Line("============================================================");

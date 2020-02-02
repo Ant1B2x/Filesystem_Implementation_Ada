@@ -26,9 +26,9 @@ begin
    current_directory := get_root;
    run_command(current_directory, "tar test");
    if has_son_with_this_name(current_directory, "test.tar") then
-      put_line("tar test is ok");
+      put_line(ASCII.ESC & "[92m" & "tar test is ok" & ASCII.ESC & "[0m");
    else
-      put_line("tar test is incoherent");
+      put_line(ASCII.ESC & "[91m" & "tar test is incoherent" & ASCII.ESC & "[0m");
    end if;
    new_line;
    
@@ -38,9 +38,9 @@ begin
    run_command(current_directory, "cd test2");
    run_command(current_directory, "tar ../test");
    if has_son_with_this_name(current_directory, "test.tar") then
-      put_line("tar ../test from test2 is ok");
+      put_line(ASCII.ESC & "[92m" & "tar ../test from test2 is ok" & ASCII.ESC & "[0m");
    else
-      put_line("tar ../test from test2 is incoherent");
+      put_line(ASCII.ESC & "[91m" & "tar ../test from test2 is incoherent" & ASCII.ESC & "[0m");
    end if;
    new_line;
    
@@ -50,9 +50,9 @@ begin
    run_command(current_directory, "cd test3");
    run_command(current_directory, "tar ./");
    if has_son_with_this_name(current_directory, "test3.tar") then
-      put_line("tar ./ from test3 is ok");
+      put_line(ASCII.ESC & "[92m" & "tar ./ from test3 is ok" & ASCII.ESC & "[0m");
    else
-      put_line("tar ./ from test3 is incoherent");
+      put_line(ASCII.ESC & "[91m" & "tar ./ from test3 is incoherent" & ASCII.ESC & "[0m");
    end if;
    new_line;
    new_line;
@@ -62,10 +62,10 @@ begin
    current_directory := get_root;
    run_command(current_directory, "cd test3");
    if get_size(find_file(current_directory, "test3.tar")) = 10000 then
-      put_line("test3/test3.tar has the expected size");
-      put_line("Size : " & get_size(find_file(current_directory, "test3.tar"))'Image);
+      put_line(ASCII.ESC & "[92m" & "test3/test3.tar has the expected size" & ASCII.ESC & "[0m");
+      put_line(ASCII.ESC & "[92m" & "Size : " & get_size(find_file(current_directory, "test3.tar"))'Image & ASCII.ESC & "[0m");
    else
-      put_line("size of test3/tets3.tar is incoherent");
+      put_line(ASCII.ESC & "[91m" & "size of test3/tets3.tar is incoherent" & ASCII.ESC & "[0m");
    end if;
    new_line;
    new_line;
@@ -75,10 +75,10 @@ begin
    put_line("test.tar has the good size (30'000)");
    current_directory := get_root;
    if get_size(find_file(current_directory, "test.tar")) = 30000 then
-      put_line("test.tar has the expected size");
-      put_line("Size : " & get_size(find_file(current_directory, "test.tar"))'Image);
+      put_line(ASCII.ESC & "[92m" & "test.tar has the expected size" & ASCII.ESC & "[0m");
+      put_line(ASCII.ESC & "[92m" & "Size : " & get_size(find_file(current_directory, "test.tar"))'Image & ASCII.ESC & "[0m");
    else
-      put_line("size of test.tar is incoherent");
+      put_line(ASCII.ESC & "[91m" & "size of test.tar is incoherent" & ASCII.ESC & "[0m");
    end if;
    run_command(current_directory, "cd ..");
    new_line;

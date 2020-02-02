@@ -20,9 +20,9 @@ begin
    current_directory := get_root;
    run_command(current_directory, "cd ..");
    if is_root(current_directory) then
-      put_line("is_root(current_directory)");
+      put_line(ASCII.ESC & "[92m" & "is_root(current_directory)" & ASCII.ESC & "[0m");
    else
-      put_line("is_root(current_directory) is incoherent");
+      put_line(ASCII.ESC & "[91m" & "is_root(current_directory) is incoherent" & ASCII.ESC & "[0m");
    end if;
    new_line;
    
@@ -31,9 +31,9 @@ begin
    current_directory := get_root;
    run_command(current_directory, "cd .");
    if is_root(current_directory) then
-      put_line("is_root(current_directory)");
+      put_line(ASCII.ESC & "[92m" & "is_root(current_directory)" & ASCII.ESC & "[0m");
    else
-      put_line("is_root(current_directory) is incoherent");
+      put_line(ASCII.ESC & "[91m" & "is_root(current_directory) is incoherent" & ASCII.ESC & "[0m");
    end if;
    new_line;
    
@@ -42,9 +42,9 @@ begin
    current_directory := get_root;
    run_command(current_directory, "cd test");
    if get_name(current_directory) = "test" then
-      put_line("get_name(current_directory) = 'test'");
+      put_line(ASCII.ESC & "[92m" & "get_name(current_directory) = 'test'" & ASCII.ESC & "[0m");
    else
-      put_line("get_name(current_directory) = 'test' is incoherent");
+      put_line(ASCII.ESC & "[91m" & "get_name(current_directory) = 'test' is incoherent" & ASCII.ESC & "[0m");
    end if;
    new_line;
    
@@ -54,9 +54,9 @@ begin
    run_command(current_directory, "cd test");
    run_command(current_directory, "cd ..");
    if is_root(current_directory) then
-      put_line("is_root(current_directory)");
+      put_line(ASCII.ESC & "[92m" & "is_root(current_directory)" & ASCII.ESC & "[0m");
    else
-      put_line("is_root(current_directory) is incoherent");
+      put_line(ASCII.ESC & "[91m" & "is_root(current_directory) is incoherent" & ASCII.ESC & "[0m");
    end if;
    new_line;
    
@@ -66,9 +66,9 @@ begin
    run_command(current_directory, "cd test");
    run_command(current_directory, "cd ../test2");
    if get_name(current_directory) = "test2" then
-      put_line("get_name(current_directory) = 'test2'");
+      put_line(ASCII.ESC & "[92m" & "get_name(current_directory) = 'test2'" & ASCII.ESC & "[0m");
    else
-      put_line("get_name(current_directory) = 'test2' is incoherent");
+      put_line(ASCII.ESC & "[91m" & "get_name(current_directory) = 'test2' is incoherent" & ASCII.ESC & "[0m");
    end if;
    new_line;
    
@@ -78,9 +78,9 @@ begin
    run_command(current_directory, "cd test");
    run_command(current_directory, "cd ./");
    if get_name(current_directory) = "test" then
-      put_line("get_name(current_directory) = 'test'");
+      put_line(ASCII.ESC & "[92m" & "get_name(current_directory) = 'test'" & ASCII.ESC & "[0m");
    else
-      put_line("get_name(current_directory) = 'test' is incoherent");
+      put_line(ASCII.ESC & "[91m" & "get_name(current_directory) = 'test' is incoherent" & ASCII.ESC & "[0m");
    end if;
    new_line;
    
@@ -90,9 +90,9 @@ begin
    run_command(current_directory, "cd test2");
    run_command(current_directory, "cd ./.././test/./ok");
    if get_name(current_directory) = "ok" then
-      put_line("get_name(current_directory) = 'ok'");
+      put_line(ASCII.ESC & "[92m" & "get_name(current_directory) = 'ok'" & ASCII.ESC & "[0m");
    else
-      put_line("get_name(current_directory) = 'ok' is incoherent");
+      put_line(ASCII.ESC & "[91m" & "get_name(current_directory) = 'ok' is incoherent" & ASCII.ESC & "[0m");
    end if;
    new_line;
    new_line;
@@ -101,7 +101,7 @@ begin
    put_line("'cd unexisting_folder' with unexisting_folder not existing");
    current_directory := get_root;
    if not has_son_with_this_name(current_directory, "unexisting_folder") then
-      put_line("unexisting_folder does not exist");
+      put_line(ASCII.ESC & "[92m" & "unexisting_folder does not exist" & ASCII.ESC & "[0m");
    end if;
    put_line("It should raise Invalid_Folder_Error. The couple of lines between two '===...===' should be the same :");
    Put_Line("============================================================");
